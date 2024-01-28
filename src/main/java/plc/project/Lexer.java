@@ -86,7 +86,13 @@ public final class Lexer {
      * true. Hint - it's easiest to have this method simply call peek.
      */
     public boolean match(String... patterns) {
-
+        boolean peek = peek(patterns);
+        if(peek){
+            for(int i = 0; i < patterns.length; i++){
+                chars.advance();
+            }
+        }
+        return peek;
     }
 
     /**
