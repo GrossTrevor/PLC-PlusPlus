@@ -52,17 +52,16 @@ public final class Lexer {
     }
 
     public Token lexIdentifier() {
-        boolean ident = false;
         int offset = 0;
         while(chars.has(offset)){
             if(offset == 0){
                 if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
-                    throw new ParseException("parse exception", offset);
+                    //throw new ParseException("parse exception", offset);
                 }
             }
             else{
                 if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
-                    throw new ParseException("parse exception", offset);
+                    //throw new ParseException("parse exception", offset);
                 }
             }
             offset++;
@@ -71,7 +70,35 @@ public final class Lexer {
     }
 
     public Token lexNumber() {
-        throw new UnsupportedOperationException(); //TODO
+        boolean decimal = false;
+        int offset = 0;
+        while(chars.has(offset)){
+            if(offset == 0) {
+                if (!(Character.isDigit(chars.get(0)) || chars.get(0) != '0' || chars.get(0) == '-')) {
+                    if (chars.get(offset + 1) != '.') {
+                        //throw new ParseException("parse exception", offset);
+                    }
+                }
+            }
+            else if (chars.get(offset) == '.') {
+                if(!Character.isDigit(chars.get(offset+1))){
+                    //throw new ParseException("parse exception", offset);
+                }
+                decimal = true;
+            }
+            else{
+                if(!Character.isDigit(chars.get(offset))){
+                    //throw new ParseException("parse exception", offset);
+                }
+            }
+            offset++;
+        }
+        if(decimal){
+            return chars.emit(Token.Type.DECIMAL);
+        }
+        else{
+            return chars.emit(Token.Type.INTEGER);
+        }
     }
 
     public Token lexCharacter() {
