@@ -1,5 +1,7 @@
 package plc.project;
 
+import groovyjarjarantlr.Token;
+
 import java.util.List;
 
 /**
@@ -29,14 +31,21 @@ public final class Lexer {
      * whitespace where appropriate.
      */
     public List<Token> lex() {
+        List<Token> tokens;
+        Token temp;
         while(chars.has(0)){
-            if(chars.get(0) == ('\b' || '\n' || '\r' || '\t')){
+            char cur = chars.get(0);
+            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t')){
                 chars.advance();
                 chars.skip();
             }
-            else
-                lexToken();
+            else{
+                temp = lexToken();
+                //if exception thrown dont do this
+                tokens.add(temp.getIndex(), temp);
+            }
         }
+        return tokens;
     }
 
     /**
@@ -48,7 +57,19 @@ public final class Lexer {
      * by {@link #lex()}
      */
     public Token lexToken() {
-        throw new UnsupportedOperationException(); //TODO
+        char cur = chars.get(0);
+        Token token;
+        if(Character.isDigit(cur))
+            return lexNumber();
+        else if(cur == "\'")
+            return lexCharacter();
+        else if(cur == "\"")
+            return lexString();
+        else if(Character.isLetter(cur) || cur == '@')
+            return lexIdentifier();
+        //lexEscape()
+        else
+            return lexOperator();
     }
 
     public Token lexIdentifier() {
