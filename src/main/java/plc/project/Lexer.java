@@ -18,6 +18,8 @@ public final class Lexer {
 
     private final CharStream chars;
 
+    private ParseException parEx;
+
     public Lexer(String input) {
         chars = new CharStream(input);
     }
@@ -43,7 +45,22 @@ public final class Lexer {
     }
 
     public Token lexIdentifier() {
-        throw new UnsupportedOperationException(); //TODO
+        boolean ident = false;
+        int offset = 0;
+        while(chars.has(offset)){
+            if(offset == 0){
+                if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
+                    throw new ParseException("parse exception", parEx.getIndex());
+                }
+            }
+            else{
+                if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
+                    throw new ParseException("parse exception", parEx.getIndex());
+                }
+            }
+            offset++;
+        }
+        return chars.emit(Token.Type.IDENTIFIER);
     }
 
     public Token lexNumber() {
@@ -113,7 +130,7 @@ public final class Lexer {
             this.input = input;
         }
 
-        public boolean has(int offset) {
+        public static boolean has(int offset) {
             return index + offset < input.length();
         }
 

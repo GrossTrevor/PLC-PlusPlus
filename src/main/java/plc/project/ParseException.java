@@ -9,7 +9,7 @@ public final class ParseException extends RuntimeException {
         this.index = index;
     }
 
-    public int getIndex() {
+    public static int getIndex() {
         return index;
     }
 
