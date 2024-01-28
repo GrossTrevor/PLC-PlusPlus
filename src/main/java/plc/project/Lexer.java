@@ -50,12 +50,12 @@ public final class Lexer {
         while(chars.has(offset)){
             if(offset == 0){
                 if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
-                    throw new ParseException("parse exception", parEx.getIndex());
+                    throw new ParseException("parse exception", offset);
                 }
             }
             else{
                 if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
-                    throw new ParseException("parse exception", parEx.getIndex());
+                    throw new ParseException("parse exception", offset);
                 }
             }
             offset++;
