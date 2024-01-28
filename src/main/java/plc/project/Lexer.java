@@ -29,7 +29,14 @@ public final class Lexer {
      * whitespace where appropriate.
      */
     public List<Token> lex() {
-        throw new UnsupportedOperationException(); //TODO
+        while(chars.has(0)){
+            if(chars.get(0) == ('\b' || '\n' || '\r' || '\t')){
+                chars.advance();
+                chars.skip();
+            }
+            else
+                lexToken();
+        }
     }
 
     /**
