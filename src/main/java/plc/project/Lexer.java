@@ -129,6 +129,7 @@ public final class Lexer {
 //
 //            }
 //        }
+        throw new UnsupportedOperationException();
     }
 
     public Token lexString() {
