@@ -1,9 +1,12 @@
 package plc.project;
 
-import groovyjarjarantlr.Token;
+//import groovyjarjarantlr.Token;
+
+import com.sun.source.tree.IdentifierTree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern
 
 /**
  * The lexer works through three main functions:
@@ -74,21 +77,30 @@ public final class Lexer {
     }
 
     public Token lexIdentifier() {
-        int offset = 0;
-        while(chars.has(offset)){
-            if(offset == 0){
-                if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
-                    //throw new ParseException("parse exception", offset);
-                }
+        while(!peek(" ")){
+            if(peek()){
+
             }
-            else{
-                if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
-                    //throw new ParseException("parse exception", offset);
-                }
-            }
-            offset++;
         }
         return chars.emit(Token.Type.IDENTIFIER);
+
+
+//        int offset = 0;
+//        while(chars.has(offset)){
+//            if(offset == 0){
+//                if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
+//                    throw new ParseException("parse exception", offset);
+//                }
+//            }
+//            else{
+//                if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
+//                    throw new ParseException("parse exception", offset);
+//                }
+//            }
+//            offset++;
+//            chars.advance();
+//        }
+//        return chars.emit(Token.Type.IDENTIFIER);
     }
 
     public Token lexNumber() {
@@ -98,13 +110,13 @@ public final class Lexer {
             if(offset == 0) {
                 if (!(Character.isDigit(chars.get(0)) || chars.get(0) != '0' || chars.get(0) == '-')) {
                     if (chars.get(offset + 1) != '.') {
-                        //throw new ParseException("parse exception", offset);
+                        throw new ParseException("parse exception", offset);
                     }
                 }
             }
             else if (chars.get(offset) == '.') {
                 if(!Character.isDigit(chars.get(offset+1))){
-                    //throw new ParseException("parse exception", offset);
+                    throw new ParseException("parse exception", offset);
                 }
                 decimal = true;
             }
@@ -114,6 +126,7 @@ public final class Lexer {
                 }
             }
             offset++;
+            chars.advance();
         }
         if(decimal){
             return chars.emit(Token.Type.DECIMAL);
@@ -192,7 +205,7 @@ public final class Lexer {
             this.input = input;
         }
 
-        public static boolean has(int offset) {
+        public boolean has(int offset) {
             return index + offset < input.length();
         }
 
