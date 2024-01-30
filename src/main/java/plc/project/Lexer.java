@@ -2,6 +2,7 @@ package plc.project;
 
 import groovyjarjarantlr.Token;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,8 +32,8 @@ public final class Lexer {
      * whitespace where appropriate.
      */
     public List<Token> lex() {
-        List<Token> tokens;
-        Token temp;
+        List<Token> tokens = new ArrayList<Token>();
+        Token temp = null;
         while(chars.has(0)){
             char cur = chars.get(0);
             if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t'){
