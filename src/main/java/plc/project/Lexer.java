@@ -102,7 +102,12 @@ public final class Lexer {
     }
 
     public Token lexCharacter() {
-        throw new UnsupportedOperationException(); //TODO
+//        int offset = 0;
+//        while(chars.has(offset)){
+//            if(offset == 0){
+//
+//            }
+//        }
     }
 
     public Token lexString() {
