@@ -1,7 +1,5 @@
 package plc.project;
 
-import groovyjarjarantlr.Token;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +40,8 @@ public final class Lexer {
             }
             else {
                 temp = lexToken();
-                //if exception thrown don't do this
-                tokens.add(temp.getIndex(), temp);
+                if(temp != null)
+                    tokens.add(temp.getIndex(), temp);
             }
         }
         return tokens;
@@ -78,12 +76,12 @@ public final class Lexer {
         while(chars.has(offset)){
             if(offset == 0){
                 if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
-                    //throw new ParseException("parse exception", offset);
+                    throw new ParseException("parse exception", offset);
                 }
             }
             else{
                 if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
-                    //throw new ParseException("parse exception", offset);
+                    throw new ParseException("parse exception", offset);
                 }
             }
             offset++;
@@ -98,19 +96,19 @@ public final class Lexer {
             if(offset == 0) {
                 if (!(Character.isDigit(chars.get(0)) || chars.get(0) != '0' || chars.get(0) == '-')) {
                     if (chars.get(offset + 1) != '.') {
-                        //throw new ParseException("parse exception", offset);
+                        throw new ParseException("parse exception", offset);
                     }
                 }
             }
             else if (chars.get(offset) == '.') {
                 if(!Character.isDigit(chars.get(offset+1))){
-                    //throw new ParseException("parse exception", offset);
+                    throw new ParseException("parse exception", offset);
                 }
                 decimal = true;
             }
             else{
                 if(!Character.isDigit(chars.get(offset))){
-                    //throw new ParseException("parse exception", offset);
+                    throw new ParseException("parse exception", offset);
                 }
             }
             offset++;
@@ -130,6 +128,7 @@ public final class Lexer {
 //
 //            }
 //        }
+        throw new UnsupportedOperationException();
     }
 
     public Token lexString() {
@@ -191,7 +190,7 @@ public final class Lexer {
             this.input = input;
         }
 
-        public static boolean has(int offset) {
+        public boolean has(int offset) {
             return index + offset < input.length();
         }
 

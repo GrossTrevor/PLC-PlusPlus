@@ -22,7 +22,9 @@ public class LexerTests {
         return Stream.of(
                 Arguments.of("Alphabetic", "getName", true),
                 Arguments.of("Alphanumeric", "thelegend27", true),
+                Arguments.of("Just At", "@", true),
                 Arguments.of("Leading Hyphen", "-five", false),
+                Arguments.of("Just Number", "0", false),
                 Arguments.of("Leading Digit", "1fish2fish3fishbluefish", false)
         );
     }
