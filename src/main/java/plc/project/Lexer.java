@@ -35,13 +35,13 @@ public final class Lexer {
         Token temp;
         while(chars.has(0)){
             char cur = chars.get(0);
-            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t')){
+            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t'){
                 chars.advance();
                 chars.skip();
             }
-            else{
+            else {
                 temp = lexToken();
-                //if exception thrown dont do this
+                //if exception thrown don't do this
                 tokens.add(temp.getIndex(), temp);
             }
         }
@@ -61,9 +61,9 @@ public final class Lexer {
         Token token;
         if(Character.isDigit(cur))
             return lexNumber();
-        else if(cur == "\'")
+        else if(cur == '\'')
             return lexCharacter();
-        else if(cur == "\"")
+        else if(cur == '\"')
             return lexString();
         else if(Character.isLetter(cur) || cur == '@')
             return lexIdentifier();
