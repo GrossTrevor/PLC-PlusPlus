@@ -6,7 +6,7 @@ import com.sun.source.tree.IdentifierTree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern
+import java.util.regex.Pattern;
 
 /**
  * The lexer works through three main functions:
@@ -45,7 +45,7 @@ public final class Lexer {
             }
             else {
                 temp = lexToken();
-                //if exception thrown don't do this
+                //if exception thrown, don't do this
                 tokens.add(temp.getIndex(), temp);
             }
         }
@@ -77,30 +77,14 @@ public final class Lexer {
     }
 
     public Token lexIdentifier() {
-        while(!peek(" ")){
-            if(peek()){
-
-            }
+        if(!peek("[@a-zA-Z]")){
+            throw new ParseException("parse exception?!", 0);
+        }
+        match("[@a-zA-Z]");
+        while(peek("[a-zA-Z0-9-_]")){
+            match("[a-zA-Z0-9-_]");
         }
         return chars.emit(Token.Type.IDENTIFIER);
-
-
-//        int offset = 0;
-//        while(chars.has(offset)){
-//            if(offset == 0){
-//                if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
-//                    throw new ParseException("parse exception", offset);
-//                }
-//            }
-//            else{
-//                if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
-//                    throw new ParseException("parse exception", offset);
-//                }
-//            }
-//            offset++;
-//            chars.advance();
-//        }
-//        return chars.emit(Token.Type.IDENTIFIER);
     }
 
     public Token lexNumber() {
