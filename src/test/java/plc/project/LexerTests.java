@@ -50,8 +50,12 @@ public class LexerTests {
                 Arguments.of("Negative", "-1", true),
                 Arguments.of("Leading Zero", "01", false),
                 Arguments.of("Leading Zeros", "000001", false),
-                Arguments.of("Decimal", "5.1", false)
-        );
+                Arguments.of("Decimal", "5.1", false),
+                Arguments.of("Comma Separated", "1,999", false),
+                Arguments.of("Negative String", "-a", false),
+                Arguments.of("Leading Zeros with Negative", "-000001", false),
+                Arguments.of("Negative Symbols", "-&%$", false)
+                );
     }
 
     @ParameterizedTest
@@ -68,8 +72,13 @@ public class LexerTests {
                 Arguments.of("Trailing Zeros", "123.000", true),
                 Arguments.of("Trailing Decimal", "1.", false),
                 Arguments.of("Leading Decimal", ".5", false),
-                Arguments.of("Single Digit", "1", false)
-        );
+                Arguments.of("Single Digit", "1", false),
+                Arguments.of("Double Decimal", "1..0", false),
+                Arguments.of("Double Decimal with Num Between", "1.0.9", false),
+                Arguments.of("Negative String", "-ajhg", false),
+                Arguments.of("Leading Zeros with Negative", "-000.001", false),
+                Arguments.of("Negative Symbols", "-&%$", false)
+                );
     }
 
     @ParameterizedTest
@@ -84,7 +93,7 @@ public class LexerTests {
                 Arguments.of("Newline Escape", "\'\\n\'", true),
                 Arguments.of("Empty", "\'\'", false),
                 Arguments.of("Multiple", "\'abc\'", false),
-                Arguments.of("Missing Last Quote", "\'a", false),
+                Arguments.of("Missing Last Quote", "\'", false),
                 Arguments.of("Newline Without Escape", "\'\n\'", false),
                 Arguments.of("Escape r", "\'\r\'", false)
         );
@@ -101,10 +110,11 @@ public class LexerTests {
                 Arguments.of("Empty", "\"\"", true),
                 Arguments.of("Alphabetic", "\"abc\"", true),
                 Arguments.of("Newline Escape", "\"Hello,\\nWorld\"", true),
+                Arguments.of("Symbols", "\"!@#$%^&*()\"", true),
                 Arguments.of("Unterminated", "\"unterminated", false),
                 Arguments.of("Invalid Escape", "\"invalid\\escape\"", false),
-                Arguments.of("Newline Without Escape", "\"\n\"", false),
-                Arguments.of("Newline Unterminated", "\"\\n", false)
+                Arguments.of("Newline Without Escape", "\"wordsssss\n\"", false),
+                Arguments.of("Newline Unterminated", "\"\n", false)
         );
     }
 
@@ -123,6 +133,8 @@ public class LexerTests {
                 Arguments.of("Assign", "=", true),
                 Arguments.of("Compound Comparison OR", "||", true),
                 Arguments.of("Compound Comparison AND", "&&", true),
+                Arguments.of("Plus Sign", "+", true),
+                Arguments.of("Dollar Sign", "$", true),
                 Arguments.of("End of Line", ";", true),
                 Arguments.of("Comma", ",", true),
                 Arguments.of("Space", " ", false),
