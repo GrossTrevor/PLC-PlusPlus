@@ -72,19 +72,9 @@ public final class Lexer {
     }
 
     public Token lexIdentifier() {
-        int offset = 0;
-        while(chars.has(offset)){
-            if(offset == 0){
-                if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
-                    throw new ParseException("parse exception", offset);
-                }
-            }
-            else{
-                if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
-                    throw new ParseException("parse exception", offset);
-                }
-            }
-            offset++;
+        match("[@a-zA-Z]");
+        while(peek("[a-zA-Z0-9_-]")){
+            match("[a-zA-Z0-9_-]");
         }
         return chars.emit(Token.Type.IDENTIFIER);
     }

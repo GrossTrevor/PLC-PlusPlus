@@ -22,10 +22,16 @@ public class LexerTests {
         return Stream.of(
                 Arguments.of("Alphabetic", "getName", true),
                 Arguments.of("Alphanumeric", "thelegend27", true),
-                Arguments.of("Just At", "@", true),
+                Arguments.of("At Symbol", "@thelegend27", true),
+                Arguments.of("Hyphenated", "Please-Work", true),
+                Arguments.of("Single Character", "f", true),
+                Arguments.of("Underscore in Word", "Hello_hi", true),
                 Arguments.of("Leading Hyphen", "-five", false),
-                Arguments.of("Just Number", "0", false),
-                Arguments.of("Leading Digit", "1fish2fish3fishbluefish", false)
+                Arguments.of("Leading Bracket", "]five", false),
+                Arguments.of("Just Number", "2", false),
+                Arguments.of("Just Space", " ", false),
+                Arguments.of("Leading Digit", "1fish2fish3fishbluefish", false),
+                Arguments.of("Underscores", "_hello", false)
         );
     }
 
