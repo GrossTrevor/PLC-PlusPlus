@@ -54,7 +54,10 @@ public class LexerTests {
                 Arguments.of("Comma Separated", "1,999", false),
                 Arguments.of("Negative String", "-a", false),
                 Arguments.of("Leading Zeros with Negative", "-000001", false),
-                Arguments.of("Negative Symbols", "-&%$", false)
+                Arguments.of("Negative Symbols", "-&%$", false),
+                Arguments.of("Number then String", "2345u777", false),
+                Arguments.of("Escape Characters", "\\n\n", false),
+                Arguments.of("Number then Symbols", "234.5++77", false)
                 );
     }
 
@@ -77,7 +80,10 @@ public class LexerTests {
                 Arguments.of("Double Decimal with Num Between", "1.0.9", false),
                 Arguments.of("Negative String", "-ajhg", false),
                 Arguments.of("Leading Zeros with Negative", "-000.001", false),
-                Arguments.of("Negative Symbols", "-&%$", false)
+                Arguments.of("Negative Symbols", "-+&%$", false),
+                Arguments.of("Number then String", "234.5u777", false),
+                Arguments.of("Escape Characters", "\\n\n", false),
+                Arguments.of("Number then Symbols", "234.5++77", false)
                 );
     }
 
