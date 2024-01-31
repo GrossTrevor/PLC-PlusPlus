@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="starting to try to use peek and match in the func like we were supposed to do in the beginning, but we didn't know that :)">
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Simplifying Identifier func">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +137,7 @@
       <workItem from="1706454415009" duration="653000" />
       <workItem from="1706466912126" duration="1875000" />
       <workItem from="1706583276786" duration="4115000" />
-      <workItem from="1706664940079" duration="3927000" />
+      <workItem from="1706664940079" duration="8457000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -188,7 +187,31 @@
       <option name="project" value="LOCAL" />
       <updated>1706587338552</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Include new test cases">
+      <option name="closed" value="true" />
+      <created>1706669173572</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1706669173572</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Got Identifier to work :]">
+      <option name="closed" value="true" />
+      <created>1706670097736</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1706670097736</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Simplifying Identifier func">
+      <option name="closed" value="true" />
+      <created>1706671049384</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1706671049384</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -212,7 +235,10 @@
     <MESSAGE value="give character temp return func" />
     <MESSAGE value="testing new branch" />
     <MESSAGE value="starting to try to use peek and match in the func like we were supposed to do in the beginning, but we didn't know that :)" />
-    <option name="LAST_COMMIT_MESSAGE" value="starting to try to use peek and match in the func like we were supposed to do in the beginning, but we didn't know that :)" />
+    <MESSAGE value="Include new test cases" />
+    <MESSAGE value="Got Identifier to work :]" />
+    <MESSAGE value="Simplifying Identifier func" />
+    <option name="LAST_COMMIT_MESSAGE" value="Simplifying Identifier func" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

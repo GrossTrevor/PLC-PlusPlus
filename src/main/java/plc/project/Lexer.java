@@ -76,6 +76,7 @@ public final class Lexer {
             return lexOperator();
     }
 
+    //need to edit to go to operator and escape when needed
     public Token lexIdentifier() {
         match("[@a-zA-Z]");
         while(peek("[a-zA-Z0-9-_]")){
@@ -85,6 +86,13 @@ public final class Lexer {
     }
 
     public Token lexNumber() {
+
+
+
+        //if minus sign followed by number, stay here
+        //else, go to operator function
+
+
         boolean decimal = false;
         int offset = 0;
         while(chars.has(offset)){
@@ -131,12 +139,20 @@ public final class Lexer {
         throw new UnsupportedOperationException(); //TODO
     }
 
+    //handles escape character
+    //go here when escape character then go back to where you were
     public void lexEscape() {
         throw new UnsupportedOperationException(); //TODO
     }
 
     public Token lexOperator() {
-        throw new UnsupportedOperationException(); //TODO
+//        if(peek("[]")){
+//
+//        }
+
+
+
+        throw new ParseException("parse exception", 0);
     }
 
     /**
