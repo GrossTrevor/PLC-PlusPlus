@@ -27,6 +27,8 @@ public class LexerTests {
                 Arguments.of("Single Character", "f", true),
                 Arguments.of("Underscore in Word", "Hello_hi", true),
                 Arguments.of("Leading Hyphen", "-five", false),
+                Arguments.of("Special Character Not Allowed", "@fi@ve", false),
+                Arguments.of("Dollar Sign", "fi$ve", false),
                 Arguments.of("Leading Bracket", "]five", false),
                 Arguments.of("Just Number", "2", false),
                 Arguments.of("Just Space", " ", false),

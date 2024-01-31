@@ -77,9 +77,6 @@ public final class Lexer {
     }
 
     public Token lexIdentifier() {
-        if(!peek("[@a-zA-Z]")){
-            throw new ParseException("parse exception?!", 0);
-        }
         match("[@a-zA-Z]");
         while(peek("[a-zA-Z0-9-_]")){
             match("[a-zA-Z0-9-_]");
