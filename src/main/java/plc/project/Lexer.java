@@ -125,17 +125,21 @@ public final class Lexer {
         if(peek("[']")){
             throw new ParseException("parse exception", 0);
         }
-        lexEscape();
-        if(!peek(".")){
+        if(peek("\\\\", "[bnrt\\\'\"]")){
+            lexEscape();
+        }
+        else if(!peek(".")){
             throw new ParseException("parse exception", 0);
         }
         else{
             match(".");
         }
-        if(peek("[^']")){
+        if(peek("[']")){
+            match("'");
+        }
+        else{
             throw new ParseException("parse exception", 0);
         }
-        match("'");
         return chars.emit(Token.Type.CHARACTER);
     }
 

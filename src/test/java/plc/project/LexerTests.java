@@ -94,6 +94,7 @@ public class LexerTests {
                 Arguments.of("Empty", "\'\'", false),
                 Arguments.of("Multiple", "\'abc\'", false),
                 Arguments.of("Missing Last Quote", "\'", false),
+                Arguments.of("Missing Last Quote With Character", "\'a", false),
                 Arguments.of("Newline Without Escape", "\'\n\'", false),
                 Arguments.of("Escape r", "\'\r\'", false)
         );
