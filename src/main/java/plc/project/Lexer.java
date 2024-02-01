@@ -46,7 +46,6 @@ public final class Lexer {
             }
             else {
                 temp = lexToken();
-                System.out.println(temp.getLiteral());
                 if(temp != null) {
                     tokens.add(i, temp);
                     i++;

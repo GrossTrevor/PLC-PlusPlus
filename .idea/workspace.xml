@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Added Trevor's string and escape func">
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Fix Number func so single 0 digit is true">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" afterDir="false" />
@@ -104,6 +104,30 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="LexerTests.testDecimal" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;plc.project.LexerTests.testDecimal&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="LexerTests.testExamples" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -152,7 +176,7 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="LexerTests.testIdentifier" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="LexerTests.testInteger" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -165,31 +189,7 @@
           <list>
             <option value=":test" />
             <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testIdentifier&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="LexerTests.testOperator" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testOperator&quot;" />
+            <option value="&quot;plc.project.LexerTests.testInteger&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -203,10 +203,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.LexerTests.testExamples" />
+        <item itemvalue="Gradle.LexerTests.testInteger" />
+        <item itemvalue="Gradle.LexerTests.testDecimal" />
         <item itemvalue="Gradle.LexerTests.testException" />
         <item itemvalue="Gradle.LexerTests.testCharacter" />
-        <item itemvalue="Gradle.LexerTests.testOperator" />
-        <item itemvalue="Gradle.LexerTests.testIdentifier" />
       </list>
     </recent_temporary>
   </component>
@@ -230,7 +230,7 @@
       <workItem from="1706466912126" duration="1875000" />
       <workItem from="1706583276786" duration="4115000" />
       <workItem from="1706664940079" duration="20494000" />
-      <workItem from="1706796530332" duration="5084000" />
+      <workItem from="1706796530332" duration="10461000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -360,7 +360,31 @@
       <option name="project" value="LOCAL" />
       <updated>1706761733286</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="fix lex func">
+      <option name="closed" value="true" />
+      <created>1706801686632</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1706801686633</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Fix Number func so -0 does not count as true">
+      <option name="closed" value="true" />
+      <created>1706815411906</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1706815411906</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Fix Number func so single 0 digit is true">
+      <option name="closed" value="true" />
+      <created>1706815637559</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1706815637559</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -394,7 +418,10 @@
     <MESSAGE value="Make Operator func and more tests for it" />
     <MESSAGE value="Add more operator tests" />
     <MESSAGE value="Added Trevor's string and escape func" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Trevor's string and escape func" />
+    <MESSAGE value="fix lex func" />
+    <MESSAGE value="Fix Number func so -0 does not count as true" />
+    <MESSAGE value="Fix Number func so single 0 digit is true" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix Number func so single 0 digit is true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
