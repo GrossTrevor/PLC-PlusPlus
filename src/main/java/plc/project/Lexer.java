@@ -88,7 +88,7 @@ public final class Lexer {
         if(peek("0")){
             match("0");
             if(!peek(".", "[0-9]")){
-                throw new ParseException("parse exception!!!", 0);
+                throw new ParseException("parse exception", 0);
             }
             else{
                 decimal = true;
@@ -102,11 +102,10 @@ public final class Lexer {
             else {
                 match(".");
                 if(!peek("[0-9]")) {
-                    System.out.println("here3");
-                    throw new ParseException("parse exception??", 0);
+                    throw new ParseException("parse exception", 0);
                 }
                 if(decimal == true){
-                    throw new ParseException("parse exception??", 0);
+                    throw new ParseException("parse exception", 0);
                 }
                 decimal = true;
                 match("[0-9]");
@@ -126,10 +125,7 @@ public final class Lexer {
         if(peek("[']")){
             throw new ParseException("parse exception", 0);
         }
-        if(peek("\\\\", "[bnrt\\\'\"]")){
-            System.out.println("escape");
-            match("\\\\", "[bnrt\\\'\"]");
-        }
+        lexEscape();
         if(!peek(".")){
             throw new ParseException("parse exception", 0);
         }
@@ -144,11 +140,32 @@ public final class Lexer {
     }
 
     public Token lexString() {
-        throw new UnsupportedOperationException(); //TODO
+        match("\"");
+        while(!peek("[\"]")){
+            if(peek("[\\\n\r]")){
+                throw new ParseException("parse exception", 0);
+            }
+            if(!peek(".")){
+                throw new ParseException("parse exception", 0);
+            }
+            if(peek("\\\\", "[^bnrt\\\'\"]")){
+                throw new ParseException("parse exception", 0);
+            }
+            if(peek("\\\\", "[bnrt\\\'\"]")){
+                lexEscape();
+            }
+            else{
+                match(".");
+            }
+        }
+        match("\"");
+        return chars.emit(Token.Type.STRING);
     }
 
     public void lexEscape() {
-        throw new UnsupportedOperationException(); //TODO
+        if(peek("\\\\", "[bnrt\\\'\"]")){
+            match("\\\\", "[bnrt\\\'\"]");
+        }
     }
 
     public Token lexOperator() {
