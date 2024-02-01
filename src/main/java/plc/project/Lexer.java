@@ -85,18 +85,26 @@ public final class Lexer {
 
     public Token lexNumber() {
         boolean decimal = false;
-        if(peek("-")){
-            match("-");
+        if(peek("-", "[1-9]")){
+            match("-", "[1-9]");
+        }
+        if(peek("-", "0", "[^.]")){
+            throw new ParseException("parse exception", chars.index);
         }
 
         if(peek("0")){
             match("0");
-            if(!peek(".", "[0-9]")){
+            if(peek(".", "[0-9]")){
+                decimal = true;
+                match(".", "[0-9]");
+            }
+            else if(peek("[0-9]")){
                 throw new ParseException("parse exception", chars.index);
             }
-            else{
-                decimal = true;
-            }
+        }
+        else if(peek("-", "0", ".", "[0-9]")){
+            match("-", "0", ".", "[0-9]");
+            decimal = true;
         }
 
         while(peek("[.0-9]")){
@@ -108,7 +116,7 @@ public final class Lexer {
                 if(!peek("[0-9]")) {
                     throw new ParseException("parse exception", chars.index);
                 }
-                if(decimal == true){
+                if(decimal){
                     throw new ParseException("parse exception", chars.index);
                 }
                 decimal = true;
