@@ -32,17 +32,21 @@ public final class Lexer {
     public List<Token> lex() {
         List<Token> tokens = new ArrayList<Token>();
         Token temp = null;
+        int i = 0;
         while(chars.has(0)){
             char cur = chars.get(0);
-            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t'){
+            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t' || cur == '\s'){
                 chars.advance();
                 chars.skip();
             }
             else {
                 temp = lexToken();
-                if(temp != null)
-                    tokens.add(temp.getIndex(), temp);
+                if(temp != null) {
+                    tokens.add(i, temp);
+                    i++;
+                }
             }
+            temp = null;
         }
         return tokens;
     }
@@ -269,6 +273,8 @@ public final class Lexer {
 
         public Token emit(Token.Type type) {
             int start = index - length;
+            System.out.println("index: " + index);
+            System.out.println("start: " + start);
             skip();
             return new Token(type, input.substring(start, index), start);
         }
