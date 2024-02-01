@@ -112,13 +112,25 @@ public final class Lexer {
     }
 
     public Token lexCharacter() {
-//        int offset = 0;
-//        while(chars.has(offset)){
-//            if(offset == 0){
-//
-//            }
-//        }
-        throw new UnsupportedOperationException();
+        match("'");
+        if(peek("[']")){
+            System.out.println("1");
+            throw new ParseException("parse exception", 0);
+        }
+        if(peek("\\\\", "[bnrt\\\'\"]")){
+            System.out.println("escape");
+            match("\\\\", "[bnrt\\\'\"]");
+        }
+        else{
+            System.out.println("else");
+            match(".");
+        }
+        if(peek("[^']")){
+            System.out.println("2");
+            throw new ParseException("parse exception", 0);
+        }
+        match("'");
+        return chars.emit(Token.Type.CHARACTER);
     }
 
     public Token lexString() {
