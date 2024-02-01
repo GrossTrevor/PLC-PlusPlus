@@ -58,7 +58,7 @@ public final class Lexer {
     public Token lexToken() {
         char cur = chars.get(0);
         Token token;
-        if(Character.isDigit(cur))
+        if(Character.isDigit(cur) || peek("-", "[0-9]"))
             return lexNumber();
         else if(cur == '\'')
             return lexCharacter();
@@ -66,7 +66,7 @@ public final class Lexer {
             return lexString();
         else if(Character.isLetter(cur) || cur == '@')
             return lexIdentifier();
-        //lexEscape()
+            //lexEscape()
         else
             return lexOperator();
     }
@@ -81,28 +81,38 @@ public final class Lexer {
 
     public Token lexNumber() {
         boolean decimal = false;
-        int offset = 0;
-        while(chars.has(offset)){
-            if(offset == 0) {
-                if (!(Character.isDigit(chars.get(0)) || chars.get(0) != '0' || chars.get(0) == '-')) {
-                    if (chars.get(offset + 1) != '.') {
-                        throw new ParseException("parse exception", offset);
-                    }
-                }
-            }
-            else if (chars.get(offset) == '.') {
-                if(!Character.isDigit(chars.get(offset+1))){
-                    throw new ParseException("parse exception", offset);
-                }
-                decimal = true;
+        if(peek("-")){
+            match("-");
+        }
+
+        if(peek("0")){
+            match("0");
+            if(!peek(".", "[0-9]")){
+                throw new ParseException("parse exception!!!", 0);
             }
             else{
-                if(!Character.isDigit(chars.get(offset))){
-                    throw new ParseException("parse exception", offset);
-                }
+                decimal = true;
             }
-            offset++;
         }
+
+        while(peek("[.0-9]")){
+            if(peek("[0-9]")){
+                match("[0-9]");
+            }
+            else {
+                match(".");
+                if(!peek("[0-9]")) {
+                    System.out.println("here3");
+                    throw new ParseException("parse exception??", 0);
+                }
+                if(decimal == true){
+                    throw new ParseException("parse exception??", 0);
+                }
+                decimal = true;
+                match("[0-9]");
+            }
+        }
+
         if(decimal){
             return chars.emit(Token.Type.DECIMAL);
         }

@@ -27,6 +27,8 @@ public class LexerTests {
                 Arguments.of("Single Character", "f", true),
                 Arguments.of("Underscore in Word", "Hello_hi", true),
                 Arguments.of("Leading Hyphen", "-five", false),
+                Arguments.of("Special Character Not Allowed", "@fi@ve", false),
+                Arguments.of("Dollar Sign", "fi$ve", false),
                 Arguments.of("Leading Bracket", "]five", false),
                 Arguments.of("Just Number", "2", false),
                 Arguments.of("Just Space", " ", false),
@@ -46,7 +48,13 @@ public class LexerTests {
                 Arguments.of("Single Digit", "1", true),
                 Arguments.of("Multiple Digits", "12345", true),
                 Arguments.of("Negative", "-1", true),
-                Arguments.of("Leading Zero", "01", false)
+                Arguments.of("Leading Zero", "01", false),
+                Arguments.of("Leading Zeros", "000001", false),
+                Arguments.of("Decimal", "5.1", false),
+                Arguments.of("Comma Separated", "1,999", false),
+                Arguments.of("Negative String", "-a", false),
+                Arguments.of("Leading Zeros with Negative", "-000001", false),
+                Arguments.of("Negative Symbols", "-&%$", false)
         );
     }
 
@@ -59,9 +67,17 @@ public class LexerTests {
     private static Stream<Arguments> testDecimal() {
         return Stream.of(
                 Arguments.of("Multiple Digits", "123.456", true),
+                Arguments.of("Single Decimal", "3.0", true),
                 Arguments.of("Negative Decimal", "-1.0", true),
+                Arguments.of("Trailing Zeros", "123.000", true),
                 Arguments.of("Trailing Decimal", "1.", false),
-                Arguments.of("Leading Decimal", ".5", false)
+                Arguments.of("Leading Decimal", ".5", false),
+                Arguments.of("Single Digit", "1", false),
+                Arguments.of("Double Decimal", "1..0", false),
+                Arguments.of("Double Decimal with Num Between", "1.0.9", false),
+                Arguments.of("Negative String", "-ajhg", false),
+                Arguments.of("Leading Zeros with Negative", "-000.001", false),
+                Arguments.of("Negative Symbols", "-&%$", false)
         );
     }
 
@@ -76,7 +92,10 @@ public class LexerTests {
                 Arguments.of("Alphabetic", "\'c\'", true),
                 Arguments.of("Newline Escape", "\'\\n\'", true),
                 Arguments.of("Empty", "\'\'", false),
-                Arguments.of("Multiple", "\'abc\'", false)
+                Arguments.of("Multiple", "\'abc\'", false),
+                Arguments.of("Missing Last Quote", "\'", false),
+                Arguments.of("Newline Without Escape", "\'\n\'", false),
+                Arguments.of("Escape r", "\'\r\'", false)
         );
     }
 
@@ -91,8 +110,11 @@ public class LexerTests {
                 Arguments.of("Empty", "\"\"", true),
                 Arguments.of("Alphabetic", "\"abc\"", true),
                 Arguments.of("Newline Escape", "\"Hello,\\nWorld\"", true),
+                Arguments.of("Symbols", "\"!@#$%^&*()\"", true),
                 Arguments.of("Unterminated", "\"unterminated", false),
-                Arguments.of("Invalid Escape", "\"invalid\\escape\"", false)
+                Arguments.of("Invalid Escape", "\"invalid\\escape\"", false),
+                Arguments.of("Newline Without Escape", "\"wordsssss\n\"", false),
+                Arguments.of("Newline Unterminated", "\"\n", false)
         );
     }
 
@@ -106,7 +128,15 @@ public class LexerTests {
     private static Stream<Arguments> testOperator() {
         return Stream.of(
                 Arguments.of("Character", "(", true),
-                Arguments.of("Comparison", "!=", true),
+                Arguments.of("Comparison Not Equals", "!=", true),
+                Arguments.of("Comparison Equals", "==", true),
+                Arguments.of("Assign", "=", true),
+                Arguments.of("Compound Comparison OR", "||", true),
+                Arguments.of("Compound Comparison AND", "&&", true),
+                Arguments.of("Plus Sign", "+", true),
+                Arguments.of("Dollar Sign", "$", true),
+                Arguments.of("End of Line", ";", true),
+                Arguments.of("Comma", ",", true),
                 Arguments.of("Space", " ", false),
                 Arguments.of("Tab", "\t", false)
         );
