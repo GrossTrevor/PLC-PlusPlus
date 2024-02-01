@@ -166,7 +166,6 @@ public final class Lexer {
             }
         }
         else if(peek("[|]")){
-            //System.out.println("k");
             match("[|]");
             if(peek("[|]")){
                 match("[|]");
