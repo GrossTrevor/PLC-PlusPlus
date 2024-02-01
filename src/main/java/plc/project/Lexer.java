@@ -46,6 +46,7 @@ public final class Lexer {
             }
             else {
                 temp = lexToken();
+                System.out.println(temp.getLiteral());
                 if(temp != null) {
                     tokens.add(i, temp);
                     i++;
@@ -91,18 +92,25 @@ public final class Lexer {
 
     public Token lexNumber() {
         boolean decimal = false;
-        if(peek("-")){
-            match("-");
+        if(peek("-", "[1-9]")){
+            match("-", "[1-9]");
+        }
+        if(peek("-", "0", "[^.]")){
+            throw new ParseException("parse exception", chars.index);
         }
 
         if(peek("0")){
             match("0");
             if(!peek(".", "[0-9]")){
-                throw new ParseException("parse exception", 0);
+                throw new ParseException("parse exception", chars.index);
             }
             else{
                 decimal = true;
             }
+        }
+        else if(peek("-", "0", ".", "[0-9]")){
+            match("-", "0", ".", "[0-9]");
+            decimal = true;
         }
 
         while(peek("[.0-9]")){
@@ -112,10 +120,10 @@ public final class Lexer {
             else {
                 match(".");
                 if(!peek("[0-9]")) {
-                    throw new ParseException("parse exception", 0);
+                    throw new ParseException("parse exception", chars.index);
                 }
                 if(decimal == true){
-                    throw new ParseException("parse exception", 0);
+                    throw new ParseException("parse exception", chars.index);
                 }
                 decimal = true;
                 match("[0-9]");
@@ -133,19 +141,19 @@ public final class Lexer {
     public Token lexCharacter() {
         match("'");
         if(peek("[']")){
-            throw new ParseException("parse exception", 0);
+            throw new ParseException("parse exception", chars.index);
         }
         if(peek("\\\\", "[bnrt\\\'\"]")){
             match("\\\\", "[bnrt\\\'\"]");
         }
         if(!peek(".")){
-            throw new ParseException("parse exception", 0);
+            throw new ParseException("parse exception", chars.index);
         }
         else{
             match(".");
         }
         if(peek("[^']")){
-            throw new ParseException("parse exception", 0);
+            throw new ParseException("parse exception", chars.index);
         }
         match("'");
         return chars.emit(Token.Type.CHARACTER);
@@ -155,13 +163,13 @@ public final class Lexer {
         match("\"");
         while(!peek("[\"]")){
             if(peek("[\\\n\r]")){
-                throw new ParseException("parse exception", 0);
+                throw new ParseException("parse exception", chars.index);
             }
             if(!peek(".")){
-                throw new ParseException("parse exception", 0);
+                throw new ParseException("parse exception", chars.index);
             }
             if(peek("\\\\", "[^bnrt\\\'\"]")){
-                throw new ParseException("parse exception", 0);
+                throw new ParseException("parse exception", chars.index);
             }
             if(peek("\\\\", "[bnrt\\\'\"]")){
                 lexEscape();
@@ -200,7 +208,7 @@ public final class Lexer {
             match("[+={}\\[\\];:?<>,.\\|\\&]");
         }
         else{
-            throw new ParseException("parse exception", 0);
+            throw new ParseException("parse exception", chars.index);
         }
         return chars.emit(Token.Type.OPERATOR);
     }
