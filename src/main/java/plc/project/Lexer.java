@@ -169,7 +169,34 @@ public final class Lexer {
     }
 
     public Token lexOperator() {
-        throw new UnsupportedOperationException(); //TODO
+        if(peek("[!=]")){
+            match("[!=]");
+            if(peek("=")){
+                match("[!=]");
+            }
+        }
+        else if(peek("[|]")){
+            match("[|]");
+            if(peek("[|]")){
+                match("[|]");
+            }
+        }
+        else if(peek("&")){
+            match("&");
+            if(peek("&")){
+                match("&");
+            }
+        }
+        else if(peek("[~!@#$%^*()_-]")){
+            match("[~!@#$%^*()_-]");
+        }
+        else if(peek("[+={}\\[\\];:?<>,.]")){
+            match("[+={}\\[\\];:?<>,.]");
+        }
+        else{
+            throw new ParseException("parse exception1", 0);
+        }
+        return chars.emit(Token.Type.OPERATOR);
     }
 
     /**

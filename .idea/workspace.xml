@@ -92,7 +92,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.LexerTests.testString">
+  <component name="RunManager" selected="Gradle.LexerTests.testCharacter">
     <configuration name="LexerTests.testCharacter" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -215,8 +215,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.LexerTests.testString" />
         <item itemvalue="Gradle.LexerTests.testCharacter" />
+        <item itemvalue="Gradle.LexerTests.testString" />
         <item itemvalue="Gradle.LexerTests.testDecimal" />
         <item itemvalue="Gradle.LexerTests.testInteger" />
         <item itemvalue="Gradle.LexerTests.testIdentifier" />
