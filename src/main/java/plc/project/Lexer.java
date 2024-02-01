@@ -149,13 +149,34 @@ public final class Lexer {
     }
 
     public Token lexString() {
-        throw new UnsupportedOperationException(); //TODO
+        match("\"");
+        while(!peek("[\"]")){
+            if(peek("[\\\n\r]")){
+                throw new ParseException("parse exception", 0);
+            }
+            if(!peek(".")){
+                throw new ParseException("parse exception", 0);
+            }
+            if(peek("\\\\", "[^bnrt\\\'\"]")){
+                throw new ParseException("parse exception", 0);
+            }
+            if(peek("\\\\", "[bnrt\\\'\"]")){
+                lexEscape();
+            }
+            else{
+                match(".");
+            }
+        }
+        match("\"");
+        return chars.emit(Token.Type.STRING);
     }
 
     //handles escape character
     //go here when escape character then go back to where you were
     public void lexEscape() {
-        throw new UnsupportedOperationException(); //TODO
+        if(peek("\\\\", "[bnrt\\\'\"]")){
+            match("\\\\", "[bnrt\\\'\"]");
+        }
     }
 
     public Token lexOperator() {
@@ -184,7 +205,7 @@ public final class Lexer {
             match("[+={}\\[\\];:?<>,.]");
         }
         else{
-            throw new ParseException("parse exception1", 0);
+            throw new ParseException("parse exception", 0);
         }
         return chars.emit(Token.Type.OPERATOR);
     }
