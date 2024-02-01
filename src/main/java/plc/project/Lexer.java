@@ -128,7 +128,25 @@ public final class Lexer {
     }
 
     public Token lexCharacter() {
-        throw new UnsupportedOperationException();
+        match("'");
+        if(peek("[']")){
+            throw new ParseException("parse exception", 0);
+        }
+        if(peek("\\\\", "[bnrt\\\'\"]")){
+            System.out.println("escape");
+            match("\\\\", "[bnrt\\\'\"]");
+        }
+        if(!peek(".")){
+            throw new ParseException("parse exception", 0);
+        }
+        else{
+            match(".");
+        }
+        if(peek("[^']")){
+            throw new ParseException("parse exception", 0);
+        }
+        match("'");
+        return chars.emit(Token.Type.CHARACTER);
     }
 
     public Token lexString() {
