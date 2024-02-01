@@ -273,8 +273,6 @@ public final class Lexer {
 
         public Token emit(Token.Type type) {
             int start = index - length;
-            System.out.println("index: " + index);
-            System.out.println("start: " + start);
             skip();
             return new Token(type, input.substring(start, index), start);
         }
