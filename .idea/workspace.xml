@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="lex character" />
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="added test cases and number from sam's" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -72,6 +72,7 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Gradle.LexerTests.testCharacter.executor": "Run",
+    "Gradle.LexerTests.testDecimal.executor": "Run",
     "Gradle.LexerTests.testIdentifier.executor": "Run",
     "Gradle.LexerTests.testInteger.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -102,6 +103,30 @@
             <option value=":test" />
             <option value="--tests" />
             <option value="&quot;plc.project.LexerTests.testCharacter&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="LexerTests.testDecimal" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;plc.project.LexerTests.testDecimal&quot;" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -163,8 +188,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.LexerTests.testCharacter" />
-        <item itemvalue="Gradle.LexerTests.testIdentifier" />
+        <item itemvalue="Gradle.LexerTests.testDecimal" />
         <item itemvalue="Gradle.LexerTests.testInteger" />
+        <item itemvalue="Gradle.LexerTests.testIdentifier" />
       </list>
     </recent_temporary>
   </component>
@@ -188,7 +214,7 @@
       <workItem from="1706466912126" duration="1875000" />
       <workItem from="1706582846375" duration="1481000" />
       <workItem from="1706584342200" duration="3024000" />
-      <workItem from="1706665024993" duration="11032000" />
+      <workItem from="1706665024993" duration="11381000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -230,7 +256,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706755568551</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="added test cases and number from sam's">
+      <option name="closed" value="true" />
+      <created>1706755915565</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1706755915565</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -254,6 +288,7 @@
     <MESSAGE value="fixed import errors" />
     <MESSAGE value="lex identifier" />
     <MESSAGE value="lex character" />
-    <option name="LAST_COMMIT_MESSAGE" value="lex character" />
+    <MESSAGE value="added test cases and number from sam's" />
+    <option name="LAST_COMMIT_MESSAGE" value="added test cases and number from sam's" />
   </component>
 </project>

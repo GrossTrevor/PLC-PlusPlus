@@ -124,19 +124,19 @@ public final class Lexer {
     public Token lexCharacter() {
         match("'");
         if(peek("[']")){
-            System.out.println("1");
             throw new ParseException("parse exception", 0);
         }
         if(peek("\\\\", "[bnrt\\\'\"]")){
             System.out.println("escape");
             match("\\\\", "[bnrt\\\'\"]");
         }
+        if(!peek(".")){
+            throw new ParseException("parse exception", 0);
+        }
         else{
-            System.out.println("else");
             match(".");
         }
         if(peek("[^']")){
-            System.out.println("2");
             throw new ParseException("parse exception", 0);
         }
         match("'");
