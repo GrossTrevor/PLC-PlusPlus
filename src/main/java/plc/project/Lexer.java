@@ -101,11 +101,12 @@ public final class Lexer {
 
         if(peek("0")){
             match("0");
-            if(!peek(".", "[0-9]")){
-                throw new ParseException("parse exception", chars.index);
-            }
-            else{
+            if(peek(".", "[0-9]")){
                 decimal = true;
+                match(".", "[0-9]");
+            }
+            else if(peek("[0-9]")){
+                throw new ParseException("parse exception", chars.index);
             }
         }
         else if(peek("-", "0", ".", "[0-9]")){
