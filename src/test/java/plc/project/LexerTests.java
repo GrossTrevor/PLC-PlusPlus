@@ -143,8 +143,12 @@ public class LexerTests {
                 Arguments.of("Dollar Sign", "$", true),
                 Arguments.of("End of Line", ";", true),
                 Arguments.of("Comma", ",", true),
+                Arguments.of("Greater Than", ">", true),
+                Arguments.of("Less Than", "<", true),
                 Arguments.of("Space", " ", false),
-                Arguments.of("Tab", "\t", false)
+                Arguments.of("Tab", "\t", false),
+                Arguments.of("Greater Than and Equal to", ">=", false),
+                Arguments.of("Less Than and Equal to", "<=", false)
         );
     }
 

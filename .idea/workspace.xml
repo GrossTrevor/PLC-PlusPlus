@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Added more test cases">
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Added Character from Trevor">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +51,7 @@
     "Gradle.LexerTests.testDecimal.executor": "Run",
     "Gradle.LexerTests.testIdentifier.executor": "Run",
     "Gradle.LexerTests.testInteger.executor": "Run",
+    "Gradle.LexerTests.testOperator.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "sam's-branch",
@@ -62,7 +65,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Gradle.LexerTests.testInteger">
+  <component name="RunManager" selected="Gradle.LexerTests.testOperator">
     <configuration name="LexerTests.testDecimal" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -135,8 +138,33 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="LexerTests.testOperator" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;plc.project.LexerTests.testOperator&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.LexerTests.testOperator" />
         <item itemvalue="Gradle.LexerTests.testInteger" />
         <item itemvalue="Gradle.LexerTests.testDecimal" />
         <item itemvalue="Gradle.LexerTests.testIdentifier" />
@@ -162,7 +190,7 @@
       <workItem from="1706454415009" duration="653000" />
       <workItem from="1706466912126" duration="1875000" />
       <workItem from="1706583276786" duration="4115000" />
-      <workItem from="1706664940079" duration="15663000" />
+      <workItem from="1706664940079" duration="18968000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -260,7 +288,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706730737696</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added Character from Trevor">
+      <option name="closed" value="true" />
+      <created>1706757076631</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1706757076631</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,7 +326,8 @@
     <MESSAGE value="Adding comments for future reference (future edge cases and funcs)" />
     <MESSAGE value="Added more/corrected some test cases; made number func use peek and match correctly" />
     <MESSAGE value="Added more test cases" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added more test cases" />
+    <MESSAGE value="Added Character from Trevor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Character from Trevor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -94,7 +94,7 @@ public final class Lexer {
         if(peek("0")){
             match("0");
             if(!peek(".", "[0-9]")){
-                throw new ParseException("parse exception!!!", 0);
+                throw new ParseException("parse exception", 0);
             }
             else{
                 decimal = true;
@@ -109,10 +109,10 @@ public final class Lexer {
                 match(".");
                 if(!peek("[0-9]")) {
                     System.out.println("here3");
-                    throw new ParseException("parse exception??", 0);
+                    throw new ParseException("parse exception", 0);
                 }
                 if(decimal == true){
-                    throw new ParseException("parse exception??", 0);
+                    throw new ParseException("parse exception", 0);
                 }
                 decimal = true;
                 match("[0-9]");
@@ -133,7 +133,6 @@ public final class Lexer {
             throw new ParseException("parse exception", 0);
         }
         if(peek("\\\\", "[bnrt\\\'\"]")){
-            System.out.println("escape");
             match("\\\\", "[bnrt\\\'\"]");
         }
         if(!peek(".")){
@@ -160,13 +159,35 @@ public final class Lexer {
     }
 
     public Token lexOperator() {
-//        if(peek("[]")){
-//
-//        }
-
-
-
-        throw new ParseException("parse exception", 0);
+        if(peek("[!=]")){
+            match("[!=]");
+            if(peek("=")){
+                match("[!=]");
+            }
+        }
+        else if(peek("[|]")){
+            //System.out.println("k");
+            match("[|]");
+            if(peek("[|]")){
+                match("[|]");
+            }
+        }
+        else if(peek("&")){
+            match("&");
+            if(peek("&")){
+                match("&");
+            }
+        }
+        else if(peek("[~!@#$%^*()_-]")){
+            match("[~!@#$%^*()_-]");
+        }
+        else if(peek("[+={}\\[\\];:?<>,.]")){
+            match("[+={}\\[\\];:?<>,.]");
+        }
+        else{
+            throw new ParseException("parse exception1", 0);
+        }
+        return chars.emit(Token.Type.OPERATOR);
     }
 
     /**
