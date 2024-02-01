@@ -37,17 +37,21 @@ public final class Lexer {
     public List<Token> lex() {
         List<Token> tokens = new ArrayList<Token>();
         Token temp = null;
+        int i = 0;
         while(chars.has(0)){
             char cur = chars.get(0);
-            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t'){
+            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t' || cur == '\s'){
                 chars.advance();
                 chars.skip();
             }
             else {
                 temp = lexToken();
-                //if exception thrown, don't do this
-                tokens.add(temp.getIndex(), temp);
+                if(temp != null) {
+                    tokens.add(i, temp);
+                    i++;
+                }
             }
+            temp = null;
         }
         return tokens;
     }
@@ -108,7 +112,6 @@ public final class Lexer {
             else {
                 match(".");
                 if(!peek("[0-9]")) {
-                    System.out.println("here3");
                     throw new ParseException("parse exception", 0);
                 }
                 if(decimal == true){
@@ -180,29 +183,21 @@ public final class Lexer {
     }
 
     public Token lexOperator() {
-        if(peek("[!=]")){
-            match("[!=]");
-            if(peek("=")){
-                match("[!=]");
-            }
+        if(peek("!", "=") || peek("=", "=")){
+            match("[!=]", "=");
         }
-        else if(peek("[|]")){
-            match("[|]");
-            if(peek("[|]")){
-                match("[|]");
-            }
+        else if(peek("[|]", "[|]")){
+            match("[|]", "[|]");
         }
-        else if(peek("&")){
-            match("&");
-            if(peek("&")){
-                match("&");
-            }
+        else if(peek("&", "&")){
+            //System.out.println("butthead");
+            match("&", "&");
         }
         else if(peek("[~!@#$%^*()_-]")){
             match("[~!@#$%^*()_-]");
         }
-        else if(peek("[+={}\\[\\];:?<>,.]")){
-            match("[+={}\\[\\];:?<>,.]");
+        else if(peek("[+={}\\[\\];:?<>,.\\|\\&]")){
+            match("[+={}\\[\\];:?<>,.\\|\\&]");
         }
         else{
             throw new ParseException("parse exception", 0);

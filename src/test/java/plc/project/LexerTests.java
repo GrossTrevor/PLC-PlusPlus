@@ -101,7 +101,8 @@ public class LexerTests {
                 Arguments.of("Multiple", "\'abc\'", false),
                 Arguments.of("Missing Last Quote", "\'", false),
                 Arguments.of("Newline Without Escape", "\'\n\'", false),
-                Arguments.of("Escape r", "\'\r\'", false)
+                Arguments.of("Escape r", "\'\r\'", false),
+                Arguments.of("Missing Last Quote with Char", "\'n", false)
         );
     }
 
@@ -145,6 +146,8 @@ public class LexerTests {
                 Arguments.of("Comma", ",", true),
                 Arguments.of("Greater Than", ">", true),
                 Arguments.of("Less Than", "<", true),
+                Arguments.of("Single And Sign", "&", true),
+                Arguments.of("Single Or Sign", "|", true),
                 Arguments.of("Space", " ", false),
                 Arguments.of("Tab", "\t", false),
                 Arguments.of("Greater Than and Equal to", ">=", false),
@@ -161,6 +164,7 @@ public class LexerTests {
         test(input, expected, true);
     }
 
+    //make test case about 'm and "str
     private static Stream<Arguments> testExamples() {
         return Stream.of(
                 Arguments.of("Example 1", "LET x = 5;", Arrays.asList(
