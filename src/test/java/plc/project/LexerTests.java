@@ -249,11 +249,20 @@ public class LexerTests {
                 Arguments.of("Not Whitespace", "one\btwo", Arrays.asList(
                         new Token(Token.Type.IDENTIFIER, "one", 0),
                         new Token(Token.Type.IDENTIFIER, "two", 4)
-                ))
-//                Arguments.of("Muliple Decimals", "0.09.8", Arrays.asList(
+                )),
+//                Arguments.of("Multiple Decimals", "0.09.8", Arrays.asList(
 //                        new Token(Token.Type.DECIMAL, "0.0", 0),
 //                        new Token(Token.Type.DECIMAL, "9.8", 3)
 //                ))
+                Arguments.of("Weird Quotes", "\'\"\'string\'\"\'", Arrays.asList(
+                        new Token(Token.Type.CHARACTER, "\'\"\'", 0),
+                        new Token(Token.Type.IDENTIFIER, "string", 3),
+                        new Token(Token.Type.CHARACTER, "\'\"\'", 9)
+                )),
+                Arguments.of("Multiple Decimals", "07", Arrays.asList(
+                        new Token(Token.Type.INTEGER, "0", 0),
+                        new Token(Token.Type.INTEGER, "7", 1)
+                ))
         );
     }
 
