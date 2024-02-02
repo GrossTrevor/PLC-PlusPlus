@@ -78,7 +78,7 @@ public class LexerTests {
                 Arguments.of("Leading Decimal", ".5", false),
                 Arguments.of("Single Digit", "1", false),
                 Arguments.of("Double Decimal", "1..0", false),
-                Arguments.of("Double Decimal with Num Between", "1.0.9", false),
+                Arguments.of("Double Decimal with Num Between", "1.0.9.8", false),
                 Arguments.of("Negative String", "-ajhg", false),
                 Arguments.of("Leading Zeros with Negative", "-000.001", false),
                 Arguments.of("Negative Symbols", "-+&%$", false),
@@ -155,7 +155,8 @@ public class LexerTests {
                 Arguments.of("Less Than and Equal to", "<=", false),
                 Arguments.of("Less Than and Equal to", "-98", false),
                 Arguments.of("Negative String", "-a", false),
-                Arguments.of("Leading Decimal", ".5", false)
+                Arguments.of("Leading Decimal", ".5", false),
+                Arguments.of("Comparison Equals", "======", false)
         );
     }
 
@@ -233,7 +234,26 @@ public class LexerTests {
                         new Token(Token.Type.OPERATOR, ";", 155),
                         new Token(Token.Type.IDENTIFIER, "END", 161),
                         new Token(Token.Type.IDENTIFIER, "END", 165)
+                )),
+                Arguments.of("Muliple Spaces", "one   two;", Arrays.asList(
+                        new Token(Token.Type.IDENTIFIER, "one", 0),
+                        new Token(Token.Type.IDENTIFIER, "two", 6),
+                        new Token(Token.Type.OPERATOR, ";", 9)
+                )),
+                Arguments.of("Equals Combination", "!======", Arrays.asList(
+                        new Token(Token.Type.OPERATOR, "!=", 0),
+                        new Token(Token.Type.OPERATOR, "==", 2),
+                        new Token(Token.Type.OPERATOR, "==", 4),
+                        new Token(Token.Type.OPERATOR, "=", 6)
+                )),
+                Arguments.of("Not Whitespace", "one\btwo", Arrays.asList(
+                        new Token(Token.Type.IDENTIFIER, "one", 0),
+                        new Token(Token.Type.IDENTIFIER, "two", 4)
                 ))
+//                Arguments.of("Muliple Decimals", "0.09.8", Arrays.asList(
+//                        new Token(Token.Type.DECIMAL, "0.0", 0),
+//                        new Token(Token.Type.DECIMAL, "9.8", 3)
+//                ))
         );
     }
 

@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Fix Number func so single 0 digit is true">
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Create long example to test all func and got rid of print statement in lex">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,55 +54,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Gradle.LexerTests.testCharacter.executor": "Run",
-    "Gradle.LexerTests.testDecimal.executor": "Run",
-    "Gradle.LexerTests.testExamples.executor": "Run",
-    "Gradle.LexerTests.testException.executor": "Run",
-    "Gradle.LexerTests.testIdentifier.executor": "Run",
-    "Gradle.LexerTests.testInteger.executor": "Run",
-    "Gradle.LexerTests.testOperator.executor": "Run",
-    "Gradle.LexerTests.testString.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "sam's-branch",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Gradle.LexerTests.testCharacter.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.LexerTests.testDecimal.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.LexerTests.testExamples.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.LexerTests.testException.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.LexerTests.testIdentifier.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.LexerTests.testInteger.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.LexerTests.testOperator.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.LexerTests.testString.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;sam's-branch&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Gradle.LexerTests.testExamples">
-    <configuration name="LexerTests.testCharacter" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testCharacter&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration name="LexerTests.testDecimal" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -200,13 +175,37 @@
       <RunAsTest>true</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="LexerTests.testOperator" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+            <option value="--tests" />
+            <option value="&quot;plc.project.LexerTests.testOperator&quot;" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>true</RunAsTest>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.LexerTests.testExamples" />
+        <item itemvalue="Gradle.LexerTests.testOperator" />
         <item itemvalue="Gradle.LexerTests.testInteger" />
         <item itemvalue="Gradle.LexerTests.testDecimal" />
         <item itemvalue="Gradle.LexerTests.testException" />
-        <item itemvalue="Gradle.LexerTests.testCharacter" />
       </list>
     </recent_temporary>
   </component>
@@ -230,7 +229,9 @@
       <workItem from="1706466912126" duration="1875000" />
       <workItem from="1706583276786" duration="4115000" />
       <workItem from="1706664940079" duration="20494000" />
-      <workItem from="1706796530332" duration="10461000" />
+      <workItem from="1706796530332" duration="10838000" />
+      <workItem from="1706816774502" duration="47000" />
+      <workItem from="1706884137795" duration="949000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -384,7 +385,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706815637559</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Create long example to test all func and got rid of print statement in lex">
+      <option name="closed" value="true" />
+      <created>1706816220233</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1706816220233</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -421,7 +430,8 @@
     <MESSAGE value="fix lex func" />
     <MESSAGE value="Fix Number func so -0 does not count as true" />
     <MESSAGE value="Fix Number func so single 0 digit is true" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix Number func so single 0 digit is true" />
+    <MESSAGE value="Create long example to test all func and got rid of print statement in lex" />
+    <option name="LAST_COMMIT_MESSAGE" value="Create long example to test all func and got rid of print statement in lex" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
