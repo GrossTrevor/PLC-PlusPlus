@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="make 01 two integers">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" afterDir="false" />
-    </list>
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="make -0 work as operator then integer" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -79,7 +75,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Gradle.LexerTests.testInteger">
+  <component name="RunManager" selected="Gradle.LexerTests.testExamples">
     <configuration name="LexerTests.testDecimal" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -202,10 +198,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.LexerTests.testInteger" />
         <item itemvalue="Gradle.LexerTests.testExamples" />
-        <item itemvalue="Gradle.LexerTests.testOperator" />
         <item itemvalue="Gradle.LexerTests.testDecimal" />
+        <item itemvalue="Gradle.LexerTests.testInteger" />
+        <item itemvalue="Gradle.LexerTests.testOperator" />
         <item itemvalue="Gradle.LexerTests.testException" />
       </list>
     </recent_temporary>
@@ -235,7 +231,7 @@
       <workItem from="1706884137795" duration="4037000" />
       <workItem from="1706903759503" duration="3085000" />
       <workItem from="1706907818638" duration="50000" />
-      <workItem from="1706922782592" duration="730000" />
+      <workItem from="1706922782592" duration="2470000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -413,7 +409,23 @@
       <option name="project" value="LOCAL" />
       <updated>1706898179315</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="make 0. , 0...7 , 0007 , and 0.09.7 work :)))))">
+      <option name="closed" value="true" />
+      <created>1706924958854</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1706924958854</updated>
+    </task>
+    <task id="LOCAL-00024" summary="make -0 work as operator then integer">
+      <option name="closed" value="true" />
+      <created>1706925135634</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1706925135634</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -453,7 +465,9 @@
     <MESSAGE value="Create long example to test all func and got rid of print statement in lex" />
     <MESSAGE value="Add more tests" />
     <MESSAGE value="make 01 two integers" />
-    <option name="LAST_COMMIT_MESSAGE" value="make 01 two integers" />
+    <MESSAGE value="make 0. , 0...7 , 0007 , and 0.09.7 work :)))))" />
+    <MESSAGE value="make -0 work as operator then integer" />
+    <option name="LAST_COMMIT_MESSAGE" value="make -0 work as operator then integer" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -67,7 +67,7 @@ public final class Lexer {
     public Token lexToken() {
         char cur = chars.get(0);
         Token token;
-        if(Character.isDigit(cur) || peek("-", "[1-9]"))
+        if(Character.isDigit(cur) || peek("-", "[0-9]"))
             return lexNumber();
         else if(cur == '\'')
             return lexCharacter();
@@ -95,7 +95,7 @@ public final class Lexer {
             match("-", "[1-9]");
         }
         if(peek("-", "0", "[^.]")){
-            throw new ParseException("parse exception1", chars.index);
+            return lexOperator();
         }
 
         if(peek("0")){
@@ -113,6 +113,10 @@ public final class Lexer {
             match("-", "0", "[.]", "[0-9]");
             System.out.println("2");
             decimal = true;
+        }
+
+        if(peek("-", "0") && chars.has(1)){
+            return lexOperator();
         }
 
         while(peek("[.0-9]")){
