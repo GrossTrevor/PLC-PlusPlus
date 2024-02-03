@@ -67,7 +67,7 @@ public final class Lexer {
     public Token lexToken() {
         char cur = chars.get(0);
         Token token;
-        if(Character.isDigit(cur) || peek("-", "[0-9]"))
+        if(Character.isDigit(cur) || peek("-", "[1-9]"))
             return lexNumber();
         else if(cur == '\'')
             return lexCharacter();
