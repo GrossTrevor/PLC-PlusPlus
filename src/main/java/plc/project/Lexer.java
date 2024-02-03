@@ -95,21 +95,23 @@ public final class Lexer {
             match("-", "[1-9]");
         }
         if(peek("-", "0", "[^.]")){
-            throw new ParseException("parse exception", chars.index);
+            throw new ParseException("parse exception1", chars.index);
         }
 
         if(peek("0")){
             match("0");
-            if(peek(".", "[0-9]")){
+            if(peek("[.]", "[0-9]")){
+                System.out.println("1");
                 decimal = true;
-                match(".", "[0-9]");
+                match("[.]", "[0-9]");
             }
             else if(peek("[0-9]")){
                 return chars.emit(Token.Type.INTEGER);
             }
         }
-        else if(peek("-", "0", ".", "[0-9]")){
-            match("-", "0", ".", "[0-9]");
+        else if(peek("-", "0", "[.]", "[0-9]")){
+            match("-", "0", "[.]", "[0-9]");
+            System.out.println("2");
             decimal = true;
         }
 
@@ -117,14 +119,18 @@ public final class Lexer {
             if(peek("[0-9]")){
                 match("[0-9]");
             }
-            else {
-                match(".");
-                if(!peek("[0-9]")) {
-                    throw new ParseException("parse exception", chars.index);
-                }
+            else { //has to be a decimal
                 if(decimal == true){
-                    throw new ParseException("parse exception", chars.index);
+                    return chars.emit(Token.Type.DECIMAL);
                 }
+                if(peek("[.]", "[^0-9]")) {
+                    return chars.emit(Token.Type.INTEGER);
+                }
+                if(!chars.has(1)) {
+                    return chars.emit(Token.Type.INTEGER);
+                }
+                match(".");
+                System.out.println("3");
                 decimal = true;
                 match("[0-9]");
             }
@@ -136,6 +142,79 @@ public final class Lexer {
         else{
             return chars.emit(Token.Type.INTEGER);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        boolean decimal = false;
+//        if(peek("-", "[1-9]")){
+//            match("-", "[1-9]");
+//        }
+//        if(peek("-", "0", "[^.]")){
+//            throw new ParseException("parse exception1", chars.index);
+//        }
+//        System.out.println("1:" + chars.get(0));
+//
+//        if(peek("0")){
+//            match("0");
+//            System.out.println("2:" + chars.get(0));
+//            if(peek( "[0-9]")){
+//                return chars.emit(Token.Type.INTEGER);
+//            }
+//            else if(peek("[\\.]", "[^0-9]")){
+//                System.out.println("here");
+//                return chars.emit(Token.Type.INTEGER);
+//            }
+//            else if(peek("[\\.]", "[0-9]")){
+//                System.out.println("top in if1:" + chars.get(0));
+//                match("[.]");
+//                System.out.println("top in if2:" + chars.get(0));
+//                decimal = true;
+//                match("[\\.]", "[0-9]");
+//            }
+//        }
+//        else if(peek("-", "0", "[.]", "[0-9]")){
+//            match("-", "0", "[.]", "[0-9]");
+//            System.out.println("2");
+//            decimal = true;
+//        }
+//        while(peek("[.0-9]")){
+//            if(peek("[0-9]")){
+//                match("[0-9]");
+//            }
+//            else {
+//                if(decimal){
+//                    return chars.emit(Token.Type.DECIMAL);
+//                }
+//                if(!peek("[.]", "[0-9]")) {
+//                    System.out.println("3:" + chars.get(0));
+//                    return chars.emit(Token.Type.DECIMAL);
+//                }
+//                System.out.println("3:" + chars.get(0));
+//                match("[.]");
+//                System.out.println("3");
+//                decimal = true;
+//                match("[0-9]");
+//            }
+//        }
+//        System.out.println("end");
+//        if(decimal){
+//            return chars.emit(Token.Type.DECIMAL);
+//        }
+//        else{
+//            return chars.emit(Token.Type.INTEGER);
+//        }
     }
 
     public Token lexCharacter() {
@@ -204,8 +283,8 @@ public final class Lexer {
         else if(peek("[~!@#$%^*()_-]")){
             match("[~!@#$%^*()_-]");
         }
-        else if(peek("[+={}\\[\\];:?<>,.\\|\\&]")){
-            match("[+={}\\[\\];:?<>,.\\|\\&]");
+        else if(peek("[+={}\\[\\];:?<>,\\.\\|\\&]")){
+            match("[+={}\\[\\];:?<>,\\.\\|\\&]");
         }
         else{
             throw new ParseException("parse exception", chars.index);
