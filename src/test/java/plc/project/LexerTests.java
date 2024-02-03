@@ -45,7 +45,7 @@ public class LexerTests {
 
     private static Stream<Arguments> testInteger() {
         return Stream.of(
-                Arguments.of("Single Digit", "1", true),
+                Arguments.of("Single Digit", "0", true),
                 Arguments.of("Multiple Digits", "12345", true),
                 Arguments.of("Negative", "-1", true),
                 Arguments.of("Leading Zero", "01", false),
@@ -53,8 +53,12 @@ public class LexerTests {
                 Arguments.of("Decimal", "5.1", false),
                 Arguments.of("Comma Separated", "1,999", false),
                 Arguments.of("Negative String", "-a", false),
+                Arguments.of("Negative Zero", "-0", false),
                 Arguments.of("Leading Zeros with Negative", "-000001", false),
-                Arguments.of("Negative Symbols", "-&%$", false)
+                Arguments.of("Negative Symbols", "-&%$", false),
+                Arguments.of("Number then String", "2345u777", false),
+                Arguments.of("Escape Characters", "\\n\n", false),
+                Arguments.of("Number then Symbols", "234.5++77", false)
         );
     }
 
@@ -68,16 +72,19 @@ public class LexerTests {
         return Stream.of(
                 Arguments.of("Multiple Digits", "123.456", true),
                 Arguments.of("Single Decimal", "3.0", true),
-                Arguments.of("Negative Decimal", "-1.0", true),
+                Arguments.of("Negative Decimal Start with Zero", "-0.1", true),
                 Arguments.of("Trailing Zeros", "123.000", true),
                 Arguments.of("Trailing Decimal", "1.", false),
                 Arguments.of("Leading Decimal", ".5", false),
                 Arguments.of("Single Digit", "1", false),
                 Arguments.of("Double Decimal", "1..0", false),
-                Arguments.of("Double Decimal with Num Between", "1.0.9", false),
+                Arguments.of("Double Decimal with Num Between", "1.0.9.8", false),
                 Arguments.of("Negative String", "-ajhg", false),
                 Arguments.of("Leading Zeros with Negative", "-000.001", false),
-                Arguments.of("Negative Symbols", "-&%$", false)
+                Arguments.of("Negative Symbols", "-+&%$", false),
+                Arguments.of("Number then String", "234.5u777", false),
+                Arguments.of("Escape Characters", "\\n\n", false),
+                Arguments.of("Number then Symbols", "234.5++77", false)
         );
     }
 
@@ -94,9 +101,9 @@ public class LexerTests {
                 Arguments.of("Empty", "\'\'", false),
                 Arguments.of("Multiple", "\'abc\'", false),
                 Arguments.of("Missing Last Quote", "\'", false),
-                Arguments.of("Missing Last Quote With Character", "\'a", false),
                 Arguments.of("Newline Without Escape", "\'\n\'", false),
-                Arguments.of("Escape r", "\'\r\'", false)
+                Arguments.of("Escape r", "\'\r\'", false),
+                Arguments.of("Missing Last Quote with Char", "\'n", false)
         );
     }
 
@@ -138,8 +145,18 @@ public class LexerTests {
                 Arguments.of("Dollar Sign", "$", true),
                 Arguments.of("End of Line", ";", true),
                 Arguments.of("Comma", ",", true),
+                Arguments.of("Greater Than", ">", true),
+                Arguments.of("Less Than", "<", true),
+                Arguments.of("Single And Sign", "&", true),
+                Arguments.of("Single Or Sign", "|", true),
                 Arguments.of("Space", " ", false),
-                Arguments.of("Tab", "\t", false)
+                Arguments.of("Tab", "\t", false),
+                Arguments.of("Greater Than and Equal to", ">=", false),
+                Arguments.of("Less Than and Equal to", "<=", false),
+                Arguments.of("Less Than and Equal to", "-98", false),
+                Arguments.of("Negative String", "-a", false),
+                Arguments.of("Leading Decimal", ".5", false),
+                Arguments.of("Comparison Equals", "======", false)
         );
     }
 
@@ -149,6 +166,7 @@ public class LexerTests {
         test(input, expected, true);
     }
 
+    //make test case about 'm and "str
     private static Stream<Arguments> testExamples() {
         return Stream.of(
                 Arguments.of("Example 1", "LET x = 5;", Arrays.asList(
@@ -216,6 +234,34 @@ public class LexerTests {
                         new Token(Token.Type.OPERATOR, ";", 155),
                         new Token(Token.Type.IDENTIFIER, "END", 161),
                         new Token(Token.Type.IDENTIFIER, "END", 165)
+                )),
+                Arguments.of("Muliple Spaces", "one   two;", Arrays.asList(
+                        new Token(Token.Type.IDENTIFIER, "one", 0),
+                        new Token(Token.Type.IDENTIFIER, "two", 6),
+                        new Token(Token.Type.OPERATOR, ";", 9)
+                )),
+                Arguments.of("Equals Combination", "!======", Arrays.asList(
+                        new Token(Token.Type.OPERATOR, "!=", 0),
+                        new Token(Token.Type.OPERATOR, "==", 2),
+                        new Token(Token.Type.OPERATOR, "==", 4),
+                        new Token(Token.Type.OPERATOR, "=", 6)
+                )),
+                Arguments.of("Not Whitespace", "one\btwo", Arrays.asList(
+                        new Token(Token.Type.IDENTIFIER, "one", 0),
+                        new Token(Token.Type.IDENTIFIER, "two", 4)
+                )),
+//                Arguments.of("Multiple Decimals", "0.09.8", Arrays.asList(
+//                        new Token(Token.Type.DECIMAL, "0.0", 0),
+//                        new Token(Token.Type.DECIMAL, "9.8", 3)
+//                ))
+                Arguments.of("Weird Quotes", "\'\"\'string\'\"\'", Arrays.asList(
+                        new Token(Token.Type.CHARACTER, "\'\"\'", 0),
+                        new Token(Token.Type.IDENTIFIER, "string", 3),
+                        new Token(Token.Type.CHARACTER, "\'\"\'", 9)
+                )),
+                Arguments.of("Multiple Decimals", "07", Arrays.asList(
+                        new Token(Token.Type.INTEGER, "0", 0),
+                        new Token(Token.Type.INTEGER, "7", 1)
                 ))
         );
     }
@@ -223,8 +269,8 @@ public class LexerTests {
     @Test
     void testException() {
         ParseException exception = Assertions.assertThrows(ParseException.class,
-                () -> new Lexer("\"unterminated").lex());
-        Assertions.assertEquals(13, exception.getIndex());
+                () -> new Lexer("\"unterminated 'f'").lex());
+        Assertions.assertEquals(17, exception.getIndex());
     }
 
     /**

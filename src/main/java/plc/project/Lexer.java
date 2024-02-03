@@ -99,7 +99,7 @@ public final class Lexer {
                 match(".", "[0-9]");
             }
             else if(peek("[0-9]")){
-                throw new ParseException("parse exception", chars.index);
+                return chars.emit(Token.Type.INTEGER);
             }
         }
         else if(peek("-", "0", ".", "[0-9]")){
@@ -116,7 +116,7 @@ public final class Lexer {
                 if(!peek("[0-9]")) {
                     throw new ParseException("parse exception", chars.index);
                 }
-                if(decimal){
+                if(decimal == true){
                     throw new ParseException("parse exception", chars.index);
                 }
                 decimal = true;
