@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="make -0 work as operator then integer" />
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="actually make -0 an operator and integer AND -0.0 and decimal">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -231,7 +235,8 @@
       <workItem from="1706884137795" duration="4037000" />
       <workItem from="1706903759503" duration="3085000" />
       <workItem from="1706907818638" duration="50000" />
-      <workItem from="1706922782592" duration="2470000" />
+      <workItem from="1706922782592" duration="3360000" />
+      <workItem from="1707005384812" duration="343000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -425,7 +430,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706925135634</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="actually make -0 an operator and integer AND -0.0 and decimal">
+      <option name="closed" value="true" />
+      <created>1706926127787</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1706926127787</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -467,7 +480,8 @@
     <MESSAGE value="make 01 two integers" />
     <MESSAGE value="make 0. , 0...7 , 0007 , and 0.09.7 work :)))))" />
     <MESSAGE value="make -0 work as operator then integer" />
-    <option name="LAST_COMMIT_MESSAGE" value="make -0 work as operator then integer" />
+    <MESSAGE value="actually make -0 an operator and integer AND -0.0 and decimal" />
+    <option name="LAST_COMMIT_MESSAGE" value="actually make -0 an operator and integer AND -0.0 and decimal" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
