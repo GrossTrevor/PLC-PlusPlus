@@ -173,7 +173,7 @@ public final class Lexer {
                 throw new ParseException("parse exception", chars.index);
             }
             if(peek("\\\\", "[^bnrt\\\'\"]")){
-                throw new ParseException("parse exception", chars.index);
+                throw new ParseException("parse exception", chars.index + 1);
             }
             if(peek("\\\\", "[bnrt\\\'\"]")){
                 lexEscape();
