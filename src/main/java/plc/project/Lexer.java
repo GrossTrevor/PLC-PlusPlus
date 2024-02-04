@@ -1,12 +1,9 @@
 package plc.project;
 
-//import groovyjarjarantlr.Token;
-
-import com.sun.source.tree.IdentifierTree;
+import groovyjarjarantlr.Token;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * The lexer works through three main functions:
@@ -37,21 +34,17 @@ public final class Lexer {
     public List<Token> lex() {
         List<Token> tokens = new ArrayList<Token>();
         Token temp = null;
-        int i = 0;
         while(chars.has(0)){
             char cur = chars.get(0);
-            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t' || cur == '\s'){
+            if(cur == '\b' || cur == '\n' || cur == '\r' || cur == '\t'){
                 chars.advance();
                 chars.skip();
             }
             else {
                 temp = lexToken();
-                if(temp != null) {
-                    tokens.add(i, temp);
-                    i++;
-                }
+                //if exception thrown don't do this
+                tokens.add(temp.getIndex(), temp);
             }
-            temp = null;
         }
         return tokens;
     }
@@ -67,7 +60,7 @@ public final class Lexer {
     public Token lexToken() {
         char cur = chars.get(0);
         Token token;
-        if(Character.isDigit(cur) || peek("-", "[0-9]"))
+        if(Character.isDigit(cur))
             return lexNumber();
         else if(cur == '\'')
             return lexCharacter();
@@ -80,63 +73,48 @@ public final class Lexer {
             return lexOperator();
     }
 
-    //need to edit to go to operator and escape when needed
     public Token lexIdentifier() {
-        match("[@a-zA-Z]");
-        while(peek("[a-zA-Z0-9-_]")){
-            match("[a-zA-Z0-9-_]");
+        int offset = 0;
+        while(chars.has(offset)){
+            if(offset == 0){
+                if(!(Character.isLetter(chars.get(0)) || chars.get(0) == '@')){
+                    //throw new ParseException("parse exception", offset);
+                }
+            }
+            else{
+                if(!(Character.isDigit(chars.get(offset)) || Character.isLetter(chars.get(offset)) || chars.get(0) == '-' || chars.get(0) == '_')){
+                    //throw new ParseException("parse exception", offset);
+                }
+            }
+            offset++;
         }
         return chars.emit(Token.Type.IDENTIFIER);
     }
 
     public Token lexNumber() {
         boolean decimal = false;
-        if(peek("-", "[1-9]")){
-            match("-", "[1-9]");
-        }
-        if(peek("-", "0", "[^.]")){
-            return lexOperator();
-        }
-
-        if(peek("0")){
-            match("0");
-            if(peek("[.]", "[0-9]")){
+        int offset = 0;
+        while(chars.has(offset)){
+            if(offset == 0) {
+                if (!(Character.isDigit(chars.get(0)) || chars.get(0) != '0' || chars.get(0) == '-')) {
+                    if (chars.get(offset + 1) != '.') {
+                        //throw new ParseException("parse exception", offset);
+                    }
+                }
+            }
+            else if (chars.get(offset) == '.') {
+                if(!Character.isDigit(chars.get(offset+1))){
+                    //throw new ParseException("parse exception", offset);
+                }
                 decimal = true;
-                match("[.]", "[0-9]");
             }
-            else if(peek("[0-9]")){
-                return chars.emit(Token.Type.INTEGER);
-            }
-        }
-        else if(peek("-", "0", "[.]", "[0-9]")){
-            match("-", "0", "[.]", "[0-9]");
-            decimal = true;
-        }
-
-        if(peek("-", "0") && chars.has(1)){
-            return lexOperator();
-        }
-
-        while(peek("[.0-9]")){
-            if(peek("[0-9]")){
-                match("[0-9]");
-            }
-            else { //has to be a decimal
-                if(decimal == true){
-                    return chars.emit(Token.Type.DECIMAL);
+            else{
+                if(!Character.isDigit(chars.get(offset))){
+                    //throw new ParseException("parse exception", offset);
                 }
-                if(peek("[.]", "[^0-9]")) {
-                    return chars.emit(Token.Type.INTEGER);
-                }
-                if(!chars.has(1)) {
-                    return chars.emit(Token.Type.INTEGER);
-                }
-                match(".");
-                decimal = true;
-                match("[0-9]");
             }
+            offset++;
         }
-
         if(decimal){
             return chars.emit(Token.Type.DECIMAL);
         }
@@ -146,71 +124,24 @@ public final class Lexer {
     }
 
     public Token lexCharacter() {
-        match("'");
-        if(peek("[']")){
-            throw new ParseException("parse exception", chars.index);
-        }
-        if(peek("\\\\", "[bnrt\\\'\"]")){
-            match("\\\\", "[bnrt\\\'\"]");
-        }
-        if(!peek(".")){
-            throw new ParseException("parse exception", chars.index);
-        }
-        else{
-            match(".");
-        }
-        if(peek("[^']")){
-            throw new ParseException("parse exception", chars.index);
-        }
-        match("'");
-        return chars.emit(Token.Type.CHARACTER);
+//        int offset = 0;
+//        while(chars.has(offset)){
+//            if(offset == 0){
+//
+//            }
+//        }
     }
 
     public Token lexString() {
-        match("\"");
-        while(!peek("[\"]")){
-            if(peek("[\\\n\r]")){
-                throw new ParseException("parse exception", chars.index);
-            }
-            if(!peek(".")){
-                throw new ParseException("parse exception", chars.index);
-            }
-            if(peek("\\\\", "[^bnrt\\\'\"]")){
-                throw new ParseException("parse exception", chars.index);
-            }
-            if(peek("\\\\", "[bnrt\\\'\"]")){
-                lexEscape();
-            }
-            else{
-                match(".");
-            }
-        }
-        match("\"");
-        return chars.emit(Token.Type.STRING);
+        throw new UnsupportedOperationException(); //TODO
     }
 
-    //handles escape character
-    //go here when escape character then go back to where you were
     public void lexEscape() {
-        if(peek("\\\\", "[bnrt\\\'\"]")){
-            match("\\\\", "[bnrt\\\'\"]");
-        }
+        throw new UnsupportedOperationException(); //TODO
     }
 
     public Token lexOperator() {
-        if(peek("!", "=") || peek("=", "=")){
-            match("[!=]", "=");
-        }
-        else if(peek("[|]", "[|]")){
-            match("[|]", "[|]");
-        }
-        else if(peek("&", "&")){
-            match("&", "&");
-        }
-        else{
-            match(".");
-        }
-        return chars.emit(Token.Type.OPERATOR);
+        throw new UnsupportedOperationException(); //TODO
     }
 
     /**
@@ -260,7 +191,7 @@ public final class Lexer {
             this.input = input;
         }
 
-        public boolean has(int offset) {
+        public static boolean has(int offset) {
             return index + offset < input.length();
         }
 

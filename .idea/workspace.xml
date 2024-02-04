@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="Fix operator func and more test cases">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/plc/project/LexerTests.java" afterDir="false" />
+    <list default="true" id="5d1bb181-e5b2-4dab-a075-bc1fa3267b31" name="Changes" comment="initial commit">
+      <change beforePath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/plc/project/Lexer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,25 +17,7 @@
       <ProjectState />
     </projectState>
   </component>
-  <component name="ExternalProjectsManager">
-    <system id="GRADLE">
-      <state>
-        <task path="$PROJECT_DIR$">
-          <activation />
-        </task>
-        <projects_view />
-      </state>
-    </system>
-  </component>
-  <component name="Git.Merge.Settings">
-    <option name="BRANCH" value="origin/trevor's-branch" />
-  </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="master" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProblemsViewState">
@@ -57,17 +38,9 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Gradle.LexerTests.testCharacter.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.LexerTests.testDecimal.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.LexerTests.testExamples.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.LexerTests.testException.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.LexerTests.testIdentifier.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.LexerTests.testInteger.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.LexerTests.testOperator.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.LexerTests.testString.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;sam's-branch&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -78,137 +51,6 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Gradle.LexerTests.testException">
-    <configuration name="LexerTests.testDecimal" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testDecimal&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="LexerTests.testExamples" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testExamples&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="LexerTests.testException" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testException&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="LexerTests.testInteger" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testInteger&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="LexerTests.testOperator" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;plc.project.LexerTests.testOperator&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>true</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Gradle.LexerTests.testException" />
-        <item itemvalue="Gradle.LexerTests.testExamples" />
-        <item itemvalue="Gradle.LexerTests.testOperator" />
-        <item itemvalue="Gradle.LexerTests.testDecimal" />
-        <item itemvalue="Gradle.LexerTests.testInteger" />
-      </list>
-    </recent_temporary>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -227,15 +69,6 @@
       <workItem from="1706127900970" duration="1002000" />
       <workItem from="1706454415009" duration="653000" />
       <workItem from="1706466912126" duration="1875000" />
-      <workItem from="1706583276786" duration="4115000" />
-      <workItem from="1706664940079" duration="20494000" />
-      <workItem from="1706796530332" duration="10838000" />
-      <workItem from="1706816774502" duration="47000" />
-      <workItem from="1706884137795" duration="4037000" />
-      <workItem from="1706903759503" duration="3085000" />
-      <workItem from="1706907818638" duration="50000" />
-      <workItem from="1706922782592" duration="3360000" />
-      <workItem from="1707005384812" duration="1240000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <option name="closed" value="true" />
@@ -245,207 +78,7 @@
       <option name="project" value="LOCAL" />
       <updated>1706128304620</updated>
     </task>
-    <task id="LOCAL-00002" summary="fix some trevor typos">
-      <option name="closed" value="true" />
-      <created>1706582504805</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1706582504805</updated>
-    </task>
-    <task id="LOCAL-00003" summary="give character temp return func">
-      <option name="closed" value="true" />
-      <created>1706583093414</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1706583093414</updated>
-    </task>
-    <task id="LOCAL-00004" summary="testing new branch">
-      <option name="closed" value="true" />
-      <created>1706583360832</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1706583360832</updated>
-    </task>
-    <task id="LOCAL-00005" summary="testing new branch">
-      <option name="closed" value="true" />
-      <created>1706583626823</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1706583626823</updated>
-    </task>
-    <task id="LOCAL-00006" summary="starting to try to use peek and match in the func like we were supposed to do in the beginning, but we didn't know that :)">
-      <option name="closed" value="true" />
-      <created>1706587338552</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1706587338552</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Include new test cases">
-      <option name="closed" value="true" />
-      <created>1706669173572</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1706669173572</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Got Identifier to work :]">
-      <option name="closed" value="true" />
-      <created>1706670097736</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1706670097736</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Simplifying Identifier func">
-      <option name="closed" value="true" />
-      <created>1706671049384</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1706671049384</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Adding comments for future reference (future edge cases and funcs)">
-      <option name="closed" value="true" />
-      <created>1706673922801</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1706673922801</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Added more/corrected some test cases; made number func use peek and match correctly">
-      <option name="closed" value="true" />
-      <created>1706730480875</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1706730480875</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Added more test cases">
-      <option name="closed" value="true" />
-      <created>1706730737696</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1706730737696</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Added Character from Trevor">
-      <option name="closed" value="true" />
-      <created>1706757076631</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1706757076631</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Make Operator func and more tests for it">
-      <option name="closed" value="true" />
-      <created>1706760676848</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1706760676848</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Add more operator tests">
-      <option name="closed" value="true" />
-      <created>1706761428788</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1706761428788</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Added Trevor's string and escape func">
-      <option name="closed" value="true" />
-      <created>1706761733286</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1706761733286</updated>
-    </task>
-    <task id="LOCAL-00017" summary="fix lex func">
-      <option name="closed" value="true" />
-      <created>1706801686632</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1706801686633</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Fix Number func so -0 does not count as true">
-      <option name="closed" value="true" />
-      <created>1706815411906</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1706815411906</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Fix Number func so single 0 digit is true">
-      <option name="closed" value="true" />
-      <created>1706815637559</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1706815637559</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Create long example to test all func and got rid of print statement in lex">
-      <option name="closed" value="true" />
-      <created>1706816220233</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1706816220233</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Add more tests">
-      <option name="closed" value="true" />
-      <created>1706885787906</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1706885787906</updated>
-    </task>
-    <task id="LOCAL-00022" summary="make 01 two integers">
-      <option name="closed" value="true" />
-      <created>1706898179315</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1706898179315</updated>
-    </task>
-    <task id="LOCAL-00023" summary="make 0. , 0...7 , 0007 , and 0.09.7 work :)))))">
-      <option name="closed" value="true" />
-      <created>1706924958854</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1706924958854</updated>
-    </task>
-    <task id="LOCAL-00024" summary="make -0 work as operator then integer">
-      <option name="closed" value="true" />
-      <created>1706925135634</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1706925135634</updated>
-    </task>
-    <task id="LOCAL-00025" summary="actually make -0 an operator and integer AND -0.0 and decimal">
-      <option name="closed" value="true" />
-      <created>1706926127787</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1706926127787</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Fix operator func and more test cases">
-      <option name="closed" value="true" />
-      <created>1707006214430</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1707006214430</updated>
-    </task>
-    <option name="localTasksCounter" value="27" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -465,40 +98,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="initial commit" />
-    <MESSAGE value="fix some trevor typos" />
-    <MESSAGE value="give character temp return func" />
-    <MESSAGE value="testing new branch" />
-    <MESSAGE value="starting to try to use peek and match in the func like we were supposed to do in the beginning, but we didn't know that :)" />
-    <MESSAGE value="Include new test cases" />
-    <MESSAGE value="Got Identifier to work :]" />
-    <MESSAGE value="Simplifying Identifier func" />
-    <MESSAGE value="Adding comments for future reference (future edge cases and funcs)" />
-    <MESSAGE value="Added more/corrected some test cases; made number func use peek and match correctly" />
-    <MESSAGE value="Added more test cases" />
-    <MESSAGE value="Added Character from Trevor" />
-    <MESSAGE value="Make Operator func and more tests for it" />
-    <MESSAGE value="Add more operator tests" />
-    <MESSAGE value="Added Trevor's string and escape func" />
-    <MESSAGE value="fix lex func" />
-    <MESSAGE value="Fix Number func so -0 does not count as true" />
-    <MESSAGE value="Fix Number func so single 0 digit is true" />
-    <MESSAGE value="Create long example to test all func and got rid of print statement in lex" />
-    <MESSAGE value="Add more tests" />
-    <MESSAGE value="make 01 two integers" />
-    <MESSAGE value="make 0. , 0...7 , 0007 , and 0.09.7 work :)))))" />
-    <MESSAGE value="make -0 work as operator then integer" />
-    <MESSAGE value="actually make -0 an operator and integer AND -0.0 and decimal" />
-    <MESSAGE value="Fix operator func and more test cases" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix operator func and more test cases" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="org.opentest4j.AssertionFailedError" package="org.opentest4j" />
-          <option name="timeStamp" value="2" />
-        </breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <option name="LAST_COMMIT_MESSAGE" value="initial commit" />
   </component>
 </project>
