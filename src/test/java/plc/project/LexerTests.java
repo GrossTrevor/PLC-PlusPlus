@@ -255,10 +255,10 @@ public class LexerTests {
                         new Token(Token.Type.OPERATOR, ".", 4),
                         new Token(Token.Type.INTEGER, "7", 5)
                 )),
-                Arguments.of("Weird Quotes", "\'\"\'string\'\"\'", Arrays.asList(
+                Arguments.of("Weird Quotes", "\'\"\'string\"\'\"", Arrays.asList(
                         new Token(Token.Type.CHARACTER, "\'\"\'", 0),
                         new Token(Token.Type.IDENTIFIER, "string", 3),
-                        new Token(Token.Type.CHARACTER, "\'\"\'", 9)
+                        new Token(Token.Type.STRING, "\"\'\"", 9)
                 )),
                 Arguments.of("Leading Zeros are Integers", "0007", Arrays.asList(
                         new Token(Token.Type.INTEGER, "0", 0),
