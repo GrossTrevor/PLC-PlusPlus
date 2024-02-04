@@ -118,7 +118,7 @@ public final class Lexer {
                 match("[0-9]");
             }
             else { //has to be a decimal
-                if(decimal == true){
+                if(decimal){
                     return chars.emit(Token.Type.DECIMAL);
                 }
                 if(peek("[.]", "[^0-9]")) {
@@ -213,14 +213,8 @@ public final class Lexer {
                 match("&");
             }
         }
-        else if(peek("[~!@#$%^*()_-]")){
-            match("[~!@#$%^*()_-]");
-        }
-        else if(peek("[+={}\\[\\];:?<>,.]")){
-            match("[+={}\\[\\];:?<>,.]");
-        }
         else{
-            throw new ParseException("parse exception1", chars.index);
+            match(".");
         }
         return chars.emit(Token.Type.OPERATOR);
     }
