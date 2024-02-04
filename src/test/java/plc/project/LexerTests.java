@@ -255,10 +255,10 @@ public class LexerTests {
                         new Token(Token.Type.OPERATOR, ".", 4),
                         new Token(Token.Type.INTEGER, "7", 5)
                 )),
-                Arguments.of("Weird Quotes", "\'\"\'string\'\"\'", Arrays.asList(
+                Arguments.of("Weird Quotes", "\'\"\'string\"\'\"", Arrays.asList(
                         new Token(Token.Type.CHARACTER, "\'\"\'", 0),
                         new Token(Token.Type.IDENTIFIER, "string", 3),
-                        new Token(Token.Type.CHARACTER, "\'\"\'", 9)
+                        new Token(Token.Type.STRING, "\"\'\"", 9)
                 )),
                 Arguments.of("Leading Zeros are Integers", "0007", Arrays.asList(
                         new Token(Token.Type.INTEGER, "0", 0),
@@ -266,29 +266,33 @@ public class LexerTests {
                         new Token(Token.Type.INTEGER, "0", 2),
                         new Token(Token.Type.INTEGER, "7", 3)
                 )),
-                Arguments.of("Double Decimals in a Row", "0...7", Arrays.asList(
+                Arguments.of("Multiple Decimals", "0...7", Arrays.asList(
                         new Token(Token.Type.INTEGER, "0", 0),
                         new Token(Token.Type.OPERATOR, ".", 1),
                         new Token(Token.Type.OPERATOR, ".", 2),
                         new Token(Token.Type.OPERATOR, ".", 3),
                         new Token(Token.Type.INTEGER, "7", 4)
                 )),
-                Arguments.of("Double Decimals in a Row", "0.", Arrays.asList(
+                Arguments.of("Integer with Decimal at End", "0.", Arrays.asList(
                         new Token(Token.Type.INTEGER, "0", 0),
                         new Token(Token.Type.OPERATOR, ".", 1)
                 )),
-                Arguments.of("Double Decimals in a Row", "-0", Arrays.asList(
+                Arguments.of("Negative Zero", "-0", Arrays.asList(
                         new Token(Token.Type.OPERATOR, "-", 0),
                         new Token(Token.Type.INTEGER, "0", 1)
                 )),
-                Arguments.of("Double Decimals in a Row", "-0.0", Arrays.asList(
+                Arguments.of("Negative Zero Decimal", "-0.0", Arrays.asList(
                         new Token(Token.Type.DECIMAL, "-0.0", 0)
                 )),
-                Arguments.of("Double Decimals in a Row", "-09.0", Arrays.asList(
+                Arguments.of("Negative Leading Zero Decimal", "-09.0", Arrays.asList(
                         new Token(Token.Type.OPERATOR, "-", 0),
                         new Token(Token.Type.INTEGER, "0", 1),
                         new Token(Token.Type.DECIMAL, "9.0", 2)
                 )),
+                Arguments.of("Plus with Numbers", "7+3", Arrays.asList(
+                        new Token(Token.Type.INTEGER, "7", 0),
+                        new Token(Token.Type.OPERATOR, "+", 1),
+                        new Token(Token.Type.INTEGER, "3", 2)
                 Arguments.of("Double Decimals in a Row", "-0.0000000", Arrays.asList(
                         new Token(Token.Type.DECIMAL, "-0.0000000", 0)
                 )),

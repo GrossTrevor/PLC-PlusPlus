@@ -2,6 +2,7 @@ package plc.project;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * The lexer works through three main functions:
@@ -75,6 +76,7 @@ public final class Lexer {
             return lexOperator();
     }
 
+    //need to edit to go to operator and escape when needed
     public Token lexIdentifier() {
         match("[@a-zA-Z]");
         while(peek("[a-zA-Z0-9_-]")){
@@ -95,7 +97,6 @@ public final class Lexer {
         if(peek("0")){
             match("0");
             if(peek("[.]", "[0-9]")){
-                System.out.println("1");
                 decimal = true;
                 match("[.]", "[0-9]");
             }
@@ -105,7 +106,6 @@ public final class Lexer {
         }
         else if(peek("-", "0", "[.]", "[0-9]")){
             match("-", "0", "[.]", "[0-9]");
-            System.out.println("2");
             decimal = true;
         }
 
@@ -128,7 +128,6 @@ public final class Lexer {
                     return chars.emit(Token.Type.INTEGER);
                 }
                 match(".");
-                System.out.println("3");
                 decimal = true;
                 match("[0-9]");
             }
@@ -143,7 +142,7 @@ public final class Lexer {
     }
 
     public Token lexCharacter() {
-        match("'");
+       match("'");
         if(peek("[']")){
             throw new ParseException("parse exception", chars.index);
         }
@@ -188,6 +187,8 @@ public final class Lexer {
         return chars.emit(Token.Type.STRING);
     }
 
+    //handles escape character
+    //go here when escape character then go back to where you were
     public void lexEscape() {
         if(peek("\\\\", "[bnrt\\\'\"]")){
             match("\\\\", "[bnrt\\\'\"]");
@@ -195,23 +196,14 @@ public final class Lexer {
     }
 
     public Token lexOperator() {
-        if(peek("[!=]")){
-            match("[!=]");
-            if(peek("=")){
-                match("[!=]");
-            }
+        if(peek("!", "=") || peek("=", "=")){
+            match("[!=]", "=");
         }
-        else if(peek("[|]")){
-            match("[|]");
-            if(peek("[|]")){
-                match("[|]");
-            }
+        else if(peek("[|]", "[|]")){
+            match("[|]", "[|]");
         }
-        else if(peek("&")){
-            match("&");
-            if(peek("&")){
-                match("&");
-            }
+        else if(peek("&", "&")){
+            match("&", "&");
         }
         else{
             match(".");
