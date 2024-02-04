@@ -235,7 +235,7 @@ public class LexerTests {
                         new Token(Token.Type.IDENTIFIER, "END", 161),
                         new Token(Token.Type.IDENTIFIER, "END", 165)
                 )),
-                Arguments.of("Muliple Spaces", "one   two;", Arrays.asList(
+                Arguments.of("Multiple Spaces", "one   two;", Arrays.asList(
                         new Token(Token.Type.IDENTIFIER, "one", 0),
                         new Token(Token.Type.IDENTIFIER, "two", 6),
                         new Token(Token.Type.OPERATOR, ";", 9)
@@ -266,7 +266,7 @@ public class LexerTests {
                         new Token(Token.Type.INTEGER, "0", 2),
                         new Token(Token.Type.INTEGER, "7", 3)
                 )),
-                Arguments.of("Multiple Decimals ", "0...7", Arrays.asList(
+                Arguments.of("Multiple Decimals", "0...7", Arrays.asList(
                         new Token(Token.Type.INTEGER, "0", 0),
                         new Token(Token.Type.OPERATOR, ".", 1),
                         new Token(Token.Type.OPERATOR, ".", 2),
@@ -289,13 +289,20 @@ public class LexerTests {
                         new Token(Token.Type.INTEGER, "0", 1),
                         new Token(Token.Type.DECIMAL, "9.0", 2)
                 )),
-                Arguments.of("Negative Zero Decimal Multiple Trailing Zeros", "-0.0000000", Arrays.asList(
-                        new Token(Token.Type.DECIMAL, "-0.0000000", 0)
-                )),
                 Arguments.of("Plus with Numbers", "7+3", Arrays.asList(
                         new Token(Token.Type.INTEGER, "7", 0),
                         new Token(Token.Type.OPERATOR, "+", 1),
                         new Token(Token.Type.INTEGER, "3", 2)
+                Arguments.of("Double Decimals in a Row", "-0.0000000", Arrays.asList(
+                        new Token(Token.Type.DECIMAL, "-0.0000000", 0)
+                )),
+                Arguments.of("Chars and Nums and Ops", "\'7\'.07-1\'4\'", Arrays.asList(
+                        new Token(Token.Type.CHARACTER, "\'7\'", 0),
+                        new Token(Token.Type.OPERATOR, ".", 3),
+                        new Token(Token.Type.INTEGER, "0", 4),
+                        new Token(Token.Type.INTEGER, "7", 5),
+                        new Token(Token.Type.INTEGER, "-1", 6),
+                        new Token(Token.Type.CHARACTER, "\'4\'", 8)
                 ))
         );
     }

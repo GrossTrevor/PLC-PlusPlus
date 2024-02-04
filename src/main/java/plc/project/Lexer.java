@@ -1,9 +1,5 @@
 package plc.project;
 
-//import groovyjarjarantlr.Token;
-
-import com.sun.source.tree.IdentifierTree;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -83,8 +79,8 @@ public final class Lexer {
     //need to edit to go to operator and escape when needed
     public Token lexIdentifier() {
         match("[@a-zA-Z]");
-        while(peek("[a-zA-Z0-9-_]")){
-            match("[a-zA-Z0-9-_]");
+        while(peek("[a-zA-Z0-9_-]")){
+            match("[a-zA-Z0-9_-]");
         }
         return chars.emit(Token.Type.IDENTIFIER);
     }
@@ -122,7 +118,7 @@ public final class Lexer {
                 match("[0-9]");
             }
             else { //has to be a decimal
-                if(decimal == true){
+                if(decimal){
                     return chars.emit(Token.Type.DECIMAL);
                 }
                 if(peek("[.]", "[^0-9]")) {
@@ -146,23 +142,25 @@ public final class Lexer {
     }
 
     public Token lexCharacter() {
-        match("'");
+       match("'");
         if(peek("[']")){
             throw new ParseException("parse exception", chars.index);
         }
         if(peek("\\\\", "[bnrt\\\'\"]")){
-            match("\\\\", "[bnrt\\\'\"]");
+            lexEscape();
         }
-        if(!peek(".")){
+        else if(!peek(".")){
             throw new ParseException("parse exception", chars.index);
         }
         else{
             match(".");
         }
-        if(peek("[^']")){
+        if(peek("[']")){
+            match("'");
+        }
+        else{
             throw new ParseException("parse exception", chars.index);
         }
-        match("'");
         return chars.emit(Token.Type.CHARACTER);
     }
 
