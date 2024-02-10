@@ -12,7 +12,7 @@ import java.util.List;
  * #match(Object...)} are helpers to make the implementation easier.
  *
  * This type of parser is called <em>recursive descent</em>. Each rule in our
- * grammar will have it's own function, and reference to other rules correspond
+ * grammar will have its own function, and reference to other rules correspond
  * to calling that functions.
  */
 public final class Parser {
@@ -197,7 +197,25 @@ public final class Parser {
      * {@code peek(Token.Type.IDENTIFIER)} and {@code peek("literal")}.
      */
     private boolean peek(Object... patterns) {
-        throw new UnsupportedOperationException(); //TODO (in lecture)
+        for (int i = 0; i < patterns.length; i++) {
+            if (!tokens.has(i)) {
+                return false;
+            }
+            else if (patterns[i] instanceof Token.Type){
+                if (patterns[i] != tokens.get(i).getType()){
+                    return false;
+                }
+            }
+            else if (patterns[i] instanceof String){
+                if (!patterns[i].equals(tokens.get(i).getLiteral())){
+                    return false;
+                }
+            }
+            else {
+                throw new AssertionError("Invalid pattern object: " + patterns[i].getClass());
+            }
+        }
+        return true;
     }
 
     /**
@@ -205,8 +223,13 @@ public final class Parser {
      * and advances the token stream.
      */
     private boolean match(Object... patterns) {
-        throw new UnsupportedOperationException(); //TODO (in lecture)
-    }
+        boolean peek = peek(patterns);
+        if (peek){
+            for (int i = 0; i < patterns.length; i++){
+                tokens.advance();
+            }
+        }
+        return peek;    }
 
     private static final class TokenStream {
 
