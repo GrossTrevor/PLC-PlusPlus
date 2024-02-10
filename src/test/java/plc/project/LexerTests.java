@@ -293,6 +293,7 @@ public class LexerTests {
                         new Token(Token.Type.INTEGER, "7", 0),
                         new Token(Token.Type.OPERATOR, "+", 1),
                         new Token(Token.Type.INTEGER, "3", 2)
+                )),
                 Arguments.of("Double Decimals in a Row", "-0.0000000", Arrays.asList(
                         new Token(Token.Type.DECIMAL, "-0.0000000", 0)
                 )),
@@ -310,8 +311,8 @@ public class LexerTests {
     @Test
     void testException() {
         ParseException exception = Assertions.assertThrows(ParseException.class,
-                () -> new Lexer("\"unterminated 'f'").lex());
-        Assertions.assertEquals(17, exception.getIndex());
+                () -> new Lexer("\"invalid\\escape\"").lex());
+        Assertions.assertEquals(9, exception.getIndex());
     }
 
     /**
