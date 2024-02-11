@@ -2,7 +2,9 @@ package plc.project;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The parser takes the sequence of tokens emitted by the lexer and turns that
@@ -219,7 +221,17 @@ public final class Parser {
             match("FALSE");
             return parseLiteral(Boolean.FALSE);
         }
-        // next chars are specific
+        String name = tokens.get(0).getLiteral();
+        match(Token.Type.IDENTIFIER);
+        if (peek("[")) {
+            return parseAccess(false, name);
+        }
+        else if (peek("(")){
+            return parseExFunction(name);
+        }
+        else {
+            return parseAccess(true, name);
+        }
     }
 
     public Ast.Expression parseInteger() throws ParseException{
@@ -239,22 +251,68 @@ public final class Parser {
     public Ast.Expression parseCharacter() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
         // s.replace('\\n', '\n');
+        match(Token.Type.CHARACTER);
         return parseLiteral(s);
     }
 
     public Ast.Expression parseString() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
+        // s.replace('\\n', '\n');
+        match(Token.Type.STRING);
         return parseLiteral(s);
     }
 
     public Ast.Expression parseLiteral(Object obj){
-        Ast.Expression exp;
-        exp = new Ast.Expression.Literal(obj);
-        return exp;
+        return new Ast.Expression.Literal(obj);
     }
 
     public Ast.Expression parseGroup(){
+        match("(");
+        Ast.Expression exp = new Ast.Expression.Group(parseExpression());
 
+        if (!peek(")")){
+            throw new ParseException("parse exception", tokens.index);
+        }
+        match(")");
+        return exp;
+    }
+
+    public Ast.Expression parseAccess(boolean single, String name){
+        if (single){
+            return new Ast.Expression.Access(Optional.empty(), name);
+        }
+        match("[");
+        Ast.Expression exp = new Ast.Expression.Access(Optional.of(parseExpression()), name);
+
+        if (!peek("]")){
+            throw new ParseException("parse exception", tokens.index);
+        }
+        match("]");
+        return exp;
+
+    }
+
+    public Ast.Expression parseExFunction(String name){
+        match("(");
+        List<Ast.Expression> exps = new ArrayList<Ast.Expression>();
+        int i = 0;
+        while (!peek(")")){
+            if (peek(",")){
+                throw new ParseException("parse exception", tokens.index);
+            }
+            exps.add(i, parseExpression());
+            i++;
+            if (peek(",")){
+                match(",");
+                if (peek(")")){
+                    throw new ParseException("parse exception", tokens.index);
+                }
+            }
+            else if (!peek(")")){
+                throw new ParseException("parse exception", tokens.index);
+            }
+        }
+        return new Ast.Expression.Function(name, exps);
     }
 
     /**
