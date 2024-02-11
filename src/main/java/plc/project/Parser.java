@@ -93,7 +93,6 @@ public final class Parser {
      * statement, then it is an expression/assignment statement.
      */
     public Ast.Statement parseStatement() throws ParseException {
-<<<<<<< HEAD
         if(tokens.has(0)){
             parseExpression();
             //temp = new Ast.Statement.Expression(parseExpression());
@@ -111,9 +110,6 @@ public final class Parser {
             }
         }
         throw new ParseException("parse exception", tokens.index + 1);
-=======
-        throw new UnsupportedOperationException(); //TODO
->>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
     }
 
     /**
@@ -212,9 +208,6 @@ public final class Parser {
      * not strictly necessary.
      */
     public Ast.Expression parsePrimaryExpression() throws ParseException {
-<<<<<<< HEAD
-        throw new UnsupportedOperationException(); //TODO
-=======
         if (peek(Token.Type.IDENTIFIER)){
             return parseIdentifier();
         }
@@ -284,8 +277,7 @@ public final class Parser {
     }
 
     public Ast.Expression parseGroup(){
-
->>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
+        throw new UnsupportedOperationException(); //TODO
     }
 
     /**
@@ -331,12 +323,8 @@ public final class Parser {
                 tokens.advance();
             }
         }
-<<<<<<< HEAD
-        return peek;    }
-=======
         return peek;
     }
->>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
 
     private static final class TokenStream {
 
