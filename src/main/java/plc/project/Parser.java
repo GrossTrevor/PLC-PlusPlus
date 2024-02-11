@@ -1,10 +1,7 @@
 package plc.project;
 
-<<<<<<< HEAD
-=======
 import java.math.BigDecimal;
 import java.math.BigInteger;
->>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
 import java.util.List;
 
 /**
@@ -170,35 +167,116 @@ public final class Parser {
      * Parses the {@code expression} rule.
      */
     public Ast.Expression parseExpression() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        return parseLogicalExpression();
     }
 
     /**
      * Parses the {@code logical-expression} rule.
      */
     public Ast.Expression parseLogicalExpression() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        boolean binary = false;
+        Ast.Expression temp1 = null;
+        String temp2 = "";
+        Ast.Expression temp3 = null;
+
+        if(tokens.has(0)){
+            temp1 = parseComparisonExpression();
+        }
+        if(peek("&", "&") || peek("[|]", "[|]")){
+            temp2 = tokens.get(0).getLiteral() + tokens.get(1).getLiteral();
+            match(".", ".");
+            binary = true;
+        }
+        if(tokens.has(0)){
+            temp3 = parseComparisonExpression();
+        }
+        if(binary){
+            return new Ast.Expression.Binary(temp2, temp1, temp3);
+        }
+        return parseComparisonExpression();
     }
 
     /**
      * Parses the {@code comparison-expression} rule.
      */
     public Ast.Expression parseComparisonExpression() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        boolean binary = false;
+        Ast.Expression temp1 = null;
+        String temp2 = "";
+        Ast.Expression temp3 = null;
+
+        if(tokens.has(0)){
+            temp1 = parseAdditiveExpression();
+        }
+        if(peek("=", "=") || peek("!", "=")){
+            temp2 = tokens.get(0).getLiteral() + tokens.get(1).getLiteral();
+            match(".", "=");
+            binary = true;
+        }
+        else if(peek(">") || peek("<")){
+            temp2 = tokens.get(0).getLiteral();
+            match(".");
+            binary = true;
+        }
+        if(tokens.has(0)){
+            temp3 = parseAdditiveExpression();
+        }
+        if(binary){
+            return new Ast.Expression.Binary(temp2, temp1, temp3);
+        }
+        return parseAdditiveExpression();
     }
 
     /**
      * Parses the {@code additive-expression} rule.
      */
     public Ast.Expression parseAdditiveExpression() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        boolean binary = false;
+        Ast.Expression temp1 = null;
+        String temp2 = "";
+        Ast.Expression temp3 = null;
+
+        if(tokens.has(0)){
+            temp1 = parseMultiplicativeExpression();
+        }
+        if(peek("[+]") || peek("-")){
+            temp2 = tokens.get(0).getLiteral();
+            match(".");
+            binary = true;
+        }
+        if(tokens.has(0)){
+            temp3 = parseMultiplicativeExpression();
+        }
+        if(binary){
+            return new Ast.Expression.Binary(temp2, temp1, temp3);
+        }
+        return parseMultiplicativeExpression();
     }
 
     /**
      * Parses the {@code multiplicative-expression} rule.
      */
     public Ast.Expression parseMultiplicativeExpression() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        boolean binary = false;
+        Ast.Expression temp1 = null;
+        String temp2 = "";
+        Ast.Expression temp3 = null;
+
+        if(tokens.has(0)){
+            temp1 = parsePrimaryExpression();
+        }
+        if(peek("[*]") || peek("/") || peek("^")){
+            temp2 = tokens.get(0).getLiteral();
+            match(".");
+            binary = true;
+        }
+        if(tokens.has(0)){
+            temp3 = parsePrimaryExpression();
+        }
+        if(binary){
+            return new Ast.Expression.Binary(temp2, temp1, temp3);
+        }
+        return parsePrimaryExpression();
     }
 
     /**
