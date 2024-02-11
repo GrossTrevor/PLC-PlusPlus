@@ -1,5 +1,10 @@
 package plc.project;
 
+<<<<<<< HEAD
+=======
+import java.math.BigDecimal;
+import java.math.BigInteger;
+>>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
 import java.util.List;
 
 /**
@@ -12,7 +17,11 @@ import java.util.List;
  * #match(Object...)} are helpers to make the implementation easier.
  *
  * This type of parser is called <em>recursive descent</em>. Each rule in our
+<<<<<<< HEAD
  * grammar will have its own function, and reference to other rules correspond
+=======
+ * grammar will have it's own function, and reference to other rules correspond
+>>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
  * to calling that functions.
  */
 public final class Parser {
@@ -84,6 +93,7 @@ public final class Parser {
      * statement, then it is an expression/assignment statement.
      */
     public Ast.Statement parseStatement() throws ParseException {
+<<<<<<< HEAD
         if(tokens.has(0)){
             parseExpression();
             //temp = new Ast.Statement.Expression(parseExpression());
@@ -101,6 +111,9 @@ public final class Parser {
             }
         }
         throw new ParseException("parse exception", tokens.index + 1);
+=======
+        throw new UnsupportedOperationException(); //TODO
+>>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
     }
 
     /**
@@ -199,7 +212,80 @@ public final class Parser {
      * not strictly necessary.
      */
     public Ast.Expression parsePrimaryExpression() throws ParseException {
+<<<<<<< HEAD
         throw new UnsupportedOperationException(); //TODO
+=======
+        if (peek(Token.Type.IDENTIFIER)){
+            return parseIdentifier();
+        }
+        else if (peek(Token.Type.INTEGER)){
+            return parseInteger();
+        }
+        else if (peek(Token.Type.DECIMAL)){
+            return parseDecimal();
+        }
+        else if (peek(Token.Type.CHARACTER)){
+            return parseCharacter();
+        }
+        else if (peek(Token.Type.STRING)){
+            return parseString();
+        }
+        else if (peek("(")){
+            return parseGroup();
+        }
+        throw new ParseException("parse exception", tokens.index);
+    }
+
+    public Ast.Expression parseIdentifier() throws ParseException{
+        if (peek("NIL")){
+            match("NIL");
+            return parseLiteral(null);
+        }
+        else if (peek("TRUE")){
+            match("TRUE");
+            return parseLiteral(Boolean.TRUE);
+        }
+        else if (peek("FALSE")){
+            match("FALSE");
+            return parseLiteral(Boolean.FALSE);
+        }
+        // next chars are specific
+    }
+
+    public Ast.Expression parseInteger() throws ParseException{
+        BigInteger bigInteger;
+        bigInteger = new BigInteger(tokens.get(0).getLiteral());
+        match(Token.Type.INTEGER);
+        return parseLiteral(bigInteger);
+    }
+
+    public Ast.Expression parseDecimal() throws ParseException{
+        BigDecimal bigDecimal;
+        bigDecimal = new BigDecimal(tokens.get(0).getLiteral());
+        match(Token.Type.DECIMAL);
+        return parseLiteral(bigDecimal);
+    }
+
+    public Ast.Expression parseCharacter() throws ParseException{
+        String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
+        // s.replace('\\n', '\n');
+        return parseLiteral(s);
+    }
+
+    public Ast.Expression parseString() throws ParseException{
+        String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
+        return parseLiteral(s);
+    }
+
+    public Ast.Expression parseLiteral(Object obj){
+        Ast.Expression exp;
+        exp = new Ast.Expression.Literal(obj);
+        return exp;
+    }
+
+    public Ast.Expression parseGroup(){
+
+>>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
     }
 
     /**
@@ -245,7 +331,12 @@ public final class Parser {
                 tokens.advance();
             }
         }
+<<<<<<< HEAD
         return peek;    }
+=======
+        return peek;
+    }
+>>>>>>> f323822dfe0ca3eeef71676afdf857348bd45f27
 
     private static final class TokenStream {
 
