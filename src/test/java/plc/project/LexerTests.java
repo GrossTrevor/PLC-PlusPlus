@@ -293,6 +293,7 @@ public class LexerTests {
                         new Token(Token.Type.INTEGER, "7", 0),
                         new Token(Token.Type.OPERATOR, "+", 1),
                         new Token(Token.Type.INTEGER, "3", 2)
+                )),
                 Arguments.of("Double Decimals in a Row", "-0.0000000", Arrays.asList(
                         new Token(Token.Type.DECIMAL, "-0.0000000", 0)
                 )),
