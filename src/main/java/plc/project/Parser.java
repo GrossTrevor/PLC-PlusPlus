@@ -97,6 +97,9 @@ public final class Parser {
             temp1 = parseExpression();
             if(peek("=")){
                 match("=");
+                if(peek(";")){
+                    throw new ParseException("parse exception, incomplete assignment", tokens.index + 1);
+                }
                 return new Ast.Statement.Assignment(temp1, parseExpression());
             }
             if(!peek(";")){
@@ -107,7 +110,7 @@ public final class Parser {
                 return new Ast.Statement.Expression(temp1);
             }
         }
-        throw new ParseException("parse exception", tokens.index + 1);
+        throw new ParseException("parse exception, no input", tokens.index + 1);
     }
 
     /**
@@ -330,7 +333,7 @@ public final class Parser {
             return parseGroup();
         }
         else {
-            throw new ParseException("parse exception primary", tokens.index);
+            throw new ParseException("parse exception, not a primary", tokens.index);
         }
     }
 
@@ -409,7 +412,7 @@ public final class Parser {
         Ast.Expression exp = new Ast.Expression.Group(parseExpression());
 
         if (!peek(")")){
-            throw new ParseException("parse exception group", tokens.index);
+            throw new ParseException("parse exception, unclosed group", tokens.index);
         }
         match(")");
         return exp;
@@ -423,7 +426,7 @@ public final class Parser {
         Ast.Expression exp = new Ast.Expression.Access(Optional.of(parseExpression()), name);
 
         if (!peek("]")){
-            throw new ParseException("parse exception access", tokens.index);
+            throw new ParseException("parse exception, unclosed access", tokens.index);
         }
         match("]");
         return exp;
@@ -436,18 +439,18 @@ public final class Parser {
         int i = 0;
         while (!peek(")")){
             if (peek(",")){
-                throw new ParseException("parse exception", tokens.index);
+                throw new ParseException("parse exception, invalid exfunc comma", tokens.index);
             }
             exps.add(i, parseExpression());
             i++;
             if (peek(",")){
                 match(",");
                 if (peek(")")){
-                    throw new ParseException("parse exception", tokens.index);
+                    throw new ParseException("parse exception, invalid exfunc close", tokens.index);
                 }
             }
             else if (!peek(")")){
-                throw new ParseException("parse exception", tokens.index);
+                throw new ParseException("parse exception, unclosed exfunc", tokens.index);
             }
         }
         match(")");

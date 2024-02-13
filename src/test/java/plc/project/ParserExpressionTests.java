@@ -55,7 +55,39 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "butt"),
                                 new Ast.Expression.Access(Optional.empty(), "cheek"),
                                 new Ast.Expression.Access(Optional.empty(), "pen15")
-                        )))
+                        )))),
+                Arguments.of("Variable Expression",
+                        Arrays.asList(
+                                //expr;
+                                new Token(Token.Type.IDENTIFIER, "expr", 0),
+                                new Token(Token.Type.OPERATOR, ";", 4)
+                        ),
+                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "expr"))
+                ),
+                Arguments.of("Missing Semicolon",
+                        Arrays.asList(
+                                //expr;
+                                new Token(Token.Type.IDENTIFIER, "f", 0)
+                        ),
+                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "expr"))
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailExpressionStatement(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseStatement);
+    }
+
+    private static Stream<Arguments> testFailExpressionStatement() {
+        return Stream.of(
+                Arguments.of("Missing Semicolon",
+                        Arrays.asList(
+                                //expr;
+                                new Token(Token.Type.IDENTIFIER, "f", 0)
+                        ),
+                        new ParseException("parse exception", 0)
                 )
         );
     }
@@ -80,6 +112,26 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "name"),
                                 new Ast.Expression.Access(Optional.empty(), "value")
                         )
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailAssignmentStatement(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseStatement);
+    }
+
+    private static Stream<Arguments> testFailAssignmentStatement() {
+        return Stream.of(
+                Arguments.of("Missing Value",
+                        Arrays.asList(
+                                //name = value;
+                                new Token(Token.Type.IDENTIFIER, "name", 0),
+                                new Token(Token.Type.OPERATOR, "=", 5),
+                                new Token(Token.Type.IDENTIFIER, ";", 7)
+                        ),
+                        new ParseException("parse exception", 7)
                 )
         );
     }
@@ -167,6 +219,25 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "expr1"),
                                 new Ast.Expression.Access(Optional.empty(), "expr2")))
                         ))
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailGroupExpression(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseExpression);
+    }
+
+    private static Stream<Arguments> testFailGroupExpression() {
+        return Stream.of(
+                Arguments.of("Missing Closing Parenthesis",
+                        Arrays.asList(
+                                //(expr)
+                                new Token(Token.Type.OPERATOR, "(", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr", 1)
+                        ),
+                        new ParseException("parse exception", 5)
                 )
         );
     }
