@@ -88,21 +88,32 @@ public final class Parser {
      * statement, then it is an expression/assignment statement.
      */
     public Ast.Statement parseStatement() throws ParseException {
+        Ast.Expression temp1 = null;
+        Ast.Expression temp2 = null;
+
         if(tokens.has(0)){
-            parseExpression();
-            //temp = new Ast.Statement.Expression(parseExpression());
+            temp1 = parseExpression();
             if(peek("=")){
                 match("=");
-                parseExpression();
-                //temp = temp + new Ast.Statement.Expression(parseExpression());
+                temp2 = parseExpression();
+                if(temp2 instanceof Ast.Expression.Literal){
+                    return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.of(temp2));
+                }
+                else if(temp2 instanceof Ast.Expression.Access || temp2 instanceof Ast.Expression.Function || temp2 instanceof Ast.Expression.Binary){
+                    return new Ast.Statement.Assignment(temp1, temp2);
+                }
             }
-            System.out.println(tokens.get(0).getLiteral());
+            else if(temp1 instanceof Ast.Expression.Access){
+                System.out.println("yes");
+                return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.empty());
+            }
             if(!peek(";")){
                 throw new ParseException("parse exception, no semicolon", tokens.index + 1);
             }
             else{
                 match(";");
-                return new Ast.Statement.Expression(parseExpression());
+                System.out.println("noooooooo");
+                return new Ast.Statement.Expression(temp1);
             }
         }
         throw new ParseException("parse exception", tokens.index + 1);
@@ -309,6 +320,8 @@ public final class Parser {
      * not strictly necessary.
      */
     public Ast.Expression parsePrimaryExpression() throws ParseException {
+        System.out.println(tokens.get(0).getType());
+        System.out.println(tokens.get(0).getLiteral());
         if (peek(Token.Type.IDENTIFIER)){
             return parseIdentifier();
         }
@@ -327,7 +340,9 @@ public final class Parser {
         else if (peek("(")){
             return parseGroup();
         }
-        throw new ParseException("parse exception", tokens.index);
+        else {
+            throw new ParseException("parse exception primary", tokens.index);
+        }
     }
 
     public Ast.Expression parseIdentifier() throws ParseException{
@@ -343,16 +358,18 @@ public final class Parser {
             match("FALSE");
             return parseLiteral(Boolean.FALSE);
         }
-        String name = tokens.get(0).getLiteral();
-        match(Token.Type.IDENTIFIER);
-        if (peek("[")) {
-            return parseAccess(false, name);
-        }
-        else if (peek("(")){
-            return parseExFunction(name);
-        }
         else {
-            return parseAccess(true, name);
+            String name = tokens.get(0).getLiteral();
+            match(Token.Type.IDENTIFIER);
+            if (peek("[")) {
+                return parseAccess(false, name);
+            }
+            else if (peek("(")) {
+                return parseExFunction(name);
+            }
+            else {
+                return parseAccess(true, name);
+            }
         }
     }
 
@@ -434,6 +451,7 @@ public final class Parser {
                 throw new ParseException("parse exception", tokens.index);
             }
         }
+        match(")");
         return new Ast.Expression.Function(name, exps);
     }
 
