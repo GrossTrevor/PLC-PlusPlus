@@ -97,6 +97,7 @@ public final class Parser {
                 match("=");
                 temp2 = parseExpression();
                 if(temp2 instanceof Ast.Expression.Literal){
+                    System.out.println("yes");
                     return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.of(temp2));
                 }
                 else if(temp2 instanceof Ast.Expression.Access || temp2 instanceof Ast.Expression.Function || temp2 instanceof Ast.Expression.Binary){
