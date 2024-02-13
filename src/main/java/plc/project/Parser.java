@@ -298,9 +298,7 @@ public final class Parser {
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
             binary++;
-            System.out.println("1");
         }
-        System.out.println("2");
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parsePrimaryExpression();
             binary++;
@@ -311,7 +309,6 @@ public final class Parser {
         if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
-        System.out.println("3");
         return parsePrimaryExpression();
     }
 
