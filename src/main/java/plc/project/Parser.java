@@ -96,6 +96,7 @@ public final class Parser {
                 parseExpression();
                 //temp = temp + new Ast.Statement.Expression(parseExpression());
             }
+            System.out.println(tokens.get(0).getLiteral());
             if(!peek(";")){
                 throw new ParseException("parse exception, no semicolon", tokens.index + 1);
             }
@@ -135,8 +136,8 @@ public final class Parser {
     }
 
     /**
-     * Parses a case or default statement block from the {@code switch} rule. 
-     * This method should only be called if the next tokens start the case or 
+     * Parses a case or default statement block from the {@code switch} rule.
+     * This method should only be called if the next tokens start the case or
      * default block of a switch statement, aka {@code CASE} or {@code DEFAULT}.
      */
     public Ast.Statement.Case parseCaseStatement() throws ParseException {
@@ -179,7 +180,7 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseComparisonExpression();
-            if (!tokens.has(0)){
+            if(!tokens.has(0)){
                 return temp1;
             }
         }
@@ -188,8 +189,11 @@ public final class Parser {
             match(".", ".");
             binary = true;
         }
-        if(tokens.has(0)){
+        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseComparisonExpression();
+        }
+        else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
+            return temp1;
         }
         if(binary){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
@@ -208,7 +212,7 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseAdditiveExpression();
-            if (!tokens.has(0)){
+            if(!tokens.has(0)){
                 return temp1;
             }
         }
@@ -222,8 +226,11 @@ public final class Parser {
             match(".");
             binary = true;
         }
-        if(tokens.has(0)){
+        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseAdditiveExpression();
+        }
+        else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
+            return temp1;
         }
         if(binary){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
@@ -242,7 +249,7 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseMultiplicativeExpression();
-            if (!tokens.has(0)){
+            if(!tokens.has(0)){
                 return temp1;
             }
         }
@@ -251,8 +258,11 @@ public final class Parser {
             match(".");
             binary = true;
         }
-        if(tokens.has(0)){
+        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseMultiplicativeExpression();
+        }
+        else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
+            return temp1;
         }
         if(binary){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
@@ -271,7 +281,7 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parsePrimaryExpression();
-            if (!tokens.has(0)){
+            if(!tokens.has(0)){
                 return temp1;
             }
         }
@@ -280,8 +290,11 @@ public final class Parser {
             match(".");
             binary = true;
         }
-        if(tokens.has(0)){
+        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parsePrimaryExpression();
+        }
+        else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
+            return temp1;
         }
         if(binary){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
