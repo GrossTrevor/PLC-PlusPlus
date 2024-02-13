@@ -179,6 +179,9 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseComparisonExpression();
+            if (!tokens.has(0)){
+                return temp1;
+            }
         }
         if(peek("&", "&") || peek("[|]", "[|]")){
             temp2 = tokens.get(0).getLiteral() + tokens.get(1).getLiteral();
@@ -205,6 +208,9 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseAdditiveExpression();
+            if (!tokens.has(0)){
+                return temp1;
+            }
         }
         if(peek("=", "=") || peek("!", "=")){
             temp2 = tokens.get(0).getLiteral() + tokens.get(1).getLiteral();
@@ -236,6 +242,9 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseMultiplicativeExpression();
+            if (!tokens.has(0)){
+                return temp1;
+            }
         }
         if(peek("[+]") || peek("-")){
             temp2 = tokens.get(0).getLiteral();
@@ -262,6 +271,9 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parsePrimaryExpression();
+            if (!tokens.has(0)){
+                return temp1;
+            }
         }
         if(peek("[*]") || peek("/") || peek("^")){
             temp2 = tokens.get(0).getLiteral();
@@ -284,6 +296,8 @@ public final class Parser {
      * not strictly necessary.
      */
     public Ast.Expression parsePrimaryExpression() throws ParseException {
+        System.out.println(tokens.get(0).getType());
+        System.out.println(tokens.get(0).getLiteral());
         if (peek(Token.Type.IDENTIFIER)){
             return parseIdentifier();
         }
@@ -302,7 +316,9 @@ public final class Parser {
         else if (peek("(")){
             return parseGroup();
         }
-        throw new ParseException("parse exception", tokens.index);
+        else {
+            throw new ParseException("parse exception primary", tokens.index);
+        }
     }
 
     public Ast.Expression parseIdentifier() throws ParseException{
@@ -318,16 +334,18 @@ public final class Parser {
             match("FALSE");
             return parseLiteral(Boolean.FALSE);
         }
-        String name = tokens.get(0).getLiteral();
-        match(Token.Type.IDENTIFIER);
-        if (peek("[")) {
-            return parseAccess(false, name);
-        }
-        else if (peek("(")){
-            return parseExFunction(name);
-        }
         else {
-            return parseAccess(true, name);
+            String name = tokens.get(0).getLiteral();
+            match(Token.Type.IDENTIFIER);
+            if (peek("[")) {
+                return parseAccess(false, name);
+            }
+            else if (peek("(")) {
+                return parseExFunction(name);
+            }
+            else {
+                return parseAccess(true, name);
+            }
         }
     }
 
@@ -409,6 +427,7 @@ public final class Parser {
                 throw new ParseException("parse exception", tokens.index);
             }
         }
+        match(")");
         return new Ast.Expression.Function(name, exps);
     }
 
