@@ -309,8 +309,6 @@ public final class Parser {
      * not strictly necessary.
      */
     public Ast.Expression parsePrimaryExpression() throws ParseException {
-        System.out.println(tokens.get(0).getType());
-        System.out.println(tokens.get(0).getLiteral());
         if (peek(Token.Type.IDENTIFIER)){
             return parseIdentifier();
         }
@@ -378,16 +376,20 @@ public final class Parser {
 
     public Ast.Expression parseCharacter() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
-        // s.replace('\\n', '\n');
+        s = s.replace("\\n", "\n");
         match(Token.Type.CHARACTER);
         return parseLiteral(s);
     }
 
     public Ast.Expression parseString() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
-        // s.replace('\\n', '\n');
+        s = s.replace("\\n", "\n");
         match(Token.Type.STRING);
         return parseLiteral(s);
+    }
+
+    public void replaceChars(){
+        //replace chars please
     }
 
     public Ast.Expression parseLiteral(Object obj){
