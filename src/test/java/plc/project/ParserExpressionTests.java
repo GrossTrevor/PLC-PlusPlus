@@ -66,11 +66,21 @@ final class ParserExpressionTests {
         return Stream.of(
                 Arguments.of("Declaration Expression",
                         Arrays.asList(
-                                //name();
+                                //name;
                                 new Token(Token.Type.IDENTIFIER, "name", 0),
                                 new Token(Token.Type.OPERATOR, ";", 4)
                         ),
                         new Ast.Statement.Declaration(new Ast.Expression.Access(Optional.empty(), "name").getName(), Optional.empty())
+                ),
+                Arguments.of("Declaration Expression with Value",
+                        Arrays.asList(
+                                //name = 3;
+                                new Token(Token.Type.IDENTIFIER, "name", 0),
+                                new Token(Token.Type.OPERATOR, "=", 5),
+                                new Token(Token.Type.INTEGER, "3", 7),
+                                new Token(Token.Type.OPERATOR, ";", 8)
+                        ),
+                        new Ast.Statement.Declaration(new Ast.Expression.Access(Optional.empty(), "name").getName(), Optional.of(new Ast.Expression.Literal(3)))
                 )
         );
     }

@@ -88,21 +88,33 @@ public final class Parser {
      * statement, then it is an expression/assignment statement.
      */
     public Ast.Statement parseStatement() throws ParseException {
+        Ast.Expression temp1 = null;
+        Ast.Expression temp2 = null;
+
         if(tokens.has(0)){
-            parseExpression();
-            //temp = new Ast.Statement.Expression(parseExpression());
+            temp1 = parseExpression();
             if(peek("=")){
                 match("=");
-                parseExpression();
-                //temp = temp + new Ast.Statement.Expression(parseExpression());
+                temp2 = parseExpression();
+                if(temp2 instanceof Ast.Expression.Literal){
+                    System.out.println("yes");
+                    return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.of(temp2));
+                }
+                else if(temp2 instanceof Ast.Expression.Access || temp2 instanceof Ast.Expression.Function || temp2 instanceof Ast.Expression.Binary){
+                    return new Ast.Statement.Assignment(temp1, temp2);
+                }
             }
-            System.out.println(tokens.get(0).getLiteral());
+            else if(temp1 instanceof Ast.Expression.Access){
+                System.out.println("yes");
+                return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.empty());
+            }
             if(!peek(";")){
                 throw new ParseException("parse exception, no semicolon", tokens.index + 1);
             }
             else{
                 match(";");
-                return new Ast.Statement.Expression(parseExpression());
+                System.out.println("noooooooo");
+                return new Ast.Statement.Expression(temp1);
             }
         }
         throw new ParseException("parse exception", tokens.index + 1);
