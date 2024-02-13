@@ -97,7 +97,6 @@ public final class Parser {
                 match("=");
                 temp2 = parseExpression();
                 if(temp2 instanceof Ast.Expression.Literal){
-                    System.out.println("yes");
                     return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.of(temp2));
                 }
                 else if(temp2 instanceof Ast.Expression.Access || temp2 instanceof Ast.Expression.Function || temp2 instanceof Ast.Expression.Binary){
@@ -105,7 +104,6 @@ public final class Parser {
                 }
             }
             else if(temp1 instanceof Ast.Expression.Access){
-                System.out.println("yes");
                 return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.empty());
             }
             if(!peek(";")){
@@ -113,7 +111,6 @@ public final class Parser {
             }
             else{
                 match(";");
-                System.out.println("noooooooo");
                 return new Ast.Statement.Expression(temp1);
             }
         }
@@ -388,20 +385,25 @@ public final class Parser {
 
     public Ast.Expression parseCharacter() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
-        s = s.replace("\\n", "\n");
+        replaceEscapes(s);
         match(Token.Type.CHARACTER);
         return parseLiteral(s);
     }
 
     public Ast.Expression parseString() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
-        s = s.replace("\\n", "\n");
+        replaceEscapes(s);
         match(Token.Type.STRING);
         return parseLiteral(s);
     }
 
-    public void replaceChars(){
-        //replace chars please
+    public void replaceEscapes(String s){
+        s = s.replace("\\n", "\n");
+        s = s.replace("\\r", "\r");
+        s = s.replace("\\t", "\t");
+        s = s.replace("\\b", "\b");
+        s = s.replace("\\f", "\f");
+        s = s.replace("\\u000B", "\u000B");
     }
 
     public Ast.Expression parseLiteral(Object obj){

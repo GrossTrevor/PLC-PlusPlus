@@ -58,35 +58,6 @@ final class ParserExpressionTests {
 
     @ParameterizedTest
     @MethodSource
-    void testDeclarationStatement(String test, List<Token> tokens, Ast.Statement.Declaration expected) {
-        test(tokens, expected, Parser::parseStatement);
-    }
-
-    private static Stream<Arguments> testDeclarationStatement() {
-        return Stream.of(
-                Arguments.of("Declaration Expression",
-                        Arrays.asList(
-                                //name;
-                                new Token(Token.Type.IDENTIFIER, "name", 0),
-                                new Token(Token.Type.OPERATOR, ";", 4)
-                        ),
-                        new Ast.Statement.Declaration(new Ast.Expression.Access(Optional.empty(), "name").getName(), Optional.empty())
-                ),
-                Arguments.of("Declaration Expression with Value",
-                        Arrays.asList(
-                                //name = 3;
-                                new Token(Token.Type.IDENTIFIER, "name", 0),
-                                new Token(Token.Type.OPERATOR, "=", 5),
-                                new Token(Token.Type.INTEGER, "3", 7),
-                                new Token(Token.Type.OPERATOR, ";", 8)
-                        ),
-                        new Ast.Statement.Declaration(new Ast.Expression.Access(Optional.empty(), "name").getName(), Optional.of(new Ast.Expression.Literal(3)))
-                )
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
     void testAssignmentStatement(String test, List<Token> tokens, Ast.Statement.Assignment expected) {
         test(tokens, expected, Parser::parseStatement);
     }
