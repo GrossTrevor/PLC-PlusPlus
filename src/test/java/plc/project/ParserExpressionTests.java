@@ -63,13 +63,6 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.OPERATOR, ";", 4)
                         ),
                         new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "expr"))
-                ),
-                Arguments.of("Missing Semicolon",
-                        Arrays.asList(
-                                //expr;
-                                new Token(Token.Type.IDENTIFIER, "f", 0)
-                        ),
-                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "expr"))
                 )
         );
     }
@@ -84,10 +77,34 @@ final class ParserExpressionTests {
         return Stream.of(
                 Arguments.of("Missing Semicolon",
                         Arrays.asList(
-                                //expr;
+                                //f
                                 new Token(Token.Type.IDENTIFIER, "f", 0)
                         ),
                         new ParseException("parse exception", 0)
+                ),
+                Arguments.of("WAS IST DAS?????",
+                        Arrays.asList(
+                                //?
+                                new Token(Token.Type.IDENTIFIER, "?", 0)
+                        ),
+                        new ParseException("parse exception", 0)
+                ),
+                Arguments.of("Missing Closing Parenthesis",
+                        Arrays.asList(
+                                //(expr
+                                new Token(Token.Type.OPERATOR, "(", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr", 1)
+                        ),
+                        new ParseException("parse exception", 5)
+                ),
+                Arguments.of("Invalid Closing Parenthesis",
+                        Arrays.asList(
+                                //(expr]
+                                new Token(Token.Type.OPERATOR, "(", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr", 1),
+                                new Token(Token.Type.OPERATOR, "]", 5)
+                        ),
+                        new ParseException("parse exception", 5)
                 )
         );
     }
