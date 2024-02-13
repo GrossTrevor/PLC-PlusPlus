@@ -235,6 +235,7 @@ public final class Parser {
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseAdditiveExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
