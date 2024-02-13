@@ -97,6 +97,9 @@ public final class Parser {
             temp1 = parseExpression();
             if(peek("=")){
                 match("=");
+                if(peek(";")){
+                    throw new ParseException("parse exception, incomplete assignment", tokens.index + 1);
+                }
                 return new Ast.Statement.Assignment(temp1, parseExpression());
             }
             if(!peek(";")){
@@ -107,7 +110,7 @@ public final class Parser {
                 return new Ast.Statement.Expression(temp1);
             }
         }
-        throw new ParseException("parse exception", tokens.index + 1);
+        throw new ParseException("parse exception, no input", tokens.index + 1);
     }
 
     /**

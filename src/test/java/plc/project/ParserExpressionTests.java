@@ -349,6 +349,39 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "expr2"),
                                 new Ast.Expression.Access(Optional.empty(), "expr3")
                         ))
+                ),
+                Arguments.of("Trailing Comma",
+                        Arrays.asList(
+                                //name(pinkCanoe,)
+                                new Token(Token.Type.IDENTIFIER, "name", 0),
+                                new Token(Token.Type.OPERATOR, "(", 4),
+                                new Token(Token.Type.IDENTIFIER, "pinkCanoe", 5),
+                                new Token(Token.Type.OPERATOR, ",", 14),
+                                new Token(Token.Type.OPERATOR, ")", 15)
+                        ),
+                        new Ast.Expression.Function("name", Arrays.asList())
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailFunctionExpression(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseExpression);
+    }
+
+    private static Stream<Arguments> testFailFunctionExpression() {
+        return Stream.of(
+                Arguments.of("Trailing Comma",
+                        Arrays.asList(
+                                //name(pinkCanoe,)
+                                new Token(Token.Type.IDENTIFIER, "name", 0),
+                                new Token(Token.Type.OPERATOR, "(", 4),
+                                new Token(Token.Type.IDENTIFIER, "pinkCanoe", 5),
+                                new Token(Token.Type.OPERATOR, ",", 14),
+                                new Token(Token.Type.OPERATOR, ")", 15)
+                        ),
+                        new ParseException("parse exception", 14)
                 )
         );
     }
