@@ -380,6 +380,25 @@ final class ParserExpressionTests {
 
     @ParameterizedTest
     @MethodSource
+    void testFailBinaryExpression(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseExpression);
+    }
+
+    private static Stream<Arguments> testFailBinaryExpression() {
+        return Stream.of(
+                Arguments.of("Binary Carrot Sign",
+                        Arrays.asList(
+                                //expr1 ^ expr2
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "^", 6)
+                        ),
+                        new ParseException("parse exception", 6)
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
     void testAccessExpression(String test, List<Token> tokens, Ast.Expression.Access expected) {
         test(tokens, expected, Parser::parseExpression);
     }
@@ -437,6 +456,28 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "expr2"),
                                 new Ast.Expression.Access(Optional.empty(), "expr3")
                         ))
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailFunctionExpression(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseExpression);
+    }
+
+    private static Stream<Arguments> testFailFunctionExpression() {
+        return Stream.of(
+                Arguments.of("Trailing Comma",
+                        Arrays.asList(
+                                //name(pinkCanoe,)
+                                new Token(Token.Type.IDENTIFIER, "name", 0),
+                                new Token(Token.Type.OPERATOR, "(", 4),
+                                new Token(Token.Type.IDENTIFIER, "pinkCanoe", 5),
+                                new Token(Token.Type.OPERATOR, ",", 14),
+                                new Token(Token.Type.OPERATOR, ")", 15)
+                        ),
+                        new ParseException("parse exception", 14)
                 )
         );
     }

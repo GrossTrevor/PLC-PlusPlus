@@ -178,7 +178,7 @@ public final class Parser {
      * Parses the {@code logical-expression} rule.
      */
     public Ast.Expression parseLogicalExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -192,17 +192,19 @@ public final class Parser {
         if(peek("&&") || peek("||")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseComparisonExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
+
         return parseComparisonExpression();
     }
 
@@ -210,7 +212,7 @@ public final class Parser {
      * Parses the {@code comparison-expression} rule.
      */
     public Ast.Expression parseComparisonExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -224,20 +226,21 @@ public final class Parser {
         if(peek("==") || peek("!=")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         else if(peek(">") || peek("<")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseAdditiveExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
         return parseAdditiveExpression();
@@ -247,7 +250,7 @@ public final class Parser {
      * Parses the {@code additive-expression} rule.
      */
     public Ast.Expression parseAdditiveExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -261,15 +264,16 @@ public final class Parser {
         if(peek("+") || peek("-")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseMultiplicativeExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
         return parseMultiplicativeExpression();
@@ -279,7 +283,7 @@ public final class Parser {
      * Parses the {@code multiplicative-expression} rule.
      */
     public Ast.Expression parseMultiplicativeExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -293,15 +297,16 @@ public final class Parser {
         if(peek("*") || peek("/") || peek("^")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parsePrimaryExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
         return parsePrimaryExpression();
