@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+//dec = first time make var, let variable
+
+
 /**
  * The parser takes the sequence of tokens emitted by the lexer and turns that
  * into a structured representation of the program, called the Abstract Syntax
@@ -89,31 +92,18 @@ public final class Parser {
      */
     public Ast.Statement parseStatement() throws ParseException {
         Ast.Expression temp1 = null;
-        Ast.Expression temp2 = null;
 
         if(tokens.has(0)){
             temp1 = parseExpression();
             if(peek("=")){
                 match("=");
-                temp2 = parseExpression();
-                if(temp2 instanceof Ast.Expression.Literal){
-                    System.out.println("yes");
-                    return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.of(temp2));
-                }
-                else if(temp2 instanceof Ast.Expression.Access || temp2 instanceof Ast.Expression.Function || temp2 instanceof Ast.Expression.Binary){
-                    return new Ast.Statement.Assignment(temp1, temp2);
-                }
-            }
-            else if(temp1 instanceof Ast.Expression.Access){
-                System.out.println("yes");
-                return new Ast.Statement.Declaration(((Ast.Expression.Access) temp1).getName(), Optional.empty());
+                return new Ast.Statement.Assignment(temp1, parseExpression());
             }
             if(!peek(";")){
                 throw new ParseException("parse exception, no semicolon", tokens.index + 1);
             }
             else{
                 match(";");
-                System.out.println("noooooooo");
                 return new Ast.Statement.Expression(temp1);
             }
         }
@@ -196,9 +186,9 @@ public final class Parser {
                 return temp1;
             }
         }
-        if(peek("&", "&") || peek("[|]", "[|]")){
-            temp2 = tokens.get(0).getLiteral() + tokens.get(1).getLiteral();
-            match(".", ".");
+        if(peek("&&") || peek("||")){
+            temp2 = tokens.get(0).getLiteral();
+            match(Token.Type.OPERATOR);
             binary = true;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
@@ -228,14 +218,14 @@ public final class Parser {
                 return temp1;
             }
         }
-        if(peek("=", "=") || peek("!", "=")){
-            temp2 = tokens.get(0).getLiteral() + tokens.get(1).getLiteral();
-            match(".", "=");
+        if(peek("==") || peek("!=")){
+            temp2 = tokens.get(0).getLiteral();
+            match(Token.Type.OPERATOR);
             binary = true;
         }
         else if(peek(">") || peek("<")){
             temp2 = tokens.get(0).getLiteral();
-            match(".");
+            match(Token.Type.OPERATOR);
             binary = true;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
@@ -265,9 +255,9 @@ public final class Parser {
                 return temp1;
             }
         }
-        if(peek("[+]") || peek("-")){
+        if(peek("+") || peek("-")){
             temp2 = tokens.get(0).getLiteral();
-            match(".");
+            match(Token.Type.OPERATOR);
             binary = true;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
@@ -297,9 +287,9 @@ public final class Parser {
                 return temp1;
             }
         }
-        if(peek("[*]") || peek("/") || peek("^")){
+        if(peek("*") || peek("/") || peek("^")){
             temp2 = tokens.get(0).getLiteral();
-            match(".");
+            match(Token.Type.OPERATOR);
             binary = true;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
@@ -321,8 +311,8 @@ public final class Parser {
      * not strictly necessary.
      */
     public Ast.Expression parsePrimaryExpression() throws ParseException {
-        System.out.println(tokens.get(0).getType());
-        System.out.println(tokens.get(0).getLiteral());
+        //System.out.println(tokens.get(0).getType());
+        //System.out.println(tokens.get(0).getLiteral());
         if (peek(Token.Type.IDENTIFIER)){
             return parseIdentifier();
         }

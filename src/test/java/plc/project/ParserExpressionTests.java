@@ -51,36 +51,11 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.OPERATOR, ")", 23),
                                 new Token(Token.Type.OPERATOR, ";", 24)
                         ),
-                        new Ast.Statement.Expression(new Ast.Expression.Function("func", Arrays.asList()))
-                )
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void testDeclarationStatement(String test, List<Token> tokens, Ast.Statement.Declaration expected) {
-        test(tokens, expected, Parser::parseStatement);
-    }
-
-    private static Stream<Arguments> testDeclarationStatement() {
-        return Stream.of(
-                Arguments.of("Declaration Expression",
-                        Arrays.asList(
-                                //name;
-                                new Token(Token.Type.IDENTIFIER, "name", 0),
-                                new Token(Token.Type.OPERATOR, ";", 4)
-                        ),
-                        new Ast.Statement.Declaration(new Ast.Expression.Access(Optional.empty(), "name").getName(), Optional.empty())
-                ),
-                Arguments.of("Declaration Expression with Value",
-                        Arrays.asList(
-                                //name = 3;
-                                new Token(Token.Type.IDENTIFIER, "name", 0),
-                                new Token(Token.Type.OPERATOR, "=", 5),
-                                new Token(Token.Type.INTEGER, "3", 7),
-                                new Token(Token.Type.OPERATOR, ";", 8)
-                        ),
-                        new Ast.Statement.Declaration(new Ast.Expression.Access(Optional.empty(), "name").getName(), Optional.of(new Ast.Expression.Literal(3)))
+                        new Ast.Statement.Expression(new Ast.Expression.Function("func", Arrays.asList(
+                                new Ast.Expression.Access(Optional.empty(), "butt"),
+                                new Ast.Expression.Access(Optional.empty(), "cheek"),
+                                new Ast.Expression.Access(Optional.empty(), "pen15")
+                        )))
                 )
         );
     }
@@ -161,7 +136,7 @@ final class ParserExpressionTests {
                         ),
                         new Ast.Expression.Group(new Ast.Expression.Access(Optional.empty(), "expr"))
                 ),
-                Arguments.of("Grouped Binary",
+                Arguments.of("Grouped BinaryBinary",
                         Arrays.asList(
                                 //(expr1 + expr2)
                                 new Token(Token.Type.OPERATOR, "(", 0),
@@ -385,6 +360,7 @@ final class ParserExpressionTests {
     private static <T extends Ast> void test(List<Token> tokens, T expected, Function<Parser, T> function) {
         Parser parser = new Parser(tokens);
         if (expected != null) {
+            //Object result =function.apply(parser);
             Assertions.assertEquals(expected, function.apply(parser));
         } else {
             Assertions.assertThrows(ParseException.class, () -> function.apply(parser));
