@@ -178,7 +178,7 @@ public final class Parser {
      * Parses the {@code logical-expression} rule.
      */
     public Ast.Expression parseLogicalExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -192,17 +192,19 @@ public final class Parser {
         if(peek("&&") || peek("||")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseComparisonExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
+
         return parseComparisonExpression();
     }
 
@@ -210,7 +212,7 @@ public final class Parser {
      * Parses the {@code comparison-expression} rule.
      */
     public Ast.Expression parseComparisonExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -224,12 +226,12 @@ public final class Parser {
         if(peek("==") || peek("!=")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         else if(peek(">") || peek("<")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseAdditiveExpression();
@@ -237,7 +239,7 @@ public final class Parser {
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
         return parseAdditiveExpression();
@@ -247,7 +249,7 @@ public final class Parser {
      * Parses the {@code additive-expression} rule.
      */
     public Ast.Expression parseAdditiveExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -261,15 +263,16 @@ public final class Parser {
         if(peek("+") || peek("-")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseMultiplicativeExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
         return parseMultiplicativeExpression();
@@ -279,7 +282,7 @@ public final class Parser {
      * Parses the {@code multiplicative-expression} rule.
      */
     public Ast.Expression parseMultiplicativeExpression() throws ParseException {
-        boolean binary = false;
+        int binary = 0;
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
@@ -293,17 +296,21 @@ public final class Parser {
         if(peek("*") || peek("/") || peek("^")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            binary = true;
+            binary++;
+            System.out.println("1");
         }
+        System.out.println("2");
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parsePrimaryExpression();
+            binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
-        if(binary){
+        if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
+        System.out.println("3");
         return parsePrimaryExpression();
     }
 
@@ -335,7 +342,7 @@ public final class Parser {
             return parseGroup();
         }
         else {
-            throw new ParseException("parse exception primary", tokens.index);
+            throw new ParseException("parse exception, not a primary", tokens.index);
         }
     }
 
@@ -383,16 +390,26 @@ public final class Parser {
 
     public Ast.Expression parseCharacter() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
-        // s.replace('\\n', '\n');
+        s = replaceEscapes(s);
         match(Token.Type.CHARACTER);
         return parseLiteral(s);
     }
 
     public Ast.Expression parseString() throws ParseException{
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
-        // s.replace('\\n', '\n');
+        s = replaceEscapes(s);
         match(Token.Type.STRING);
         return parseLiteral(s);
+    }
+
+    public String replaceEscapes(String s){
+        s = s.replace("\\n", "\n");
+        s = s.replace("\\r", "\r");
+        s = s.replace("\\t", "\t");
+        s = s.replace("\\b", "\b");
+        s = s.replace("\\f", "\f");
+        s = s.replace("\\u000B", "\u000B");
+        return s;
     }
 
     public Ast.Expression parseLiteral(Object obj){
@@ -404,7 +421,7 @@ public final class Parser {
         Ast.Expression exp = new Ast.Expression.Group(parseExpression());
 
         if (!peek(")")){
-            throw new ParseException("parse exception", tokens.index);
+            throw new ParseException("parse exception, unclosed group", tokens.index);
         }
         match(")");
         return exp;
@@ -418,7 +435,7 @@ public final class Parser {
         Ast.Expression exp = new Ast.Expression.Access(Optional.of(parseExpression()), name);
 
         if (!peek("]")){
-            throw new ParseException("parse exception", tokens.index);
+            throw new ParseException("parse exception, unclosed access", tokens.index);
         }
         match("]");
         return exp;
@@ -431,18 +448,18 @@ public final class Parser {
         int i = 0;
         while (!peek(")")){
             if (peek(",")){
-                throw new ParseException("parse exception", tokens.index);
+                throw new ParseException("parse exception, invalid exfunc comma", tokens.index);
             }
             exps.add(i, parseExpression());
             i++;
             if (peek(",")){
                 match(",");
                 if (peek(")")){
-                    throw new ParseException("parse exception", tokens.index);
+                    throw new ParseException("parse exception, invalid exfunc close", tokens.index);
                 }
             }
             else if (!peek(")")){
-                throw new ParseException("parse exception", tokens.index);
+                throw new ParseException("parse exception, unclosed exfunc", tokens.index);
             }
         }
         match(")");
