@@ -55,7 +55,56 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "butt"),
                                 new Ast.Expression.Access(Optional.empty(), "cheek"),
                                 new Ast.Expression.Access(Optional.empty(), "pen15")
-                        )))
+                        )))),
+                Arguments.of("Variable Expression",
+                        Arrays.asList(
+                                //expr;
+                                new Token(Token.Type.IDENTIFIER, "expr", 0),
+                                new Token(Token.Type.OPERATOR, ";", 4)
+                        ),
+                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "expr"))
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailExpressionStatement(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseStatement);
+    }
+
+    private static Stream<Arguments> testFailExpressionStatement() {
+        return Stream.of(
+                Arguments.of("Missing Semicolon",
+                        Arrays.asList(
+                                //f
+                                new Token(Token.Type.IDENTIFIER, "f", 0)
+                        ),
+                        new ParseException("parse exception", 0)
+                ),
+                Arguments.of("WAS IST DAS?????",
+                        Arrays.asList(
+                                //?
+                                new Token(Token.Type.IDENTIFIER, "?", 0)
+                        ),
+                        new ParseException("parse exception", 0)
+                ),
+                Arguments.of("Missing Closing Parenthesis",
+                        Arrays.asList(
+                                //(expr
+                                new Token(Token.Type.OPERATOR, "(", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr", 1)
+                        ),
+                        new ParseException("parse exception", 5)
+                ),
+                Arguments.of("Invalid Closing Parenthesis",
+                        Arrays.asList(
+                                //(expr]
+                                new Token(Token.Type.OPERATOR, "(", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr", 1),
+                                new Token(Token.Type.OPERATOR, "]", 5)
+                        ),
+                        new ParseException("parse exception", 5)
                 )
         );
     }
@@ -80,6 +129,26 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "name"),
                                 new Ast.Expression.Access(Optional.empty(), "value")
                         )
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailAssignmentStatement(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseStatement);
+    }
+
+    private static Stream<Arguments> testFailAssignmentStatement() {
+        return Stream.of(
+                Arguments.of("Missing Value",
+                        Arrays.asList(
+                                //name = value;
+                                new Token(Token.Type.IDENTIFIER, "name", 0),
+                                new Token(Token.Type.OPERATOR, "=", 5),
+                                new Token(Token.Type.IDENTIFIER, ";", 7)
+                        ),
+                        new ParseException("parse exception", 7)
                 )
         );
     }
@@ -136,7 +205,7 @@ final class ParserExpressionTests {
                         ),
                         new Ast.Expression.Group(new Ast.Expression.Access(Optional.empty(), "expr"))
                 ),
-                Arguments.of("Grouped BinaryBinary",
+                Arguments.of("Grouped Binary",
                         Arrays.asList(
                                 //(expr1 + expr2)
                                 new Token(Token.Type.OPERATOR, "(", 0),
@@ -163,10 +232,29 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.OPERATOR, ")", 17),
                                 new Token(Token.Type.OPERATOR, ")", 18)
                         ),
-                                new Ast.Expression.Group(new Ast.Expression.Group(new Ast.Expression.Group(new Ast.Expression.Binary("^",
+                        new Ast.Expression.Group(new Ast.Expression.Group(new Ast.Expression.Group(new Ast.Expression.Binary("^",
                                 new Ast.Expression.Access(Optional.empty(), "expr1"),
                                 new Ast.Expression.Access(Optional.empty(), "expr2")))
                         ))
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailGroupExpression(String test, List<Token> tokens, ParseException expected) {
+        test(tokens, null, Parser::parseExpression);
+    }
+
+    private static Stream<Arguments> testFailGroupExpression() {
+        return Stream.of(
+                Arguments.of("Missing Closing Parenthesis",
+                        Arrays.asList(
+                                //(expr)
+                                new Token(Token.Type.OPERATOR, "(", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr", 1)
+                        ),
+                        new ParseException("parse exception", 5)
                 )
         );
     }
@@ -286,6 +374,91 @@ final class ParserExpressionTests {
                                 new Ast.Expression.Access(Optional.empty(), "expr1"),
                                 new Ast.Expression.Access(Optional.empty(), "expr2")
                         )
+                ),
+                Arguments.of("Priority + then *",
+                        Arrays.asList(
+                                //expr1 + expr2 * expr3
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "+", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "*", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                        ),
+                        new Ast.Expression.Binary("+",
+                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                new Ast.Expression.Binary("*",
+                                        new Ast.Expression.Access(Optional.empty(), "expr2"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr3")
+                                )
+                        )
+                ),
+                Arguments.of("Priority * then +",
+                        Arrays.asList(
+                                //expr1 + expr2 * expr3
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "*", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "+", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                        ),
+                        new Ast.Expression.Binary("+",
+                                new Ast.Expression.Binary("*",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
+                        )
+                ),
+                Arguments.of("Priority && then ||",
+                        Arrays.asList(
+                                //expr1 + expr2 * expr3
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "&&", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "||", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                        ),
+                        new Ast.Expression.Binary("||",
+                                new Ast.Expression.Binary("&&",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
+                        )
+                ),
+                Arguments.of("Priority && then &&",
+                        Arrays.asList(
+                                //expr1 + expr2 * expr3
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "&&", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "&&", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                        ),
+                        new Ast.Expression.Binary("&&",
+                                new Ast.Expression.Binary("&&",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
+                        )
+                ),
+                Arguments.of("Priority || then &&",
+                        Arrays.asList(
+                                //expr1 + expr2 * expr3
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "||", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "&&", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                        ),
+                        new Ast.Expression.Binary("&&",
+                                new Ast.Expression.Binary("||",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
+                        )
                 )
         );
     }
@@ -401,7 +574,6 @@ final class ParserExpressionTests {
     private static <T extends Ast> void test(List<Token> tokens, T expected, Function<Parser, T> function) {
         Parser parser = new Parser(tokens);
         if (expected != null) {
-            //Object result =function.apply(parser);
             Assertions.assertEquals(expected, function.apply(parser));
         } else {
             Assertions.assertThrows(ParseException.class, () -> function.apply(parser));
