@@ -233,8 +233,13 @@ public final class Parser {
             match(Token.Type.OPERATOR);
             binary++;
         }
-        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+        if(tokens.has(0) && peek(Token.Type.IDENTIFIER) && tokens.has(1) && tokens.get(1).getLiteral() != "==" && tokens.get(1).getLiteral() != "!=" && tokens.get(1).getLiteral() != ">" && tokens.get(1).getLiteral() != "<"){
             temp3 = parseAdditiveExpression();
+            binary++;
+        }
+        else if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+            temp3 = temp1;
+            temp1 = parseComparisonExpression();
             binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
@@ -264,18 +269,24 @@ public final class Parser {
         if(peek("+") || peek("-")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
+            System.out.println("in + or -");
             binary++;
         }
+        System.out.println("+1");
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+            System.out.println("in 2nd expr +-");
             temp3 = parseMultiplicativeExpression();
             binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
+            System.out.println("+ return for temp1");
             return temp1;
         }
+        System.out.println("+2");
         if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
+        System.out.println("+ at end");
         return parseMultiplicativeExpression();
     }
 
@@ -297,10 +308,12 @@ public final class Parser {
         if(peek("*") || peek("/") || peek("^")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
+            System.out.println("in * or / or ^");
             binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parsePrimaryExpression();
+            System.out.println("in * expr 2");
             binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
