@@ -388,7 +388,8 @@ public final class Parser {
         String s = tokens.get(0).getLiteral().substring(1, tokens.get(0).getLiteral().length()-1);
         s = replaceEscapes(s);
         match(Token.Type.CHARACTER);
-        return parseLiteral(s);
+        char c = s.charAt(0);
+        return parseLiteral(c);
     }
 
     public Ast.Expression parseString() throws ParseException{
