@@ -96,19 +96,19 @@ public final class Parser {
             if(peek("=")){
                 match("=");
                 if(peek(";")){
-                    throw new ParseException("parse exception, incomplete assignment", tokens.index + 1);
+                    throw new ParseException("parse exception, incomplete assignment", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
                 }
                 return new Ast.Statement.Assignment(temp1, parseExpression());
             }
             if(!peek(";")){
-                throw new ParseException("parse exception, no semicolon", tokens.index + 1);
+                throw new ParseException("parse exception, no semicolon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
             }
             else{
                 match(";");
                 return new Ast.Statement.Expression(temp1);
             }
         }
-        throw new ParseException("parse exception, no input", tokens.index + 1);
+        throw new ParseException("parse exception, no input", 0);
     }
 
     /**
@@ -180,7 +180,40 @@ public final class Parser {
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
+        Ast.Expression.Binary tempBin = null;
 
+        if((tokens.tokens.size() - tokens.index) > 3){
+            int off = 0;
+
+            //loop to the last binary of equal level
+            while(tokens.has(0)){
+                off--;
+                if(tokens.has(0) && (tokens.get(0).getLiteral() == "&&" || tokens.get(0).getLiteral() == "||")){
+                    if(tokens.index + off >= 0){
+                        temp1 = tempBin;
+                        temp2 = tokens.get(0).getLiteral();
+                        match(Token.Type.OPERATOR);
+                        temp3 = parseComparisonExpression();
+                        tempBin = new Ast.Expression.Binary(temp2, tempBin, temp3);
+                        binary = 2;
+                    }
+                }
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "&&" || tokens.get(1).getLiteral() == "||") && tokens.has(3) && (tokens.get(3).getLiteral() == "&&" || tokens.get(3).getLiteral() == "||")){
+                    temp1 = parseComparisonExpression();
+                    temp2 = tokens.get(0).getLiteral();
+                    match(Token.Type.OPERATOR);
+                    temp3 = parseComparisonExpression();
+                    tempBin = new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else if(binary==2){
+                    return new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else{
+                    break;
+                }
+            }
+
+        }
         if(tokens.has(0)){
             temp1 = parseComparisonExpression();
             if(!tokens.has(0)){
@@ -214,7 +247,40 @@ public final class Parser {
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
+        Ast.Expression.Binary tempBin = null;
 
+        if((tokens.tokens.size() - tokens.index) > 3){
+            int off = 0;
+
+            //loop to the last binary of equal level
+            while(tokens.has(0)){
+                off--;
+                if(tokens.has(0) && (tokens.get(0).getLiteral() == "==" || tokens.get(0).getLiteral() == "!=" || tokens.get(0).getLiteral() == ">" || tokens.get(0).getLiteral() == "<")){
+                    if(tokens.index + off >= 0){
+                        temp1 = tempBin;
+                        temp2 = tokens.get(0).getLiteral();
+                        match(Token.Type.OPERATOR);
+                        temp3 = parseAdditiveExpression();
+                        tempBin = new Ast.Expression.Binary(temp2, tempBin, temp3);
+                        binary = 2;
+                    }
+                }
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "==" || tokens.get(1).getLiteral() == "!=" || tokens.get(1).getLiteral() == ">" || tokens.get(1).getLiteral() == "<") && tokens.has(3) && (tokens.get(3).getLiteral() == "==" || tokens.get(3).getLiteral() == "!=" || tokens.get(3).getLiteral() == ">" || tokens.get(3).getLiteral() == "<")){
+                    temp1 = parseAdditiveExpression();
+                    temp2 = tokens.get(0).getLiteral();
+                    match(Token.Type.OPERATOR);
+                    temp3 = parseAdditiveExpression();
+                    tempBin = new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else if(binary==2){
+                    return new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else{
+                    break;
+                }
+            }
+
+        }
         if(tokens.has(0)){
             temp1 = parseAdditiveExpression();
             if(!tokens.has(0)){
@@ -231,13 +297,8 @@ public final class Parser {
             match(Token.Type.OPERATOR);
             binary++;
         }
-        if(tokens.has(0) && peek(Token.Type.IDENTIFIER) && tokens.has(1) && tokens.get(1).getLiteral() != "==" && tokens.get(1).getLiteral() != "!=" && tokens.get(1).getLiteral() != ">" && tokens.get(1).getLiteral() != "<"){
+        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parseAdditiveExpression();
-            binary++;
-        }
-        else if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
-            temp3 = temp1;
-            temp1 = parseComparisonExpression();
             binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
@@ -257,7 +318,40 @@ public final class Parser {
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
+        Ast.Expression.Binary tempBin = null;
 
+        if((tokens.tokens.size() - tokens.index) > 3){
+            int off = 0;
+
+            //loop to the last binary of equal level
+            while(tokens.has(0)){
+                off--;
+                if(tokens.has(0) && (tokens.get(0).getLiteral() == "+" || tokens.get(0).getLiteral() == "-")){
+                    if(tokens.index + off >= 0){
+                        temp1 = tempBin;
+                        temp2 = tokens.get(0).getLiteral();
+                        match(Token.Type.OPERATOR);
+                        temp3 = parseMultiplicativeExpression();
+                        tempBin = new Ast.Expression.Binary(temp2, tempBin, temp3);
+                        binary = 2;
+                    }
+                }
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "+" || tokens.get(1).getLiteral() == "-") && tokens.has(3) && (tokens.get(3).getLiteral() == "+" || tokens.get(3).getLiteral() == "-")){
+                    temp1 = parseMultiplicativeExpression();
+                    temp2 = tokens.get(0).getLiteral();
+                    match(Token.Type.OPERATOR);
+                    temp3 = parseMultiplicativeExpression();
+                    tempBin = new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else if(binary==2){
+                    return new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else{
+                    break;
+                }
+            }
+
+        }
         if(tokens.has(0)){
             temp1 = parseMultiplicativeExpression();
             if(!tokens.has(0)){
@@ -267,24 +361,18 @@ public final class Parser {
         if(peek("+") || peek("-")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            System.out.println("in + or -");
             binary++;
         }
-        System.out.println("+1");
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
-            System.out.println("in 2nd expr +-");
             temp3 = parseMultiplicativeExpression();
             binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
-            System.out.println("+ return for temp1");
             return temp1;
         }
-        System.out.println("+2");
         if(binary==2){
             return new Ast.Expression.Binary(temp2, temp1, temp3);
         }
-        System.out.println("+ at end");
         return parseMultiplicativeExpression();
     }
 
@@ -296,7 +384,39 @@ public final class Parser {
         Ast.Expression temp1 = null;
         String temp2 = "";
         Ast.Expression temp3 = null;
+        Ast.Expression.Binary tempBin = null;
 
+        if((tokens.tokens.size() - tokens.index) > 3){
+            int off = 0;
+
+            //loop to the last binary of equal level
+            while(tokens.has(0)){
+                off--;
+                if(tokens.has(0) && (tokens.get(0).getLiteral() == "*" || tokens.get(0).getLiteral() == "/" || tokens.get(0).getLiteral() == "^")){
+                    if(tokens.index + off >= 0){
+                        temp1 = tempBin;
+                        temp2 = tokens.get(0).getLiteral();
+                        match(Token.Type.OPERATOR);
+                        temp3 = parsePrimaryExpression();
+                        tempBin = new Ast.Expression.Binary(temp2, tempBin, temp3);
+                        binary = 2;
+                    }
+                }
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "*" || tokens.get(1).getLiteral() == "/" || tokens.get(1).getLiteral() == "^") && tokens.has(3) && (tokens.get(3).getLiteral() == "*" || tokens.get(3).getLiteral() == "/" || tokens.get(3).getLiteral() == "^")){
+                    temp1 = parsePrimaryExpression();
+                    temp2 = tokens.get(0).getLiteral();
+                    match(Token.Type.OPERATOR);
+                    temp3 = parsePrimaryExpression();
+                    tempBin = new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else if(binary==2){
+                    return new Ast.Expression.Binary(temp2, temp1, temp3);
+                }
+                else{
+                    break;
+                }
+            }
+        }
         if(tokens.has(0)){
             temp1 = parsePrimaryExpression();
             if(!tokens.has(0)){
@@ -306,12 +426,10 @@ public final class Parser {
         if(peek("*") || peek("/") || peek("^")){
             temp2 = tokens.get(0).getLiteral();
             match(Token.Type.OPERATOR);
-            System.out.println("in * or / or ^");
             binary++;
         }
         if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
             temp3 = parsePrimaryExpression();
-            System.out.println("in * expr 2");
             binary++;
         }
         else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
@@ -330,8 +448,6 @@ public final class Parser {
      * not strictly necessary.
      */
     public Ast.Expression parsePrimaryExpression() throws ParseException {
-        //System.out.println(tokens.get(0).getType());
-        //System.out.println(tokens.get(0).getLiteral());
         if (peek(Token.Type.IDENTIFIER)){
             return parseIdentifier();
         }
@@ -350,8 +466,11 @@ public final class Parser {
         else if (peek("(")){
             return parseGroup();
         }
+        else if (tokens.has(0)){
+            throw new ParseException("parse exception, not a primary", tokens.get(0).getIndex());
+        }
         else {
-            throw new ParseException("parse exception, not a primary", tokens.index);
+            throw new ParseException("parse exception, not a primary", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
     }
 
@@ -431,7 +550,7 @@ public final class Parser {
         Ast.Expression exp = new Ast.Expression.Group(parseExpression());
 
         if (!peek(")")){
-            throw new ParseException("parse exception, unclosed group", tokens.index+1);
+            throw new ParseException("parse exception, unclosed group", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
         match(")");
         return exp;
@@ -445,7 +564,7 @@ public final class Parser {
         Ast.Expression exp = new Ast.Expression.Access(Optional.of(parseExpression()), name);
 
         if (!peek("]")){
-            throw new ParseException("parse exception, unclosed access", tokens.index+1);
+            throw new ParseException("parse exception, unclosed access", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
         match("]");
         return exp;
@@ -458,18 +577,18 @@ public final class Parser {
         int i = 0;
         while (!peek(")")){
             if (peek(",")){
-                throw new ParseException("parse exception, invalid exfunc comma", tokens.index+1);
+                throw new ParseException("parse exception, invalid exfunc comma", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
             }
             exps.add(i, parseExpression());
             i++;
             if (peek(",")){
                 match(",");
                 if (peek(")")){
-                    throw new ParseException("parse exception, invalid exfunc close", tokens.index+1);
+                    throw new ParseException("parse exception, invalid exfunc close", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
                 }
             }
             else if (!peek(")")){
-                throw new ParseException("parse exception, unclosed exfunc", tokens.index+1);
+                throw new ParseException("parse exception, unclosed exfunc", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
             }
         }
         match(")");
