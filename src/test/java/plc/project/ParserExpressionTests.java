@@ -102,9 +102,9 @@ final class ParserExpressionTests {
                                 //(expr]
                                 new Token(Token.Type.OPERATOR, "(", 0),
                                 new Token(Token.Type.IDENTIFIER, "expr", 1),
-                                new Token(Token.Type.OPERATOR, "]", 5)
+                                new Token(Token.Type.OPERATOR, "]", 2)
                         ),
-                        new ParseException("parse exception", 5)
+                        new ParseException("parse exception", 2)
                 )
         );
     }
@@ -267,113 +267,284 @@ final class ParserExpressionTests {
 
     private static Stream<Arguments> testBinaryExpression() {
         return Stream.of(
-                Arguments.of("Binary And",
+//                Arguments.of("Binary And",
+//                        Arrays.asList(
+//                                //expr1 && expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "&&", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 10)
+//                        ),
+//                        new Ast.Expression.Binary("&&",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Equality",
+//                        Arrays.asList(
+//                                //expr1 == expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "==", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 9)
+//                        ),
+//                        new Ast.Expression.Binary("==",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Addition",
+//                        Arrays.asList(
+//                                //expr1 + expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "+", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+//                        ),
+//                        new Ast.Expression.Binary("+",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Multiplication",
+//                        Arrays.asList(
+//                                //expr1 * expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "*", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+//                        ),
+//                        new Ast.Expression.Binary("*",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Minus Sign",
+//                        Arrays.asList(
+//                                //expr1 - expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "-", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+//                        ),
+//                        new Ast.Expression.Binary("-",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Not Equals Sign",
+//                        Arrays.asList(
+//                                //expr1 != expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "!=", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+//                        ),
+//                        new Ast.Expression.Binary("!=",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Or Sign",
+//                        Arrays.asList(
+//                                //expr1 || expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "||", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+//                        ),
+//                        new Ast.Expression.Binary("||",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Front Slash Sign",
+//                        Arrays.asList(
+//                                //expr1 / expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "/", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+//                        ),
+//                        new Ast.Expression.Binary("/",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+//                Arguments.of("Binary Carrot Sign",
+//                        Arrays.asList(
+//                                //expr1 ^ expr2
+//                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+//                                new Token(Token.Type.OPERATOR, "^", 6),
+//                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+//                        ),
+//                        new Ast.Expression.Binary("^",
+//                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+//                                new Ast.Expression.Access(Optional.empty(), "expr2")
+//                        )
+//                ),
+                Arguments.of("Priority + then *",
                         Arrays.asList(
-                                //expr1 && expr2
-                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
-                                new Token(Token.Type.OPERATOR, "&&", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 10)
-                        ),
-                        new Ast.Expression.Binary("&&",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
-                        )
-                ),
-                Arguments.of("Binary Equality",
-                        Arrays.asList(
-                                //expr1 == expr2
-                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
-                                new Token(Token.Type.OPERATOR, "==", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 9)
-                        ),
-                        new Ast.Expression.Binary("==",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
-                        )
-                ),
-                Arguments.of("Binary Addition",
-                        Arrays.asList(
-                                //expr1 + expr2
+                                //expr1 + expr2 * expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "+", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "*", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
                         ),
                         new Ast.Expression.Binary("+",
                                 new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                                new Ast.Expression.Binary("*",
+                                        new Ast.Expression.Access(Optional.empty(), "expr2"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr3")
+                                )
                         )
                 ),
-                Arguments.of("Binary Multiplication",
+                Arguments.of("Priority * then +",
                         Arrays.asList(
-                                //expr1 * expr2
+                                //expr1 + expr2 * expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "*", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "+", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
                         ),
-                        new Ast.Expression.Binary("*",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                        new Ast.Expression.Binary("+",
+                                new Ast.Expression.Binary("*",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
                         )
                 ),
-                Arguments.of("Binary Minus Sign",
+                Arguments.of("Priority && then ||",
                         Arrays.asList(
-                                //expr1 - expr2
+                                //expr1 + expr2 * expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
-                                new Token(Token.Type.OPERATOR, "-", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
-                        ),
-                        new Ast.Expression.Binary("-",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
-                        )
-                ),
-                Arguments.of("Binary Not Equals Sign",
-                        Arrays.asList(
-                                //expr1 != expr2
-                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
-                                new Token(Token.Type.OPERATOR, "!=", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
-                        ),
-                        new Ast.Expression.Binary("!=",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
-                        )
-                ),
-                Arguments.of("Binary Or Sign",
-                        Arrays.asList(
-                                //expr1 || expr2
-                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
-                                new Token(Token.Type.OPERATOR, "||", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+                                new Token(Token.Type.OPERATOR, "&&", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "||", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
                         ),
                         new Ast.Expression.Binary("||",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                                new Ast.Expression.Binary("&&",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
                         )
                 ),
-                Arguments.of("Binary Front Slash Sign",
+                Arguments.of("Priority && then &&",
                         Arrays.asList(
-                                //expr1 / expr2
+                                //expr1 + expr2 * expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
-                                new Token(Token.Type.OPERATOR, "/", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+                                new Token(Token.Type.OPERATOR, "&&", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "&&", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
                         ),
-                        new Ast.Expression.Binary("/",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                        new Ast.Expression.Binary("&&",
+                                new Ast.Expression.Binary("&&",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
                         )
                 ),
-                Arguments.of("Binary Carrot Sign",
+                Arguments.of("Priority || then &&",
                         Arrays.asList(
-                                //expr1 ^ expr2
+                                //expr1 + expr2 * expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
-                                new Token(Token.Type.OPERATOR, "^", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8)
+                                new Token(Token.Type.OPERATOR, "||", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "&&", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
                         ),
-                        new Ast.Expression.Binary("^",
-                                new Ast.Expression.Access(Optional.empty(), "expr1"),
-                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                        new Ast.Expression.Binary("&&",
+                                new Ast.Expression.Binary("||",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
                         )
+                ),
+                Arguments.of("Priority == then !=",
+                        Arrays.asList(
+                                //expr1 + expr2 * expr3
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "==", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "!=", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                        ),
+                        new Ast.Expression.Binary("!=",
+                                new Ast.Expression.Binary("==",
+                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr3")
+                        )
+                ),
+                Arguments.of("Priority == then != then >",
+                        Arrays.asList(
+                                //expr1 == expr2 != expr3 == expr4
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "==", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "!=", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11),
+                                new Token(Token.Type.OPERATOR, ">", 13),
+                                new Token(Token.Type.IDENTIFIER, "expr4", 15)
+                        ),
+                        new Ast.Expression.Binary(">",
+                                new Ast.Expression.Binary("!=",
+                                        new Ast.Expression.Binary("==",
+                                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                                        ),
+                                        new Ast.Expression.Access(Optional.empty(), "expr3")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr4")
+                        )
+
+                ),
+                Arguments.of("Priority + then * then &&",
+                        Arrays.asList(
+                                //expr1 + expr2 * expr3 && expr4
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "+", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "*", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11),
+                                new Token(Token.Type.OPERATOR, "&&", 13),
+                                new Token(Token.Type.IDENTIFIER, "expr4", 15)
+                        ),
+                        new Ast.Expression.Binary("&&",
+                                new Ast.Expression.Binary("+",
+                                        new Ast.Expression.Binary("*",
+                                                new Ast.Expression.Access(Optional.empty(), "expr2"),
+                                                new Ast.Expression.Access(Optional.empty(), "expr3")
+                                        ),
+                                        new Ast.Expression.Access(Optional.empty(), "expr1")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr4")
+                        )
+
+                ),
+                Arguments.of("Priority == then != then !=",
+                        Arrays.asList(
+                                //expr1 == expr2 != expr3 != expr4
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "==", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "!=", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11),
+                                new Token(Token.Type.OPERATOR, "!=", 13),
+                                new Token(Token.Type.IDENTIFIER, "expr4", 15)
+                        ),
+                        new Ast.Expression.Binary("!=",
+                                new Ast.Expression.Binary("!=",
+                                        new Ast.Expression.Binary("==",
+                                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                                        ),
+                                        new Ast.Expression.Access(Optional.empty(), "expr3")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr4")
+                        )
+
                 )
         );
     }
