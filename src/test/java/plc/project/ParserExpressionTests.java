@@ -394,7 +394,7 @@ final class ParserExpressionTests {
                 ),
                 Arguments.of("Priority * then +",
                         Arrays.asList(
-                                //expr1 + expr2 * expr3
+                                //expr1 * expr2 + expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "*", 6),
                                 new Token(Token.Type.IDENTIFIER, "expr2", 8),
@@ -411,7 +411,7 @@ final class ParserExpressionTests {
                 ),
                 Arguments.of("Priority && then ||",
                         Arrays.asList(
-                                //expr1 + expr2 * expr3
+                                //expr1 && expr2 || expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "&&", 6),
                                 new Token(Token.Type.IDENTIFIER, "expr2", 8),
@@ -428,7 +428,7 @@ final class ParserExpressionTests {
                 ),
                 Arguments.of("Priority && then &&",
                         Arrays.asList(
-                                //expr1 + expr2 * expr3
+                                //expr1 && expr2 && expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "&&", 6),
                                 new Token(Token.Type.IDENTIFIER, "expr2", 8),
@@ -445,7 +445,7 @@ final class ParserExpressionTests {
                 ),
                 Arguments.of("Priority || then &&",
                         Arrays.asList(
-                                //expr1 + expr2 * expr3
+                                //expr1 || expr2 && expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "||", 6),
                                 new Token(Token.Type.IDENTIFIER, "expr2", 8),
@@ -462,7 +462,7 @@ final class ParserExpressionTests {
                 ),
                 Arguments.of("Priority == then !=",
                         Arrays.asList(
-                                //expr1 + expr2 * expr3
+                                //expr1 == expr2 != expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "==", 6),
                                 new Token(Token.Type.IDENTIFIER, "expr2", 8),
@@ -479,7 +479,7 @@ final class ParserExpressionTests {
                 ),
                 Arguments.of("Priority == then != then >",
                         Arrays.asList(
-                                //expr1 == expr2 != expr3 == expr4
+                                //expr1 == expr2 != expr3 > expr4
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "==", 6),
                                 new Token(Token.Type.IDENTIFIER, "expr2", 8),
@@ -498,7 +498,6 @@ final class ParserExpressionTests {
                                 ),
                                 new Ast.Expression.Access(Optional.empty(), "expr4")
                         )
-
                 ),
                 Arguments.of("Priority + then * then &&",
                         Arrays.asList(
@@ -544,7 +543,6 @@ final class ParserExpressionTests {
                                 ),
                                 new Ast.Expression.Access(Optional.empty(), "expr4")
                         )
-
                 ),
                 Arguments.of("Priority == then != then +",
                         Arrays.asList(
@@ -567,7 +565,6 @@ final class ParserExpressionTests {
                                         new Ast.Expression.Access(Optional.empty(), "expr4")
                                 )
                         )
-
                 ),
                 Arguments.of("Priority && then *",
                         Arrays.asList(
@@ -607,7 +604,6 @@ final class ParserExpressionTests {
                                 ),
                                 new Ast.Expression.Access(Optional.empty(), "expr4")
                         )
-
                 ),
                 Arguments.of("Priority - then +",
                         Arrays.asList(
@@ -641,6 +637,55 @@ final class ParserExpressionTests {
                                         new Ast.Expression.Access(Optional.empty(), "expr2")
                                 ),
                                 new Ast.Expression.Access(Optional.empty(), "expr3")
+                        )
+                ),
+                Arguments.of("Priority * then / then ^",
+                        Arrays.asList(
+                                //expr1 && expr2 && expr3 || expr4
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "*", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "/", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11),
+                                new Token(Token.Type.OPERATOR, "^", 13),
+                                new Token(Token.Type.IDENTIFIER, "expr4", 15)
+                        ),
+                        new Ast.Expression.Binary("^",
+                                new Ast.Expression.Binary("/",
+                                        new Ast.Expression.Binary("*",
+                                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                                        ),
+                                        new Ast.Expression.Access(Optional.empty(), "expr3")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr4")
+                        )
+                ),
+                Arguments.of("Priority == then < then > then !=",
+                        Arrays.asList(
+                                //expr1 == expr2 < expr3 > expr4 != expr5
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "==", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
+                                new Token(Token.Type.OPERATOR, "<", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 11),
+                                new Token(Token.Type.OPERATOR, ">", 13),
+                                new Token(Token.Type.IDENTIFIER, "expr4", 15),
+                                new Token(Token.Type.OPERATOR, "!=", 17),
+                                new Token(Token.Type.IDENTIFIER, "expr5", 20)
+                        ),
+                        new Ast.Expression.Binary("!=",
+                                new Ast.Expression.Binary(">",
+                                        new Ast.Expression.Binary("<",
+                                                new Ast.Expression.Binary("==",
+                                                        new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                                        new Ast.Expression.Access(Optional.empty(), "expr2")
+                                                ),
+                                                new Ast.Expression.Access(Optional.empty(), "expr3")
+                                        ),
+                                        new Ast.Expression.Access(Optional.empty(), "expr4")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr5")
                         )
                 )
         );
