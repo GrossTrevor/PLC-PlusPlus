@@ -642,6 +642,58 @@ final class ParserExpressionTests {
                                 ),
                                 new Ast.Expression.Access(Optional.empty(), "expr3")
                         )
+                ),
+                Arguments.of("ANDANDANDANDANDANDANDANDANDANDANDANDANDAND",
+                        Arrays.asList(
+                                //no way jose
+                                new Token(Token.Type.IDENTIFIER, "expr1", 0),
+                                new Token(Token.Type.OPERATOR, "&&", 6),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 9),
+                                new Token(Token.Type.OPERATOR, "&&", 15),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 18),
+                                new Token(Token.Type.OPERATOR, "&&", 24),
+                                new Token(Token.Type.IDENTIFIER, "expr4", 27),
+                                new Token(Token.Type.OPERATOR, "&&", 33),
+                                new Token(Token.Type.IDENTIFIER, "expr5", 36),
+                                new Token(Token.Type.OPERATOR, "&&", 42),
+                                new Token(Token.Type.IDENTIFIER, "expr6", 45),
+                                new Token(Token.Type.OPERATOR, "&&", 51),
+                                new Token(Token.Type.IDENTIFIER, "expr7", 54),
+                                new Token(Token.Type.OPERATOR, "&&", 60),
+                                new Token(Token.Type.IDENTIFIER, "expr8", 63),
+                                new Token(Token.Type.OPERATOR, "&&", 69),
+                                new Token(Token.Type.IDENTIFIER, "expr9", 72),
+                                new Token(Token.Type.OPERATOR, "&&", 78),
+                                new Token(Token.Type.IDENTIFIER, "expr10", 81)
+                        ),
+                        new Ast.Expression.Binary("&&",
+                                new Ast.Expression.Binary("&&",
+                                        new Ast.Expression.Binary("&&",
+                                                new Ast.Expression.Binary("&&",
+                                                        new Ast.Expression.Binary("&&",
+                                                                new Ast.Expression.Binary("&&",
+                                                                        new Ast.Expression.Binary("&&",
+                                                                                new Ast.Expression.Binary("&&",
+                                                                                        new Ast.Expression.Binary("&&",
+                                                                                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                                                                                new Ast.Expression.Access(Optional.empty(), "expr2")
+                                                                                        ),
+                                                                                        new Ast.Expression.Access(Optional.empty(), "expr3")
+                                                                                ),
+                                                                                new Ast.Expression.Access(Optional.empty(), "expr4")
+                                                                        ),
+                                                                        new Ast.Expression.Access(Optional.empty(), "expr5")
+                                                                ),
+                                                                new Ast.Expression.Access(Optional.empty(), "expr6")
+                                                        ),
+                                                        new Ast.Expression.Access(Optional.empty(), "expr7")
+                                                ),
+                                                new Ast.Expression.Access(Optional.empty(), "expr8")
+                                        ),
+                                        new Ast.Expression.Access(Optional.empty(), "expr9")
+                                ),
+                                new Ast.Expression.Access(Optional.empty(), "expr10")
+                        )
                 )
         );
     }
