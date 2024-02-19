@@ -70,7 +70,7 @@ final class ParserExpressionTests {
     @ParameterizedTest
     @MethodSource
     void testFailExpressionStatement(String test, List<Token> tokens, ParseException expected) {
-        test(tokens, null, Parser::parseStatement);
+        testParseException(tokens, expected, Parser::parseStatement);
     }
 
     private static Stream<Arguments> testFailExpressionStatement() {
@@ -80,14 +80,7 @@ final class ParserExpressionTests {
                                 //f
                                 new Token(Token.Type.IDENTIFIER, "f", 0)
                         ),
-                        new ParseException("parse exception", 0)
-                ),
-                Arguments.of("WAS IST DAS?????",
-                        Arrays.asList(
-                                //?
-                                new Token(Token.Type.IDENTIFIER, "?", 0)
-                        ),
-                        new ParseException("parse exception", 0)
+                        new ParseException("parse exception, no semicolon", 1)
                 ),
                 Arguments.of("Missing Closing Parenthesis",
                         Arrays.asList(
@@ -95,7 +88,7 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.OPERATOR, "(", 0),
                                 new Token(Token.Type.IDENTIFIER, "expr", 1)
                         ),
-                        new ParseException("parse exception", 5)
+                        new ParseException("parse exception, unclosed group", 5)
                 ),
                 Arguments.of("Invalid Closing Parenthesis",
                         Arrays.asList(
@@ -104,7 +97,7 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.IDENTIFIER, "expr", 1),
                                 new Token(Token.Type.OPERATOR, "]", 5)
                         ),
-                        new ParseException("parse exception", 5)
+                        new ParseException("parse exception, unclosed group", 5)
                 )
         );
     }
@@ -136,19 +129,28 @@ final class ParserExpressionTests {
     @ParameterizedTest
     @MethodSource
     void testFailAssignmentStatement(String test, List<Token> tokens, ParseException expected) {
-        test(tokens, null, Parser::parseStatement);
+        testParseException(tokens, expected, Parser::parseStatement);
     }
 
     private static Stream<Arguments> testFailAssignmentStatement() {
         return Stream.of(
                 Arguments.of("Missing Value",
                         Arrays.asList(
-                                //name = value;
+                                //name = ;
                                 new Token(Token.Type.IDENTIFIER, "name", 0),
                                 new Token(Token.Type.OPERATOR, "=", 5),
                                 new Token(Token.Type.IDENTIFIER, ";", 7)
                         ),
-                        new ParseException("parse exception", 7)
+                        new ParseException("parse exception, incomplete assignment", 7)
+                ),
+                Arguments.of("Missing Semicolon",
+                        Arrays.asList(
+                                //name = expr
+                                new Token(Token.Type.IDENTIFIER, "name", 0),
+                                new Token(Token.Type.OPERATOR, "=", 5),
+                                new Token(Token.Type.IDENTIFIER, "expr", 7)
+                        ),
+                        new ParseException("parse exception, no semicolon", 11)
                 )
         );
     }
@@ -184,6 +186,26 @@ final class ParserExpressionTests {
                 Arguments.of("Escape Character",
                         Arrays.asList(new Token(Token.Type.STRING, "\"Hello,\\nWorld!\"", 0)),
                         new Ast.Expression.Literal("Hello,\nWorld!")
+                ),
+                Arguments.of("Character Escape \\b",
+                        Arrays.asList(new Token(Token.Type.CHARACTER, "'\\b'", 0)),
+                        new Ast.Expression.Literal('\b')
+                ),
+                Arguments.of("Character Escape \"",
+                        Arrays.asList(new Token(Token.Type.CHARACTER, "'\\\"'", 0)),
+                        new Ast.Expression.Literal('\"')
+                ),
+                Arguments.of("Character Escape \u000B",
+                        Arrays.asList(new Token(Token.Type.CHARACTER, "'\\\u000B'", 0)),
+                        new Ast.Expression.Literal('\u000B')
+                ),
+                Arguments.of("String Escape \\t",
+                        Arrays.asList(new Token(Token.Type.STRING, "\"Hello,\\tWorld!\"", 0)),
+                        new Ast.Expression.Literal("Hello,\tWorld!")
+                ),
+                Arguments.of("String Escape \'",
+                        Arrays.asList(new Token(Token.Type.STRING, "\"Hello,\\\'World!\"", 0)),
+                        new Ast.Expression.Literal("Hello,\'World!")
                 )
         );
     }
@@ -243,7 +265,7 @@ final class ParserExpressionTests {
     @ParameterizedTest
     @MethodSource
     void testFailGroupExpression(String test, List<Token> tokens, ParseException expected) {
-        test(tokens, null, Parser::parseExpression);
+        testParseException(tokens, expected, Parser::parseExpression);
     }
 
     private static Stream<Arguments> testFailGroupExpression() {
@@ -254,7 +276,7 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.OPERATOR, "(", 0),
                                 new Token(Token.Type.IDENTIFIER, "expr", 1)
                         ),
-                        new ParseException("parse exception", 5)
+                        new ParseException("parse exception, unclosed group", 5)
                 )
         );
     }
@@ -428,12 +450,12 @@ final class ParserExpressionTests {
                 ),
                 Arguments.of("Priority && then &&",
                         Arrays.asList(
-                                //expr1 + expr2 * expr3
+                                //expr1 && expr2 && expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "&&", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
-                                new Token(Token.Type.OPERATOR, "&&", 9),
-                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                                new Token(Token.Type.IDENTIFIER, "expr2", 9),
+                                new Token(Token.Type.OPERATOR, "&&", 15),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 18)
                         ),
                         new Ast.Expression.Binary("&&",
                                 new Ast.Expression.Binary("&&",
@@ -448,9 +470,9 @@ final class ParserExpressionTests {
                                 //expr1 + expr2 * expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "||", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
-                                new Token(Token.Type.OPERATOR, "&&", 9),
-                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                                new Token(Token.Type.IDENTIFIER, "expr2", 9),
+                                new Token(Token.Type.OPERATOR, "&&", 15),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 19)
                         ),
                         new Ast.Expression.Binary("&&",
                                 new Ast.Expression.Binary("||",
@@ -465,9 +487,9 @@ final class ParserExpressionTests {
                                 //expr1 + expr2 * expr3
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "==", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
-                                new Token(Token.Type.OPERATOR, "!=", 9),
-                                new Token(Token.Type.IDENTIFIER, "expr3", 11)
+                                new Token(Token.Type.IDENTIFIER, "expr2", 9),
+                                new Token(Token.Type.OPERATOR, "!=", 15),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 19)
                         ),
                         new Ast.Expression.Binary("!=",
                                 new Ast.Expression.Binary("==",
@@ -482,11 +504,11 @@ final class ParserExpressionTests {
                                 //expr1 == expr2 != expr3 == expr4
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "==", 6),
-                                new Token(Token.Type.IDENTIFIER, "expr2", 8),
-                                new Token(Token.Type.OPERATOR, "!=", 9),
-                                new Token(Token.Type.IDENTIFIER, "expr3", 11),
-                                new Token(Token.Type.OPERATOR, ">", 13),
-                                new Token(Token.Type.IDENTIFIER, "expr4", 15)
+                                new Token(Token.Type.IDENTIFIER, "expr2", 9),
+                                new Token(Token.Type.OPERATOR, "!=", 15),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 19),
+                                new Token(Token.Type.OPERATOR, ">", 25),
+                                new Token(Token.Type.IDENTIFIER, "expr4", 27)
                         ),
                         new Ast.Expression.Binary(">",
                                 new Ast.Expression.Binary("!=",
@@ -701,7 +723,7 @@ final class ParserExpressionTests {
     @ParameterizedTest
     @MethodSource
     void testFailBinaryExpression(String test, List<Token> tokens, ParseException expected) {
-        test(tokens, null, Parser::parseExpression);
+        testParseException(tokens, expected, Parser::parseExpression);
     }
 
     private static Stream<Arguments> testFailBinaryExpression() {
@@ -712,7 +734,7 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "^", 6)
                         ),
-                        new ParseException("parse exception", 6)
+                        new ParseException("parse exception, not a primary", 7)
                 )
         );
     }
@@ -783,7 +805,7 @@ final class ParserExpressionTests {
     @ParameterizedTest
     @MethodSource
     void testFailFunctionExpression(String test, List<Token> tokens, ParseException expected) {
-        test(tokens, null, Parser::parseExpression);
+        testParseException(tokens, expected, Parser::parseExpression);
     }
 
     private static Stream<Arguments> testFailFunctionExpression() {
@@ -797,7 +819,7 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.OPERATOR, ",", 14),
                                 new Token(Token.Type.OPERATOR, ")", 15)
                         ),
-                        new ParseException("parse exception", 14)
+                        new ParseException("parse exception, invalid exfunc close", 15)
                 )
         );
     }
@@ -815,4 +837,11 @@ final class ParserExpressionTests {
         }
     }
 
+    private static <T extends Ast> void testParseException(List<Token> tokens, Exception exception, Function<Parser, T> function) {
+        Parser parser = new Parser(tokens);
+        ParseException pe = Assertions.assertThrows(ParseException.class, () -> function.apply(parser));
+        Assertions.assertEquals(exception, pe);
+    }
+
 }
+

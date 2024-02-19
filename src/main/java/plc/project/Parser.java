@@ -171,7 +171,19 @@ public final class Parser {
      * next tokens start a method, aka {@code FUN}.
      */
     public Ast.Function parseFunction() throws ParseException {
-        return null;
+        if (!peek("FUN"))
+            return null;
+
+        if (!peek(Token.Type.IDENTIFIER))
+            throw new ParseException("parse exception, no identifier", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        String name = tokens.get(0).getLiteral();
+        match(Token.Type.IDENTIFIER);
+
+        if (!peek("("))
+            throw new ParseException("parse exception, no opening parenthesis", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        match("(");
+
+        // check for ident or )
     }
 
     /**
@@ -189,15 +201,20 @@ public final class Parser {
      */
     public Ast.Statement parseStatement() throws ParseException {
         Ast.Expression temp1 = null;
+        Ast.Expression temp2 = null;
 
         if(tokens.has(0)){
             temp1 = parseExpression();
             if(peek("=")){
                 match("=");
                 if(peek(";")){
-                    throw new ParseException("parse exception, incomplete assignment", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+                    throw new ParseException("parse exception, incomplete assignment", tokens.get(0).getIndex());
                 }
-                return new Ast.Statement.Assignment(temp1, parseExpression());
+                temp2 = parseExpression();
+                if(!peek(";")){
+                    throw new ParseException("parse exception, no semicolon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+                }
+                return new Ast.Statement.Assignment(temp1, temp2);
             }
             if(!peek(";")){
                 throw new ParseException("parse exception, no semicolon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
@@ -636,7 +653,10 @@ public final class Parser {
         s = s.replace("\\t", "\t");
         s = s.replace("\\b", "\b");
         s = s.replace("\\f", "\f");
-        s = s.replace("\\u000B", "\u000B");
+        s = s.replace("\\\'", "\'");
+        s = s.replace("\\\"", "\"");
+        s = s.replace("\\\\", "\\");
+        s = s.replace("\\\u000B", "\u000B");
         return s;
     }
 
