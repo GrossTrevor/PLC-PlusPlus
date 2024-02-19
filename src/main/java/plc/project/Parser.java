@@ -82,7 +82,19 @@ public final class Parser {
      * preceding token indicates the opening a block of statements.
      */
     public List<Ast.Statement> parseBlock() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        List<Ast.Statement> temp1 = new ArrayList<>();
+
+        if(!tokens.has(0)){
+            throw new ParseException("parse exception, missing statement(s)", tokens.index + 1);
+        }
+
+        while(tokens.has(0) && !peek(";")){
+            temp1.add(parseStatement());
+            if(!tokens.has(0)){
+                throw new ParseException("parse exception, missing semicolon/end of block", tokens.index + 1);
+            }
+        }
+        return temp1;
     }
 
     /**
@@ -92,8 +104,34 @@ public final class Parser {
      */
     public Ast.Statement parseStatement() throws ParseException {
         Ast.Expression temp1 = null;
+        Ast.Statement temp2 = null;
 
-        if(tokens.has(0)){
+        if(peek("LET")){
+            //declaration
+            match(Token.Type.IDENTIFIER);
+            return parseDeclarationStatement();
+        }
+        else if(peek("SWITCH")){
+            //switch or switch w/ case
+            match(Token.Type.IDENTIFIER);
+            return parseSwitchStatement();
+        }
+        else if(peek("IF")){
+            //if
+            match(Token.Type.IDENTIFIER);
+            return parseIfStatement();
+        }
+        else if(peek("WHILE")){
+            //while
+            match(Token.Type.IDENTIFIER);
+            return parseWhileStatement();
+        }
+        else if(peek("RETURN")){
+            //return
+            match(Token.Type.IDENTIFIER);
+            return parseReturnStatement();
+        }
+        else if(tokens.has(0)){
             temp1 = parseExpression();
             if(peek("=")){
                 match("=");
@@ -119,7 +157,30 @@ public final class Parser {
      * statement, aka {@code LET}.
      */
     public Ast.Statement.Declaration parseDeclarationStatement() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        Ast.Expression temp1 = null;
+
+        if(tokens.get(0).getType() == Token.Type.IDENTIFIER){
+            String name = tokens.get(0).getLiteral();
+            match(Token.Type.IDENTIFIER);
+            if(tokens.has(0) && peek("=")){
+                match("=");
+                if(tokens.has(0)){
+                    temp1 = parseExpression();
+                    if(peek(";")){
+                        match(";");
+                        return new Ast.Statement.Declaration(name, Optional.of(temp1));
+                    }
+                }
+                else{
+                    throw new ParseException("parse exception, missing expression", tokens.index + 1);
+                }
+            }
+            else if(tokens.has(0) && peek(";")){
+                match(";");
+                return new Ast.Statement.Declaration(name, Optional.empty());
+            }
+        }
+        throw new ParseException("parse exception, missing identifier", tokens.index + 1);
     }
 
     /**
@@ -128,7 +189,42 @@ public final class Parser {
      * {@code IF}.
      */
     public Ast.Statement.If parseIfStatement() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        Ast.Expression temp1 = null;
+        List<Ast.Statement> temp2 = new ArrayList<>();
+        List<Ast.Statement> temp3 = new ArrayList<>();
+
+        if(tokens.has(0)){
+            temp1 = parseExpression();
+            if(peek("DO")){
+                temp2 = parseBlock();
+                if(peek(";")){
+                    match(";");
+                }
+                else{
+                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+                }
+                if(peek("ELSE")){
+                    temp3 = parseBlock();
+                    if(peek(";")){
+                        match(";");
+                    }
+                    else{
+                        throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+                    }
+                }
+                if(peek("END")){
+                    match(Token.Type.IDENTIFIER);
+                    return new Ast.Statement.If(temp1, temp2, temp3);
+                }
+                else{
+                    throw new ParseException("parse exception, missing key word END", tokens.index + 1);
+                }
+            }
+            else{
+                throw new ParseException("parse exception, missing key word DO", tokens.index + 1);
+            }
+        }
+        throw new ParseException("parse exception, missing expression", tokens.index + 1);
     }
 
     /**
@@ -137,7 +233,47 @@ public final class Parser {
      * {@code SWITCH}.
      */
     public Ast.Statement.Switch parseSwitchStatement() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        Ast.Expression temp1 = null;
+        List<Ast.Statement.Case> temp2 = new ArrayList<>();
+
+        if(tokens.has(0)){
+            temp1 = parseExpression();
+            if(peek("CASE")){
+                match(Token.Type.IDENTIFIER);
+                while(tokens.has(0) && !peek(";")){
+                    temp2.add(parseCaseStatement());
+                    if(tokens.has(0)){
+                        throw new ParseException("parse exception, missing semicolon/end of block", tokens.index + 1);
+                    }
+                }
+                if(peek(";")){
+                    match(";");
+                }
+                else{
+                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+                }
+            }
+            if(peek("DEFAULT")){
+                temp2.add(parseCaseStatement());
+                if(peek(";")){
+                    match(";");
+                    if(peek("END")){
+                        match("END");
+                        return new Ast.Statement.Switch(temp1, temp2);
+                    }
+                    else{
+                        throw new ParseException("parse exception, missing key word end", tokens.index + 1);
+                    }
+                }
+                else{
+                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+                }
+            }
+            else{
+                throw new ParseException("parse exception, missing key word default", tokens.index + 1);
+            }
+        }
+        throw new ParseException("parse exception, missing expression", tokens.index + 1);
     }
 
     /**
@@ -146,7 +282,33 @@ public final class Parser {
      * default block of a switch statement, aka {@code CASE} or {@code DEFAULT}.
      */
     public Ast.Statement.Case parseCaseStatement() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        Ast.Expression temp1 = null;
+        List<Ast.Statement> temp2 = new ArrayList<>();
+
+        if(peek("DEFAULT")){
+            match(Token.Type.IDENTIFIER);
+            temp2 = parseBlock();
+            return new Ast.Statement.Case(Optional.empty(), temp2);
+        }
+
+        if(tokens.has(0)){
+            temp1 = parseExpression();
+            if(peek(":")){
+                match(":");
+                temp2 = parseBlock();
+                if(peek(";")){
+                    match(";");
+                    return new Ast.Statement.Case(Optional.of(temp1), temp2);
+                }
+                else{
+                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+                }
+            }
+            else{
+                throw new ParseException("parse exception, missing colon", tokens.index + 1);
+            }
+        }
+        throw new ParseException("parse exception, missing expression/statement", tokens.index + 1);
     }
 
     /**
@@ -155,7 +317,32 @@ public final class Parser {
      * {@code WHILE}.
      */
     public Ast.Statement.While parseWhileStatement() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        Ast.Expression temp1 = null;
+        List<Ast.Statement> temp2 = new ArrayList<>();
+
+        if(tokens.has(0)){
+            temp1 = parseExpression();
+            if(peek("DO")){
+                temp2 = parseBlock();
+                if(peek(";")){
+                    match(";");
+                }
+                else{
+                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+                }
+                if(peek("END")){
+                    match(Token.Type.IDENTIFIER);
+                    return new Ast.Statement.While(temp1, temp2);
+                }
+                else{
+                    throw new ParseException("parse exception, missing key word END", tokens.index + 1);
+                }
+            }
+            else{
+                throw new ParseException("parse exception, missing key word DO", tokens.index + 1);
+            }
+        }
+        throw new ParseException("parse exception, missing expression", tokens.index + 1);
     }
 
     /**
@@ -164,7 +351,16 @@ public final class Parser {
      * {@code RETURN}.
      */
     public Ast.Statement.Return parseReturnStatement() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        Ast.Expression temp1 = null;
+
+        if(tokens.has(0)){
+            temp1 = parseExpression();
+            if(peek(";")){
+                match(";");
+                return new Ast.Statement.Return(temp1);
+            }
+        }
+        throw new ParseException("parse exception, missing expression", tokens.index + 1);
     }
 
     /**
