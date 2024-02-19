@@ -255,6 +255,14 @@ final class ParserExpressionTests {
                                 new Token(Token.Type.IDENTIFIER, "expr", 1)
                         ),
                         new ParseException("parse exception", 5)
+                ),
+                Arguments.of("Missing Closing Parenthesis",
+                        Arrays.asList(
+                                //(((((expr)))
+                                new Token(Token.Type.OPERATOR, "(", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr", 1)
+                        ),
+                        new ParseException("parse exception", 5)
                 )
         );
     }
@@ -699,11 +707,19 @@ final class ParserExpressionTests {
 
     private static Stream<Arguments> testFailBinaryExpression() {
         return Stream.of(
-                Arguments.of("Binary Carrot Sign",
+                Arguments.of("Missing second term",
                         Arrays.asList(
-                                //expr1 ^ expr2
+                                //expr1 ^
                                 new Token(Token.Type.IDENTIFIER, "expr1", 0),
                                 new Token(Token.Type.OPERATOR, "^", 6)
+                        ),
+                        new ParseException("parse exception", 6)
+                ),
+                Arguments.of("Binary Carrot Sign",
+                        Arrays.asList(
+                                //^ expr1
+                                new Token(Token.Type.OPERATOR, "^", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr1", 3)
                         ),
                         new ParseException("parse exception", 6)
                 )
