@@ -141,6 +141,9 @@ public final class Parser {
                 return new Ast.Statement.Assignment(temp1, parseExpression());
             }
             if(!peek(";")){
+                if(tokens.has(-1) && tokens.get(-1).getLiteral() == "DEFAULT"){
+                    return new Ast.Statement.Expression(temp1);
+                }
                 throw new ParseException("parse exception, no semicolon", tokens.index + 1);
             }
             else{
@@ -159,6 +162,7 @@ public final class Parser {
     public Ast.Statement.Declaration parseDeclarationStatement() throws ParseException {
         Ast.Expression temp1 = null;
 
+        //change to peek
         if(tokens.get(0).getType() == Token.Type.IDENTIFIER){
             String name = tokens.get(0).getLiteral();
             match(Token.Type.IDENTIFIER);
@@ -250,6 +254,7 @@ public final class Parser {
                 }
             }
             if(peek("DEFAULT")){
+                match(Token.Type.IDENTIFIER);
                 temp2.add(parseCaseStatement());
                 if(peek(";")){
                     match(";");
@@ -289,16 +294,11 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseExpression();
+            //may have to add || tokens.... == ":" yknow in all the expression stuff where I added other things before
             if(peek(":")){
                 match(":");
                 temp2 = parseBlock();
-                if(peek(";")){
-                    match(";");
-                    return new Ast.Statement.Case(Optional.of(temp1), temp2);
-                }
-                else{
-                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
-                }
+                return new Ast.Statement.Case(Optional.of(temp1), temp2);
             }
             else{
                 throw new ParseException("parse exception, missing colon", tokens.index + 1);
@@ -448,6 +448,7 @@ public final class Parser {
             //loop to the last binary of equal level
             while(tokens.has(0)){
                 off--;
+                //change every == with to peek
                 if(tokens.has(0) && (tokens.get(0).getLiteral() == "==" || tokens.get(0).getLiteral() == "!=" || tokens.get(0).getLiteral() == ">" || tokens.get(0).getLiteral() == "<")){
                     if(tokens.index + off >= 0){
                         temp1 = tempBin;
