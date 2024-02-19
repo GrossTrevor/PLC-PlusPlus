@@ -32,7 +32,25 @@ public final class Parser {
      * Parses the {@code source} rule.
      */
     public Ast.Source parseSource() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        List<Ast.Global> globals = new ArrayList<>();
+        List<Ast.Function> functs = new ArrayList<>();
+        Ast.Global tempG = null;
+        Ast.Function tempF = null;
+        while(true){
+            tempG = parseGlobal();
+            if (tempG != null)
+                globals.add(tempG);
+            else
+                break;
+        }
+        while(true){
+            tempF = parseFunction();
+            if (tempF != null)
+                functs.add(tempF);
+            else
+                break;
+        }
+        return new Ast.Source(globals, functs);
     }
 
     /**
@@ -40,7 +58,29 @@ public final class Parser {
      * next tokens start a global, aka {@code LIST|VAL|VAR}.
      */
     public Ast.Global parseGlobal() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        Ast.Global glob = null;
+        if (peek("LET")){
+            match("LET");
+            glob = parseList();
+        }
+        else if (peek("VAR")){
+            match("VAR");
+            glob = parseMutable();
+        }
+        else if (peek("VAL")){
+            match("VAL");
+            glob = parseImmutable();
+        }
+        else
+            return null;
+
+        if(peek(";")){
+            match(";");
+            return glob;
+        }
+        else if (tokens.has(0))
+            throw new ParseException("parse exception, no semicolon in global", tokens.get(0).getIndex());
+        throw new ParseException("parse exception, no semicolon in global", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
     }
 
     /**
@@ -48,7 +88,38 @@ public final class Parser {
      * next token declares a list, aka {@code LIST}.
      */
     public Ast.Global parseList() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        String name = "";
+        List<Ast.Expression> expressionList = new ArrayList<>();
+        if (peek(Token.Type.IDENTIFIER)){
+            name = tokens.get(0).getLiteral();
+            match(Token.Type.IDENTIFIER);
+        }
+        else
+            throw new ParseException("parse exception, no identifier in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+
+        if (!peek("=")){
+            throw new ParseException("parse exception, no equals in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        match("=");
+
+        if (!peek("[")){
+            throw new ParseException("parse exception, no open bracket in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        match("[");
+
+        expressionList.add(parseExpression());
+
+        while (peek(",")){
+            match(",");
+            expressionList.add(parseExpression());
+        }
+
+        if(!peek("]")){
+            throw new ParseException("parse exception, no close bracket in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+
+        Ast.Expression PLCList = new Ast.Expression.PlcList(expressionList);
+        return new Ast.Global(name, false, Optional.of(PLCList));
     }
 
     /**
@@ -56,7 +127,21 @@ public final class Parser {
      * next token declares a mutable global variable, aka {@code VAR}.
      */
     public Ast.Global parseMutable() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        String name = "";
+        if (peek(Token.Type.IDENTIFIER)){
+            name = tokens.get(0).getLiteral();
+            match(Token.Type.IDENTIFIER);
+        }
+        else
+            throw new ParseException("parse exception, no identifier in mutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        Ast.Expression exp = null;
+        if (peek("=")){
+            match("=");
+            exp = parseExpression();
+            return new Ast.Global(name, true, Optional.of(exp));
+        }
+        else
+            return new Ast.Global(name, true, Optional.empty());
     }
 
     /**
@@ -64,7 +149,21 @@ public final class Parser {
      * next token declares an immutable global variable, aka {@code VAL}.
      */
     public Ast.Global parseImmutable() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        String name = "";
+        if (peek(Token.Type.IDENTIFIER)){
+            name = tokens.get(0).getLiteral();
+            match(Token.Type.IDENTIFIER);
+        }
+        else
+            throw new ParseException("parse exception, no identifier in immutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        Ast.Expression exp = null;
+        if (peek("=")){
+            match("=");
+            exp = parseExpression();
+            return new Ast.Global(name, false, Optional.of(exp));
+        }
+        else
+            throw new ParseException("parse exception, no equals sign in immutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
     }
 
     /**
@@ -72,7 +171,7 @@ public final class Parser {
      * next tokens start a method, aka {@code FUN}.
      */
     public Ast.Function parseFunction() throws ParseException {
-        throw new UnsupportedOperationException(); //TODO
+        return null;
     }
 
     /**
