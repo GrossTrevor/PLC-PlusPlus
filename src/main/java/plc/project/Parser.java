@@ -141,7 +141,7 @@ public final class Parser {
                 return new Ast.Statement.Assignment(temp1, parseExpression());
             }
             if(!peek(";")){
-                if(tokens.has(-1) && tokens.get(-1).getLiteral() == "DEFAULT"){
+                if(tokens.has(-1) && tokens.get(-1).getLiteral().equals("DEFAULT")){
                     return new Ast.Statement.Expression(temp1);
                 }
                 throw new ParseException("parse exception, no semicolon", tokens.index + 1);
@@ -163,7 +163,7 @@ public final class Parser {
         Ast.Expression temp1 = null;
 
         //change to peek
-        if(tokens.get(0).getType() == Token.Type.IDENTIFIER){
+        if(peek(Token.Type.IDENTIFIER)){
             String name = tokens.get(0).getLiteral();
             match(Token.Type.IDENTIFIER);
             if(tokens.has(0) && peek("=")){
@@ -378,7 +378,7 @@ public final class Parser {
             //loop to the last binary of equal level
             while(tokens.has(0)){
                 off--;
-                if(tokens.has(0) && (tokens.get(0).getLiteral() == "&&" || tokens.get(0).getLiteral() == "||")){
+                if(tokens.has(0) && (peek("&&") || peek("||"))){
                     if(tokens.index + off >= 0){
                         temp1 = tempBin;
                         temp2 = tokens.get(0).getLiteral();
@@ -388,7 +388,7 @@ public final class Parser {
                         binary = 2;
                     }
                 }
-                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "&&" || tokens.get(1).getLiteral() == "||") && tokens.has(3) && (tokens.get(3).getLiteral() == "&&" || tokens.get(3).getLiteral() == "||")){
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral().equals("&&") || tokens.get(1).getLiteral().equals("||")) && tokens.has(3) && (tokens.get(3).getLiteral().equals("&&") || tokens.get(3).getLiteral().equals("||"))){
                     temp1 = parseComparisonExpression();
                     temp2 = tokens.get(0).getLiteral();
                     match(Token.Type.OPERATOR);
@@ -408,7 +408,7 @@ public final class Parser {
         System.out.println("token in log: " + tokens.get(0).getLiteral());
         if(tokens.has(0)){
             temp1 = parseComparisonExpression();
-            if(!tokens.has(0)|| tokens.get(0).getLiteral() == "DO" || tokens.get(0).getLiteral() == "CASE" || tokens.get(0).getLiteral() == ";"){
+            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";")){
                 System.out.println("in log1: " + temp1);
                 return temp1;
             }
@@ -448,8 +448,7 @@ public final class Parser {
             //loop to the last binary of equal level
             while(tokens.has(0)){
                 off--;
-                //change every == with to peek
-                if(tokens.has(0) && (tokens.get(0).getLiteral() == "==" || tokens.get(0).getLiteral() == "!=" || tokens.get(0).getLiteral() == ">" || tokens.get(0).getLiteral() == "<")){
+                if(tokens.has(0) && (peek("==") || peek("!=") || peek(">") || peek("<"))){
                     if(tokens.index + off >= 0){
                         temp1 = tempBin;
                         temp2 = tokens.get(0).getLiteral();
@@ -459,7 +458,7 @@ public final class Parser {
                         binary = 2;
                     }
                 }
-                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "==" || tokens.get(1).getLiteral() == "!=" || tokens.get(1).getLiteral() == ">" || tokens.get(1).getLiteral() == "<") && tokens.has(3) && (tokens.get(3).getLiteral() == "==" || tokens.get(3).getLiteral() == "!=" || tokens.get(3).getLiteral() == ">" || tokens.get(3).getLiteral() == "<")){
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral().equals("==") || tokens.get(1).getLiteral().equals("!=") || tokens.get(1).getLiteral().equals(">") || tokens.get(1).getLiteral().equals("<")) && tokens.has(3) && (tokens.get(3).getLiteral().equals("==") || tokens.get(3).getLiteral().equals("!=") || tokens.get(3).getLiteral().equals(">") || tokens.get(3).getLiteral().equals("<"))){
                     temp1 = parseAdditiveExpression();
                     temp2 = tokens.get(0).getLiteral();
                     match(Token.Type.OPERATOR);
@@ -478,7 +477,7 @@ public final class Parser {
         System.out.println("comp");
         if(tokens.has(0)){
             temp1 = parseAdditiveExpression();
-            if(!tokens.has(0)|| tokens.get(0).getLiteral() == "DO" || tokens.get(0).getLiteral() == "CASE"|| tokens.get(0).getLiteral() == ";"){
+            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";")){
                 System.out.println("in comp1: " + temp1);
                 return temp1;
             }
@@ -522,7 +521,7 @@ public final class Parser {
             //loop to the last binary of equal level
             while(tokens.has(0)){
                 off--;
-                if(tokens.has(0) && (tokens.get(0).getLiteral() == "+" || tokens.get(0).getLiteral() == "-")){
+                if(tokens.has(0) && (peek("+") || peek("-"))){
                     if(tokens.index + off >= 0){
                         temp1 = tempBin;
                         temp2 = tokens.get(0).getLiteral();
@@ -532,7 +531,7 @@ public final class Parser {
                         binary = 2;
                     }
                 }
-                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "+" || tokens.get(1).getLiteral() == "-") && tokens.has(3) && (tokens.get(3).getLiteral() == "+" || tokens.get(3).getLiteral() == "-")){
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral().equals("+") || tokens.get(1).getLiteral().equals("-")) && tokens.has(3) && (tokens.get(3).getLiteral().equals("+") || tokens.get(3).getLiteral().equals("-"))){
                     temp1 = parseMultiplicativeExpression();
                     temp2 = tokens.get(0).getLiteral();
                     match(Token.Type.OPERATOR);
@@ -551,7 +550,7 @@ public final class Parser {
         System.out.println("add");
         if(tokens.has(0)){
             temp1 = parseMultiplicativeExpression();
-            if(!tokens.has(0)|| tokens.get(0).getLiteral() == "DO" || tokens.get(0).getLiteral() == "CASE"|| tokens.get(0).getLiteral() == ";"){
+            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";")){
                 System.out.println("in add1: " + temp1);
                 return temp1;
             }
@@ -590,7 +589,7 @@ public final class Parser {
             //loop to the last binary of equal level
             while(tokens.has(0)){
                 off--;
-                if(tokens.has(0) && (tokens.get(0).getLiteral() == "*" || tokens.get(0).getLiteral() == "/" || tokens.get(0).getLiteral() == "^")){
+                if(tokens.has(0) && ( peek("*") || peek("/") || peek("^"))){
                     if(tokens.index + off >= 0){
                         temp1 = tempBin;
                         temp2 = tokens.get(0).getLiteral();
@@ -600,7 +599,7 @@ public final class Parser {
                         binary = 2;
                     }
                 }
-                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral() == "*" || tokens.get(1).getLiteral() == "/" || tokens.get(1).getLiteral() == "^") && tokens.has(3) && (tokens.get(3).getLiteral() == "*" || tokens.get(3).getLiteral() == "/" || tokens.get(3).getLiteral() == "^")){
+                else if(tokens.index + off < 0 && tokens.has(1) && (tokens.get(1).getLiteral().equals("*") || tokens.get(1).getLiteral().equals("/") || tokens.get(1).getLiteral().equals("^")) && tokens.has(3) && (tokens.get(3).getLiteral().equals("*") || tokens.get(3).getLiteral().equals("/") || tokens.get(3).getLiteral().equals("^"))){
                     temp1 = parsePrimaryExpression();
                     temp2 = tokens.get(0).getLiteral();
                     match(Token.Type.OPERATOR);
@@ -620,7 +619,7 @@ public final class Parser {
             //System.out.println("in mult: " + tokens.get(0).getLiteral());
 
             temp1 = parsePrimaryExpression();
-            if(!tokens.has(0) || tokens.get(0).getLiteral() == "DO" || tokens.get(0).getLiteral() == "CASE"|| tokens.get(0).getLiteral() == ";"){
+            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";")){
                 System.out.println("in mult1: " + temp1);
                 return temp1;
             }

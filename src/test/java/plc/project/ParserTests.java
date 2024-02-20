@@ -191,31 +191,32 @@ final class ParserTests {
         );
     }
 
-//    @ParameterizedTest
-//    @MethodSource
-//    void testSwitchStatement(String test, List<Token> tokens, Ast.Statement.Switch expected) {
-//        test(tokens, expected, Parser::parseStatement);
-//    }
-//
-//    private static Stream<Arguments> testSwitchStatement() {
-//        return Stream.of(
-//                Arguments.of("Switch Simple",
-//                        Arrays.asList(
-//                                //SWITCH expr1 DEFAULT stmt; END
-//                                new Token(Token.Type.IDENTIFIER, "SWITCH", 0),
-//                                new Token(Token.Type.IDENTIFIER, "expr1", 7),
-//                                new Token(Token.Type.IDENTIFIER, "DEFAULT", 13),
-//                                new Token(Token.Type.IDENTIFIER, "stmt", 21),
-//                                new Token(Token.Type.OPERATOR, ";", 25),
-//                                new Token(Token.Type.IDENTIFIER, "END", 27)
-//                        ),
-//                        new Ast.Statement.Switch(
-//                                new Ast.Expression.Access(Optional.empty(), "expr"),
-//                                Arrays.asList(new Ast.Statement.Case( Optional.empty(),  Arrays.asList(new Ast.Statement.Case( Optional.empty(), new Ast.Expression.Access(Optional.empty(), "stmt"))))))
-//                        )
-//                )
-//        );
-//    }
+    @ParameterizedTest
+    @MethodSource
+    void testSwitchStatement(String test, List<Token> tokens, Ast.Statement.Switch expected) {
+        test(tokens, expected, Parser::parseStatement);
+    }
+
+    private static Stream<Arguments> testSwitchStatement() {
+        return Stream.of(
+                Arguments.of("Switch Simple",
+                        Arrays.asList(
+                                //SWITCH expr1 DEFAULT stmt; END
+                                new Token(Token.Type.IDENTIFIER, "SWITCH", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr1", 7),
+                                new Token(Token.Type.IDENTIFIER, "DEFAULT", 13),
+                                new Token(Token.Type.IDENTIFIER, "stmt", 21),
+                                new Token(Token.Type.OPERATOR, ";", 25),
+                                new Token(Token.Type.IDENTIFIER, "END", 27)
+                        ),
+                        new Ast.Statement.Switch(
+                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                Arrays.asList(new Ast.Statement.Case( Optional.empty(),  Arrays.asList(
+                                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt")))))
+                        )
+                )
+        );
+    }
 
     @ParameterizedTest
     @MethodSource
