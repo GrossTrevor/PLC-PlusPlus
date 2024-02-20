@@ -171,6 +171,8 @@ public final class Parser {
      * next tokens start a method, aka {@code FUN}.
      */
     public Ast.Function parseFunction() throws ParseException {
+        List<String> params = new ArrayList<>();
+        List<Ast.Statement> states = new ArrayList<>();
         if (!peek("FUN"))
             return null;
 
@@ -180,10 +182,30 @@ public final class Parser {
         match(Token.Type.IDENTIFIER);
 
         if (!peek("("))
-            throw new ParseException("parse exception, no opening parenthesis", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+            throw new ParseException("parse exception, no open parenthesis", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         match("(");
 
-        // check for ident or )
+        if (peek(Token.Type.INTEGER)){
+            params.add(tokens.get(0).getLiteral());
+            match(Token.Type.INTEGER);
+
+            while (peek(",")){
+                match(",");
+                params.add(tokens.get(0).getLiteral());
+            }
+        }
+
+        if (!peek(")"))
+            throw new ParseException("parse exception, no close parenthesis", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        match(")");
+
+        if (!peek("DO"))
+            throw new ParseException("parse exception, no DO", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        match("DO");
+
+        states = parseBlock();
+
+        return new Ast.Function(name, params, states);
     }
 
     /**
