@@ -238,7 +238,9 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseExpression();
+            System.out.println("in switch1: " + tokens.get(0).getLiteral());
             if(peek("CASE")){
+                System.out.println("found CASE");
                 match(Token.Type.IDENTIFIER);
                 while(tokens.has(0) && !peek(";")){
                     temp2.add(parseCaseStatement());
@@ -253,8 +255,12 @@ public final class Parser {
                     throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
                 }
             }
+            System.out.println("in switch2: " + tokens.get(0).getLiteral());
+
             if(peek("DEFAULT")){
+                System.out.println("found DEFAULT");
                 match(Token.Type.IDENTIFIER);
+
                 temp2.add(parseCaseStatement());
                 if(peek(";")){
                     match(";");
@@ -408,7 +414,7 @@ public final class Parser {
         System.out.println("token in log: " + tokens.get(0).getLiteral());
         if(tokens.has(0)){
             temp1 = parseComparisonExpression();
-            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";")){
+            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
                 System.out.println("in log1: " + temp1);
                 return temp1;
             }
@@ -477,7 +483,7 @@ public final class Parser {
         System.out.println("comp");
         if(tokens.has(0)){
             temp1 = parseAdditiveExpression();
-            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";")){
+            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
                 System.out.println("in comp1: " + temp1);
                 return temp1;
             }
@@ -550,7 +556,7 @@ public final class Parser {
         System.out.println("add");
         if(tokens.has(0)){
             temp1 = parseMultiplicativeExpression();
-            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";")){
+            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
                 System.out.println("in add1: " + temp1);
                 return temp1;
             }
@@ -619,7 +625,7 @@ public final class Parser {
             //System.out.println("in mult: " + tokens.get(0).getLiteral());
 
             temp1 = parsePrimaryExpression();
-            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";")){
+            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
                 System.out.println("in mult1: " + temp1);
                 return temp1;
             }
