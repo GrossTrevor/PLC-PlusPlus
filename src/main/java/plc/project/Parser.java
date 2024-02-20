@@ -88,7 +88,7 @@ public final class Parser {
             throw new ParseException("parse exception, missing statement(s)", tokens.index + 1);
         }
 
-        while(tokens.has(0) && !peek("END") && !peek("ELSE")){
+        while(tokens.has(0) && !peek("END") && !peek("ELSE") && !peek("DEFAULT")){
             temp1.add(parseStatement());
             if(!tokens.has(0)){
                 throw new ParseException("parse exception, missing semicolon/end of block", tokens.index + 1);
@@ -104,7 +104,6 @@ public final class Parser {
      */
     public Ast.Statement parseStatement() throws ParseException {
         Ast.Expression temp1 = null;
-        Ast.Statement temp2 = null;
 
         if(peek("LET")){
             //declaration
@@ -242,38 +241,34 @@ public final class Parser {
             if(peek("CASE")){
                 System.out.println("found CASE");
                 match(Token.Type.IDENTIFIER);
-                while(tokens.has(0) && !peek(";")){
+                System.out.println("in switch1.25: " + tokens.get(0).getLiteral());
+                while(tokens.has(0) && !peek(";") && !peek("DEFAULT")){
                     temp2.add(parseCaseStatement());
-                    if(tokens.has(0)){
-                        throw new ParseException("parse exception, missing semicolon/end of block", tokens.index + 1);
-                    }
+                    System.out.println("in switch1.5: " + tokens.get(0).getLiteral());
+//                    if(!tokens.has(0)){
+//                        throw new ParseException("parse exception, missing semicolon/end of block", tokens.index + 1);
+//                    }
                 }
-                if(peek(";")){
-                    match(";");
-                }
-                else{
-                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
-                }
+                System.out.println("in switch1.75: " + tokens.get(0).getLiteral());
+//                if(peek(";")){
+//                    match(";");
+//                }
+//                else{
+//                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+//                }
             }
             System.out.println("in switch2: " + tokens.get(0).getLiteral());
 
             if(peek("DEFAULT")){
+                //do not match default here, I need it for later ;)
                 System.out.println("found DEFAULT");
-                match(Token.Type.IDENTIFIER);
-
                 temp2.add(parseCaseStatement());
-                if(peek(";")){
-                    match(";");
-                    if(peek("END")){
-                        match("END");
-                        return new Ast.Statement.Switch(temp1, temp2);
-                    }
-                    else{
-                        throw new ParseException("parse exception, missing key word end", tokens.index + 1);
-                    }
+                if(peek("END")){
+                    match("END");
+                    return new Ast.Statement.Switch(temp1, temp2);
                 }
                 else{
-                    throw new ParseException("parse exception, missing semicolon", tokens.index + 1);
+                    throw new ParseException("parse exception, missing key word end", tokens.index + 1);
                 }
             }
             else{
@@ -300,6 +295,8 @@ public final class Parser {
 
         if(tokens.has(0)){
             temp1 = parseExpression();
+            //System.out.println("temp1 in case: " + temp1);
+            //System.out.println(tokens.get(0).getLiteral());
             //may have to add || tokens.... == ":" yknow in all the expression stuff where I added other things before
             if(peek(":")){
                 match(":");
@@ -411,10 +408,10 @@ public final class Parser {
 
         }
         System.out.println("logical");
-        System.out.println("token in log: " + tokens.get(0).getLiteral());
+        //System.out.println("token in log: " + tokens.get(0).getLiteral());
         if(tokens.has(0)){
             temp1 = parseComparisonExpression();
-            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
+            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 System.out.println("in log1: " + temp1);
                 return temp1;
             }
@@ -483,7 +480,7 @@ public final class Parser {
         System.out.println("comp");
         if(tokens.has(0)){
             temp1 = parseAdditiveExpression();
-            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
+            if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 System.out.println("in comp1: " + temp1);
                 return temp1;
             }
@@ -556,7 +553,7 @@ public final class Parser {
         System.out.println("add");
         if(tokens.has(0)){
             temp1 = parseMultiplicativeExpression();
-            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
+            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 System.out.println("in add1: " + temp1);
                 return temp1;
             }
@@ -625,7 +622,7 @@ public final class Parser {
             //System.out.println("in mult: " + tokens.get(0).getLiteral());
 
             temp1 = parsePrimaryExpression();
-            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT")){
+            if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 System.out.println("in mult1: " + temp1);
                 return temp1;
             }
