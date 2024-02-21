@@ -188,8 +188,46 @@ final class ParserTests {
                                 Arrays.asList(new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt2")))
                         )
                 )
+//                Arguments.of("If",
+//                        Arrays.asList(
+//                                //IF expr DO stmt; END
+//                                new Token(Token.Type.IDENTIFIER, "IF", 0),
+//                                new Token(Token.Type.IDENTIFIER, "expr", 3),
+//                                new Token(Token.Type.IDENTIFIER, "THEN", 8),
+//                                new Token(Token.Type.IDENTIFIER, "stmt", 11),
+//                                new Token(Token.Type.OPERATOR, ";", 15),
+//                                new Token(Token.Type.IDENTIFIER, "END", 17)
+//                        ),
+//                        new Ast.Statement.If(
+//                                new Ast.Expression.Access(Optional.empty(), "expr"),
+//                                Arrays.asList(new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt"))),
+//                                Arrays.asList()
+//                        )
+//                )
         );
     }
+
+//    @ParameterizedTest
+//    @MethodSource
+//    void testScenarioIfStatement(String test, List<Token> tokens, ParseException expected) {
+//        testParseException(tokens, expected, Parser::parseStatement);
+//    }
+//    private static Stream<Arguments> testScenarioIfStatement() {
+//        return Stream.of(
+//                Arguments.of("If",
+//                        Arrays.asList(
+//                                //IF expr THEN stmt; END
+//                                new Token(Token.Type.IDENTIFIER, "IF", 0),
+//                                new Token(Token.Type.IDENTIFIER, "expr", 3),
+//                                new Token(Token.Type.IDENTIFIER, "THEN", 8)
+////                                new Token(Token.Type.IDENTIFIER, "stmt", 13),
+////                                new Token(Token.Type.OPERATOR, ";", 17),
+////                                new Token(Token.Type.IDENTIFIER, "END", 19)
+//                        ),
+//                        new ParseException("parse exception, two identifiers next to each other or wrong key word", 8)
+//                )
+//        );
+//    }
 
     @ParameterizedTest
     @MethodSource
@@ -236,6 +274,36 @@ final class ParserTests {
                                         new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt1")))),
                                         new Ast.Statement.Case( Optional.empty(),  Arrays.asList(
                                         new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt2")))))
+                        )
+                ),
+                Arguments.of("Switch Simple w/ Case",
+                        Arrays.asList(
+                                //SWITCH expr1 CASE expr2 : stmt1; CASE expr3 : stmt2; DEFAULT stmt3; END
+                                new Token(Token.Type.IDENTIFIER, "SWITCH", 0),
+                                new Token(Token.Type.IDENTIFIER, "expr1", 7),
+                                new Token(Token.Type.IDENTIFIER, "CASE", 13),
+                                new Token(Token.Type.IDENTIFIER, "expr2", 18),
+                                new Token(Token.Type.OPERATOR, ":", 24),
+                                new Token(Token.Type.IDENTIFIER, "stmt1", 26),
+                                new Token(Token.Type.OPERATOR, ";", 31),
+                                new Token(Token.Type.IDENTIFIER, "CASE", 33),
+                                new Token(Token.Type.IDENTIFIER, "expr3", 38),
+                                new Token(Token.Type.OPERATOR, ":", 44),
+                                new Token(Token.Type.IDENTIFIER, "stmt2", 46),
+                                new Token(Token.Type.OPERATOR, ";", 51),
+                                new Token(Token.Type.IDENTIFIER, "DEFAULT", 53),
+                                new Token(Token.Type.IDENTIFIER, "stmt3", 61),
+                                new Token(Token.Type.OPERATOR, ";", 66),
+                                new Token(Token.Type.IDENTIFIER, "END", 68)
+                        ),
+                        new Ast.Statement.Switch(
+                                new Ast.Expression.Access(Optional.empty(), "expr1"),
+                                Arrays.asList(new Ast.Statement.Case( Optional.of(new Ast.Expression.Access(Optional.empty(), "expr2")),  Arrays.asList(
+                                                new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt1")))),
+                                        new Ast.Statement.Case( Optional.of(new Ast.Expression.Access(Optional.empty(), "expr3")),  Arrays.asList(
+                                                new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt2")))),
+                                        new Ast.Statement.Case( Optional.empty(),  Arrays.asList(
+                                                new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt3")))))
                         )
                 )
         );
@@ -564,6 +632,12 @@ final class ParserTests {
         } else {
             Assertions.assertThrows(ParseException.class, () -> function.apply(parser));
         }
+    }
+
+    private static <T extends Ast> void testParseException(List<Token> tokens, Exception exception, Function<Parser, T> function) {
+        Parser parser = new Parser(tokens);
+        ParseException pe = Assertions.assertThrows(ParseException.class, () -> function.apply(parser));
+        Assertions.assertEquals(exception, pe);
     }
 
 }
