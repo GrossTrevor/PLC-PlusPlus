@@ -522,6 +522,10 @@ public final class Parser {
             if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 return temp1;
             }
+            if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+                //throw when two identifiers are next to each other
+                throw new ParseException("parse exception, two identifiers next to each other or wrong key word", tokens.get(0).getIndex());
+            }
         }
         if(peek("&&") || peek("||")){
             temp2 = tokens.get(0).getLiteral();
@@ -588,6 +592,10 @@ public final class Parser {
             temp1 = parseAdditiveExpression();
             if(!tokens.has(0)|| peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 return temp1;
+            }
+            if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+                //throw when two identifiers are next to each other
+                throw new ParseException("parse exception, two identifiers next to each other or wrong key word", tokens.get(0).getIndex());
             }
         }
         if(peek("==") || peek("!=")){
@@ -660,6 +668,10 @@ public final class Parser {
             if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 return temp1;
             }
+            if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+                //throw when two identifiers are next to each other
+                throw new ParseException("parse exception, two identifiers next to each other or wrong key word", tokens.get(0).getIndex());
+            }
         }
         if(peek("+") || peek("-")){
             temp2 = tokens.get(0).getLiteral();
@@ -724,6 +736,10 @@ public final class Parser {
             temp1 = parsePrimaryExpression();
             if(!tokens.has(0) || peek("DO") || peek("CASE") || peek(";") || peek("DEFAULT") || peek(":")){
                 return temp1;
+            }
+            if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+                //throw when two identifiers are next to each other
+                throw new ParseException("parse exception, two identifiers next to each other or wrong key word", tokens.get(0).getIndex());
             }
         }
         if(peek("*") || peek("/") || peek("^")){
