@@ -64,6 +64,79 @@ final class ParserTests {
                                         new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt"))
                                 )))
                         )
+                ),
+                Arguments.of("Global - List",
+                        Arrays.asList(
+                                //List list = [expr];
+                                new Token(Token.Type.IDENTIFIER, "LIST", 0),
+                                new Token(Token.Type.IDENTIFIER, "list", 5),
+                                new Token(Token.Type.OPERATOR, "=", 10),
+                                new Token(Token.Type.OPERATOR, "[", 12),
+                                new Token(Token.Type.IDENTIFIER, "expr", 14),
+                                new Token(Token.Type.OPERATOR, "]", 19),
+                                new Token(Token.Type.OPERATOR, ";", 21)
+                        ),
+                        new Ast.Source(
+                                Arrays.asList(new Ast.Global("list", false, Optional.of(new Ast.Expression.PlcList(Arrays.asList(
+                                        new Ast.Expression.Access(Optional.empty(), "expr")
+                                ))))),
+                                Arrays.asList()
+                        )
+                ),
+
+                Arguments.of("Global Function",
+                        Arrays.asList(
+                                //VAR name = expr; FUN name() DO stmt; END
+                                new Token(Token.Type.IDENTIFIER, "VAR", 0),
+                                new Token(Token.Type.IDENTIFIER, "name", 4),
+                                new Token(Token.Type.OPERATOR, "=", 9),
+                                new Token(Token.Type.IDENTIFIER, "expr", 11),
+                                new Token(Token.Type.OPERATOR, ";", 15),
+                                new Token(Token.Type.IDENTIFIER, "FUN", 17),
+                                new Token(Token.Type.IDENTIFIER, "name", 21),
+                                new Token(Token.Type.OPERATOR, "(", 25),
+                                new Token(Token.Type.OPERATOR, ")", 26),
+                                new Token(Token.Type.IDENTIFIER, "DO", 28),
+                                new Token(Token.Type.IDENTIFIER, "stmt", 31),
+                                new Token(Token.Type.OPERATOR, ";", 35),
+                                new Token(Token.Type.IDENTIFIER, "END", 37)
+                        ),
+                        new Ast.Source(
+                                Arrays.asList(new Ast.Global("name", true, Optional.of(new Ast.Expression.Access(Optional.empty(), "expr")))),
+                                Arrays.asList(new Ast.Function("name", Arrays.asList(), Arrays.asList(
+                                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt"))
+                                )))
+                        )
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testFailSource(String test, List<Token> tokens, ParseException expected) {
+        testParseException(tokens, expected, Parser::parseSource);
+    }
+
+    private static Stream<Arguments> testFailSource() {
+        return Stream.of(
+                Arguments.of("Function Global",
+                        Arrays.asList(
+                                //FUN name() DO stmt; END VAR name = expr;
+                                new Token(Token.Type.IDENTIFIER, "FUN", 0),
+                                new Token(Token.Type.IDENTIFIER, "name", 4),
+                                new Token(Token.Type.OPERATOR, "(", 8),
+                                new Token(Token.Type.OPERATOR, ")", 9),
+                                new Token(Token.Type.IDENTIFIER, "DO", 11),
+                                new Token(Token.Type.IDENTIFIER, "stmt", 14),
+                                new Token(Token.Type.OPERATOR, ";", 18),
+                                new Token(Token.Type.IDENTIFIER, "END", 20),
+                                new Token(Token.Type.IDENTIFIER, "VAR", 24),
+                                new Token(Token.Type.IDENTIFIER, "name", 28),
+                                new Token(Token.Type.OPERATOR, "=", 33),
+                                new Token(Token.Type.IDENTIFIER, "expr", 35),
+                                new Token(Token.Type.OPERATOR, ";", 39)
+                        ),
+                        new ParseException("parse exception, invalid additional token(s)", 24)
                 )
         );
     }
@@ -541,6 +614,12 @@ final class ParserTests {
         } else {
             Assertions.assertThrows(ParseException.class, () -> function.apply(parser));
         }
+    }
+
+    private static <T extends Ast> void testParseException(List<Token> tokens, Exception exception, Function<Parser, T> function) {
+        Parser parser = new Parser(tokens);
+        ParseException pe = Assertions.assertThrows(ParseException.class, () -> function.apply(parser));
+        Assertions.assertEquals(exception, pe);
     }
 
 }

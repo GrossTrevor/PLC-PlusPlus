@@ -37,8 +37,8 @@ public final class Parser {
         Ast.Function tempF = null;
         while(true){
             tempG = parseGlobal();
-            if (tempG != null)
-                globals.add(tempG);
+            if (tempG != null){
+                globals.add(tempG);}
             else
                 break;
         }
@@ -49,6 +49,9 @@ public final class Parser {
             else
                 break;
         }
+        if (tokens.has(0)){
+            throw new ParseException("parse exception, invalid additional token(s)", tokens.get(0).getIndex());
+        }
         return new Ast.Source(globals, functs);
     }
 
@@ -58,8 +61,8 @@ public final class Parser {
      */
     public Ast.Global parseGlobal() throws ParseException {
         Ast.Global glob = null;
-        if (peek("LET")){
-            match("LET");
+        if (peek("LIST")){
+            match("LIST");
             glob = parseList();
         }
         else if (peek("VAR")){
@@ -116,6 +119,7 @@ public final class Parser {
         if(!peek("]")){
             throw new ParseException("parse exception, no close bracket in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
+        match("]");
 
         Ast.Expression PLCList = new Ast.Expression.PlcList(expressionList);
         return new Ast.Global(name, false, Optional.of(PLCList));
@@ -205,6 +209,10 @@ public final class Parser {
 
         states = parseBlock();
 
+        if (!peek("END"))
+            throw new ParseException("parse exception, no END", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        match("END");
+
         return new Ast.Function(name, params, states);
     }
 
@@ -272,6 +280,7 @@ public final class Parser {
                 temp2 = parseExpression();
                 if (!peek(";"))
                     throw new ParseException("parse exception, no semicolon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+                match(";");
                 return new Ast.Statement.Assignment(temp1, temp2);
             }
             if(!peek(";")){
@@ -770,9 +779,11 @@ public final class Parser {
             return parseGroup();
         }
         else if (tokens.has(0)){
+            System.out.println(tokens.get(0).getIndex());
             throw new ParseException("parse exception, not a primary", tokens.get(0).getIndex());
         }
         else {
+            System.out.println(tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
             throw new ParseException("parse exception, not a primary", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
     }
