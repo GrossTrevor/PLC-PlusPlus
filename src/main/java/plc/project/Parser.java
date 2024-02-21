@@ -219,7 +219,7 @@ public final class Parser {
             throw new ParseException("parse exception, missing statement(s)", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
 
-        while(tokens.has(0) && !peek("END") && !peek("ELSE") && !peek("DEFAULT")){
+        while(tokens.has(0) && !peek("END") && !peek("ELSE") && !peek("DEFAULT") && !peek("CASE")){
             temp1.add(parseStatement());
             if(!tokens.has(0)){
                 throw new ParseException("parse exception, missing semicolon/end of block", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
@@ -272,6 +272,7 @@ public final class Parser {
                 temp2 = parseExpression();
                 if (!peek(";"))
                     throw new ParseException("parse exception, no semicolon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+                match(";");
                 return new Ast.Statement.Assignment(temp1, temp2);
             }
             if(!peek(";")){
@@ -371,6 +372,7 @@ public final class Parser {
                 match(Token.Type.IDENTIFIER);
                 while(tokens.has(0) && !peek(";") && !peek("DEFAULT")){
                     temp2.add(parseCaseStatement());
+                    match("CASE");
                 }
             }
 
@@ -532,11 +534,11 @@ public final class Parser {
             match(Token.Type.OPERATOR);
             binary++;
         }
-        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+        if(tokens.has(0) && (peek(Token.Type.IDENTIFIER) || peek(Token.Type.INTEGER) || peek(Token.Type.DECIMAL) || peek(Token.Type.STRING) || peek(Token.Type.CHARACTER))){
             temp3 = parseComparisonExpression();
             binary++;
         }
-        else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
+        else if(tokens.has(0) && (peek(Token.Type.IDENTIFIER) || peek(Token.Type.INTEGER) || peek(Token.Type.DECIMAL) || peek(Token.Type.STRING) || peek(Token.Type.CHARACTER))){
             return temp1;
         }
         if(binary==2){
@@ -608,7 +610,7 @@ public final class Parser {
             match(Token.Type.OPERATOR);
             binary++;
         }
-        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+        if(tokens.has(0) && (peek(Token.Type.IDENTIFIER) || peek(Token.Type.INTEGER) || peek(Token.Type.DECIMAL) || peek(Token.Type.STRING) || peek(Token.Type.CHARACTER))){
             temp3 = parseAdditiveExpression();
             binary++;
         }
@@ -678,7 +680,7 @@ public final class Parser {
             match(Token.Type.OPERATOR);
             binary++;
         }
-        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+        if(tokens.has(0) && (peek(Token.Type.IDENTIFIER) || peek(Token.Type.INTEGER) || peek(Token.Type.DECIMAL) || peek(Token.Type.STRING) || peek(Token.Type.CHARACTER))){
             temp3 = parseMultiplicativeExpression();
             binary++;
         }
@@ -747,7 +749,7 @@ public final class Parser {
             match(Token.Type.OPERATOR);
             binary++;
         }
-        if(tokens.has(0) && peek(Token.Type.IDENTIFIER)){
+        if(tokens.has(0) && (peek(Token.Type.IDENTIFIER) || peek(Token.Type.INTEGER) || peek(Token.Type.DECIMAL) || peek(Token.Type.STRING) || peek(Token.Type.CHARACTER))){
             temp3 = parsePrimaryExpression();
             binary++;
         }
