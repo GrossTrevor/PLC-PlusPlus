@@ -121,8 +121,7 @@ public final class Parser {
         }
         match("]");
 
-        Ast.Expression PLCList = new Ast.Expression.PlcList(expressionList);
-        return new Ast.Global(name, false, Optional.of(PLCList));
+        return new Ast.Global(name, false, Optional.of(new Ast.Expression.PlcList(expressionList)));
     }
 
     /**
