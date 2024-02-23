@@ -77,7 +77,7 @@ final class ParserTests {
                                 new Token(Token.Type.OPERATOR, ";", 21)
                         ),
                         new Ast.Source(
-                                Arrays.asList(new Ast.Global("list", false, Optional.of(new Ast.Expression.PlcList(Arrays.asList(
+                                Arrays.asList(new Ast.Global("list", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(
                                         new Ast.Expression.Access(Optional.empty(), "expr")
                                 ))))),
                                 Arrays.asList()
