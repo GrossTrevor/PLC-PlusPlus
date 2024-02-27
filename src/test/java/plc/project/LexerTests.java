@@ -311,8 +311,8 @@ public class LexerTests {
     @Test
     void testException() {
         ParseException exception = Assertions.assertThrows(ParseException.class,
-                () -> new Lexer("\"invalid\\escape\"").lex());
-        Assertions.assertEquals(9, exception.getIndex());
+                () -> new Lexer("\"unterminated 'f'").lex());
+        Assertions.assertEquals(17, exception.getIndex());
     }
 
     /**

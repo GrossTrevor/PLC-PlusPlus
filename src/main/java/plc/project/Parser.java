@@ -121,8 +121,7 @@ public final class Parser {
         }
         match("]");
 
-        Ast.Expression PLCList = new Ast.Expression.PlcList(expressionList);
-        return new Ast.Global(name, false, Optional.of(PLCList));
+        return new Ast.Global(name, true, Optional.of(new Ast.Expression.PlcList(expressionList)));
     }
 
     /**
@@ -215,7 +214,6 @@ public final class Parser {
 
         return new Ast.Function(name, params, states);
     }
-
 
     /**
      * Parses the {@code block} rule. This method should only be called if the
@@ -797,9 +795,11 @@ public final class Parser {
             return parseGroup();
         }
         else if (tokens.has(0)){
+            System.out.println(tokens.get(0).getIndex());
             throw new ParseException("parse exception, not a primary", tokens.get(0).getIndex());
         }
         else {
+            System.out.println(tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
             throw new ParseException("parse exception, not a primary", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
     }
