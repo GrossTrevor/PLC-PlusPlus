@@ -795,11 +795,9 @@ public final class Parser {
             return parseGroup();
         }
         else if (tokens.has(0)){
-            System.out.println(tokens.get(0).getIndex());
             throw new ParseException("parse exception, not a primary", tokens.get(0).getIndex());
         }
         else {
-            System.out.println(tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
             throw new ParseException("parse exception, not a primary", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
     }
