@@ -37,8 +37,8 @@ public final class Parser {
         Ast.Function tempF = null;
         while(true){
             tempG = parseGlobal();
-            if (tempG != null)
-                globals.add(tempG);
+            if (tempG != null){
+                globals.add(tempG);}
             else
                 break;
         }
@@ -49,6 +49,9 @@ public final class Parser {
             else
                 break;
         }
+        if (tokens.has(0)){
+            throw new ParseException("parse exception, invalid additional token(s)", tokens.get(0).getIndex());
+        }
         return new Ast.Source(globals, functs);
     }
 
@@ -58,8 +61,8 @@ public final class Parser {
      */
     public Ast.Global parseGlobal() throws ParseException {
         Ast.Global glob = null;
-        if (peek("LET")){
-            match("LET");
+        if (peek("LIST")){
+            match("LIST");
             glob = parseList();
         }
         else if (peek("VAR")){
@@ -116,6 +119,7 @@ public final class Parser {
         if(!peek("]")){
             throw new ParseException("parse exception, no close bracket in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         }
+        match("]");
 
         Ast.Expression PLCList = new Ast.Expression.PlcList(expressionList);
         return new Ast.Global(name, false, Optional.of(PLCList));
@@ -205,8 +209,13 @@ public final class Parser {
 
         states = parseBlock();
 
+        if (!peek("END"))
+            throw new ParseException("parse exception, no END", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        match("END");
+
         return new Ast.Function(name, params, states);
     }
+
 
     /**
      * Parses the {@code block} rule. This method should only be called if the
@@ -538,7 +547,7 @@ public final class Parser {
             temp3 = parseComparisonExpression();
             binary++;
         }
-        else if(tokens.has(0) && (peek(Token.Type.IDENTIFIER) || peek(Token.Type.INTEGER) || peek(Token.Type.DECIMAL) || peek(Token.Type.STRING) || peek(Token.Type.CHARACTER))){
+        else if(tokens.has(0) && peek(Token.Type.OPERATOR)){
             return temp1;
         }
         if(binary==2){
