@@ -188,13 +188,16 @@ public final class Parser {
             throw new ParseException("parse exception, no open parenthesis", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         match("(");
 
-        if (peek(Token.Type.INTEGER)){
+        if (!peek(Token.Type.OPERATOR)){
             params.add(tokens.get(0).getLiteral());
-            match(Token.Type.INTEGER);
+            match(tokens.get(0).getLiteral());
 
             while (peek(",")){
                 match(",");
+                if (peek(Token.Type.OPERATOR))
+                    break;
                 params.add(tokens.get(0).getLiteral());
+                match(tokens.get(0).getLiteral());
             }
         }
 
