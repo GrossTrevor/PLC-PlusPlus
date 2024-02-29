@@ -80,7 +80,10 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Expression.Literal ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if(ast.getLiteral() == null){
+            return Environment.NIL;
+        }
+        return Environment.create(ast.getLiteral());
     }
 
     @Override
@@ -105,7 +108,14 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Expression.PlcList ast) {
-        throw new UnsupportedOperationException(); //TODO
+        List<Ast.Expression> valsList = ast.getValues();
+        List<Object> vals = new ArrayList<>();
+
+        for (Ast.Expression i : valsList) {
+            vals.add(((Ast.Expression.Literal) i).getLiteral());
+        }
+
+        return Environment.create(vals);
     }
 
     /**
@@ -126,7 +136,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
         private final Environment.PlcObject value;
 
-        private Return(Environment.PlcObject value) {
+        public Return(Environment.PlcObject value) {
             this.value = value;
         }
 
