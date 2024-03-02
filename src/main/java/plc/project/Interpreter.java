@@ -93,6 +93,42 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Expression.Binary ast) {
+        if(ast.getLeft() instanceof Ast.Expression.Binary){
+            visit(ast.getLeft());
+        }
+        if(ast.getRight() instanceof Ast.Expression.Binary){
+            visit(ast.getRight());
+        }
+        else if(ast.getOperator().equals("&&") || ast.getOperator().equals("||")){
+
+        }
+        else if(ast.getOperator().equals(">") || ast.getOperator().equals("<")){
+
+        }
+        else if(ast.getOperator().equals("==") || ast.getOperator().equals("!=")){
+            if(ast.getLeft().equals(ast.getRight())){
+                if(ast.getOperator().equals("==")){
+                    return Environment.create(true);
+                }
+                return Environment.create(false);
+            }
+            if(ast.getOperator().equals("!=")){
+                return Environment.create(true);
+            }
+            return Environment.create(false);
+        }
+        else if(ast.getOperator().equals("+")){
+
+        }
+        else if(ast.getOperator().equals("-") || ast.getOperator().equals("*")){
+
+        }
+        else if(ast.getOperator().equals("/")){
+
+        }
+        else if(ast.getOperator().equals("^")){
+
+        }
         throw new UnsupportedOperationException(); //TODO
     }
 
