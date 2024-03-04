@@ -58,7 +58,24 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Assignment ast) {
-        throw new UnsupportedOperationException(); //TODO
+        //get list to work
+
+        if(ast.getReceiver() instanceof Ast.Expression.Access){
+            Environment.Variable temp = scope.lookupVariable(((Ast.Expression.Access) ast.getReceiver()).getName());
+            if(temp.getMutable()){
+                if(((Ast.Expression.Access) ast.getReceiver()).getOffset().isPresent()){
+                    //it's a list
+                    BigInteger newVal = (BigInteger) visit(ast.getValue()).getValue();
+                    BigInteger offset = (BigInteger) ((Ast.Expression.Literal) ((Ast.Expression.Access) ast.getReceiver()).getOffset().get()).getLiteral();
+                    List vals = (List) temp.getValue().getValue();
+                    vals.set(offset.intValue(), newVal.intValue());
+                }
+                scope.defineVariable(temp.getName(), true, visit(ast.getValue()));
+                return Environment.NIL;
+            }
+            throw new RuntimeException("variable is not mutable");
+        }
+        throw new RuntimeException("Variable is not an Ast.Expression.Access");
     }
 
     @Override
@@ -83,7 +100,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Return ast) {
-        throw new UnsupportedOperationException(); //TODO
+        throw new Return(Environment.create(ast));
     }
 
     @Override
@@ -191,7 +208,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
         public Return(Environment.PlcObject value) {
             this.value = value;
         }
-
+        //return to private?
     }
 
 }
