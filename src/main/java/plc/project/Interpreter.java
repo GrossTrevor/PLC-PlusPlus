@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
@@ -45,7 +47,13 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Declaration ast) {
-        throw new UnsupportedOperationException(); //TODO (in lecture)
+        if(ast.getValue().isPresent()){
+            scope.defineVariable(ast.getName(), true, visit(ast.getValue().get()));
+        }
+        else{
+            scope.defineVariable(ast.getName(), true, Environment.NIL);
+        }
+        return Environment.NIL;
     }
 
     @Override
@@ -134,7 +142,15 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Expression.Access ast) {
-        throw new UnsupportedOperationException(); //TODO
+        Environment.Variable var = scope.lookupVariable(ast.getName());
+        if (ast.getOffset().equals(Optional.empty())){
+            return var.getValue();
+        }
+        else{
+            Ast.Expression.Literal lit = (Ast.Expression.Literal) ast.getOffset().get();
+            List arr = (List) var.getValue().getValue();
+            return Environment.create(arr.get(((BigInteger) lit.getLiteral()).intValue()));
+        }
     }
 
     @Override
