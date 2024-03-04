@@ -65,6 +65,56 @@ final class ParserTests {
                                 )))
                         )
                 ),
+                Arguments.of("Function with One Parameter",
+                        Arrays.asList(
+                                //FUN name(x) DO stmt; END
+                                new Token(Token.Type.IDENTIFIER, "FUN", 0),
+                                new Token(Token.Type.IDENTIFIER, "name", 4),
+                                new Token(Token.Type.OPERATOR, "(", 8),
+                                new Token(Token.Type.IDENTIFIER, "x", 9),
+                                new Token(Token.Type.OPERATOR, ")", 10),
+                                new Token(Token.Type.IDENTIFIER, "DO", 12),
+                                new Token(Token.Type.IDENTIFIER, "stmt", 15),
+                                new Token(Token.Type.OPERATOR, ";", 19),
+                                new Token(Token.Type.IDENTIFIER, "END", 21)
+                        ),
+                        new Ast.Source(
+                                Arrays.asList(),
+                                Arrays.asList(new Ast.Function("name", Arrays.asList(
+                                        "x"
+                                ), Arrays.asList(
+                                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt"))
+                                )))
+                        )
+                ),
+                Arguments.of("Function with Multiple Parameters",
+                        Arrays.asList(
+                                //FUN name(x, y, z) DO stmt; END
+                                new Token(Token.Type.IDENTIFIER, "FUN", 0),
+                                new Token(Token.Type.IDENTIFIER, "name", 4),
+                                new Token(Token.Type.OPERATOR, "(", 8),
+                                new Token(Token.Type.IDENTIFIER, "x", 9),
+                                new Token(Token.Type.OPERATOR, ",", 10),
+                                new Token(Token.Type.IDENTIFIER, "y", 12),
+                                new Token(Token.Type.OPERATOR, ",", 13),
+                                new Token(Token.Type.IDENTIFIER, "z", 15),
+                                new Token(Token.Type.OPERATOR, ")", 16),
+                                new Token(Token.Type.IDENTIFIER, "DO", 18),
+                                new Token(Token.Type.IDENTIFIER, "stmt", 21),
+                                new Token(Token.Type.OPERATOR, ";", 25),
+                                new Token(Token.Type.IDENTIFIER, "END", 27)
+                        ),
+                        new Ast.Source(
+                                Arrays.asList(),
+                                Arrays.asList(new Ast.Function("name", Arrays.asList(
+                                        "x",
+                                        "y",
+                                        "z"
+                                ), Arrays.asList(
+                                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt"))
+                                )))
+                        )
+                ),
                 Arguments.of("Global - List",
                         Arrays.asList(
                                 //List list = [expr];
