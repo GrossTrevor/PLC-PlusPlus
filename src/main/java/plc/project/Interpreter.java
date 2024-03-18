@@ -58,21 +58,19 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Assignment ast) {
-        //get list to work
-        //problem with assignment = I am not defining the variable in the current scope correctly
-
         if(ast.getReceiver() instanceof Ast.Expression.Access){
             Environment.Variable temp = scope.lookupVariable(((Ast.Expression.Access) ast.getReceiver()).getName());
             if(temp.getMutable()){
                 if(((Ast.Expression.Access) ast.getReceiver()).getOffset().isPresent()){
                     //it's a list
-                    BigInteger newVal = (BigInteger) visit(ast.getValue()).getValue();
+                    Object newVal = visit(ast.getValue()).getValue();
                     BigInteger offset = (BigInteger) ((Ast.Expression.Literal) ((Ast.Expression.Access) ast.getReceiver()).getOffset().get()).getLiteral();
-                    List vals = (List) temp.getValue().getValue();
-                    vals.set(offset.intValue(), newVal.intValue());
+                    List<Object> vals = (List<Object>) temp.getValue().getValue();
+                    vals.set(offset.intValue(), newVal);
                 }
-                //this line is not working to set the correct value to the name
-                scope.defineVariable(scope.lookupVariable(((Ast.Expression.Access) ast.getReceiver()).getName()).getName(), true, visit(ast.getValue()));
+                else{
+                    temp.setValue(visit(ast.getValue()));
+                }
                 return Environment.NIL;
             }
             throw new RuntimeException("variable is not mutable");
@@ -82,9 +80,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.If ast) {
-        //mot working but need to get assignment working to see what the problem is
-
-        //if boolean == true
         if(requireType(Boolean.class, visit(ast.getCondition()))){
             try{
                 scope = new Scope(scope);
@@ -94,7 +89,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 scope = scope.getParent();
             }
         }
-        //if boolean == false
         else if(!requireType(Boolean.class, visit(ast.getCondition()))){
             try{
                 scope = new Scope(scope);
