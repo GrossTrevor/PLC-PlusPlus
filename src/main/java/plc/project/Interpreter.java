@@ -172,10 +172,10 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     @Override
     public Environment.PlcObject visit(Ast.Expression.Access ast) {
         Environment.Variable var = scope.lookupVariable(ast.getName());
-        if (ast.getOffset().equals(Optional.empty())){
+        if (ast.getOffset().equals(Optional.empty())) {
             return var.getValue();
         }
-        else{
+        else {
             Ast.Expression.Literal lit = (Ast.Expression.Literal) ast.getOffset().get();
             List arr = (List) var.getValue().getValue();
             return Environment.create(arr.get(((BigInteger) lit.getLiteral()).intValue()));
@@ -184,7 +184,15 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Expression.Function ast) {
-        throw new UnsupportedOperationException(); //TODO
+        int arity = ast.getArguments().size();
+        Environment.Function function = scope.lookupFunction(ast.getName(), arity);
+
+        List<Environment.PlcObject> args = new ArrayList();
+
+        for (Ast.Expression exp : ast.getArguments())
+            args.add(visit(exp));
+
+        return function.invoke(args);
     }
 
     @Override
