@@ -42,7 +42,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Expression ast) {
-        throw new UnsupportedOperationException(); //TODO
+        return visit(ast.getExpression());
     }
 
     @Override
@@ -80,9 +80,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.If ast) {
-        //mot working but need to get assignment working to see what the problem is
-
-        //if boolean == true
         if(requireType(Boolean.class, visit(ast.getCondition()))){
             try{
                 scope = new Scope(scope);
@@ -92,7 +89,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 scope = scope.getParent();
             }
         }
-        //if boolean == false
         else if(!requireType(Boolean.class, visit(ast.getCondition()))){
             try{
                 scope = new Scope(scope);
@@ -147,7 +143,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Expression.Group ast) {
-        throw new UnsupportedOperationException(); //TODO
+        return visit(ast.getExpression());
     }
 
     @Override
@@ -159,80 +155,10 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
             visit(ast.getRight());
         }
         else if(ast.getOperator().equals("&&") || ast.getOperator().equals("||")){
-            //if left is true and OR
-            if(requireType(Boolean.class, visit(ast.getLeft())) && ast.getOperator().equals("||")){
-                return Environment.create(true);
-            }
-            //if left is true and AND
-            else if(requireType(Boolean.class, visit(ast.getLeft())) && ast.getOperator().equals("&&")){
-                //right is true
-                if(requireType(Boolean.class, visit(ast.getRight()))){
-                    return Environment.create(true);
-                }
-                //right is false
-                else if(!requireType(Boolean.class, visit(ast.getRight()))){
-                    return Environment.create(false);
-                }
-                //right is not bool
-                else{
-                    throw new RuntimeException("Right side of binary is not boolean");
-                }
-            }
-            //if left is false and OR
-            else if(!requireType(Boolean.class, visit(ast.getLeft())) && ast.getOperator().equals("||")){
-                //if right is true
-                if(requireType(Boolean.class, visit(ast.getRight()))){
-                    return Environment.create(true);
-                }
-                //if right is false
-                else if(!requireType(Boolean.class, visit(ast.getRight()))){
-                    return Environment.create(false);
-                }
-                //right is not bool
-                else{
-                    throw new RuntimeException("Right side of binary is not boolean");
-                }
-            }
-            //if left is false and AND
-            else if(!requireType(Boolean.class, visit(ast.getLeft())) && ast.getOperator().equals("&&")){
-                //if right is bool
-                if(requireType(Boolean.class, visit(ast.getRight())) || !requireType(Boolean.class, visit(ast.getRight()))){
-                    return Environment.create(false);
-                }
-                //right is not bool
-                else{
-                    throw new RuntimeException("Right side of binary is not boolean");
-                }
-            }
-            // left is not a bool
-            else{
-                throw new RuntimeException("Left side of binary is not boolean");
-            }
+
         }
         else if(ast.getOperator().equals(">") || ast.getOperator().equals("<")){
-            //left is less than right
-            //check if comparable class
-//            if(ast.getLeft().compareTo(ast.getRight()) < 0){
-//                if(ast.getOperator().equals(">")){
-//                    return Environment.create(false);
-//                }
-//                else{
-//                    return Environment.create(true);
-//                }
-//            }
-//            //left is greater than right
-//            else if(ast.getLeft().compareTo(ast.getRight()) > 0){
-//                if(ast.getOperator().equals(">")){
-//                    return Environment.create(true);
-//                }
-//                else{
-//                    return Environment.create(false);
-//                }
-//            }
-//            // == 0, both are equal
-//            else{
-//                return Environment.create(false);
-//            }
+
         }
         else if(ast.getOperator().equals("==") || ast.getOperator().equals("!=")){
             if(ast.getLeft().equals(ast.getRight())){
@@ -247,22 +173,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
             return Environment.create(false);
         }
         else if(ast.getOperator().equals("+")){
-//            System.out.println("in addition");
-//            String temp = ast.getRight().toString();
-//            String temp1 = ast.getLeft().toString();
-//            System.out.println();
-//            return Environment.create(temp.concat(temp1));
-//
-//            requireType(String.class, visit(ast.getLeft()));
-//
-//            System.out.println(ast.getRight().getClass().equals(String.class));
-//            System.out.println(ast.getRight());
-//            if(requireType(String.class, visit(ast.getLeft()))){
-//                System.out.println("one is a string");
-//                String temp = ast.getRight().toString();
-//                String temp1 = ast.getLeft().toString();
-//                return Environment.create(temp + temp1);
-//            }
+
         }
         else if(ast.getOperator().equals("-") || ast.getOperator().equals("*")){
 
@@ -279,10 +190,10 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     @Override
     public Environment.PlcObject visit(Ast.Expression.Access ast) {
         Environment.Variable var = scope.lookupVariable(ast.getName());
-        if (ast.getOffset().equals(Optional.empty())){
+        if (ast.getOffset().equals(Optional.empty())) {
             return var.getValue();
         }
-        else{
+        else {
             Ast.Expression.Literal lit = (Ast.Expression.Literal) ast.getOffset().get();
             List arr = (List) var.getValue().getValue();
             return Environment.create(arr.get(((BigInteger) lit.getLiteral()).intValue()));
@@ -291,7 +202,15 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Expression.Function ast) {
-        throw new UnsupportedOperationException(); //TODO
+        int arity = ast.getArguments().size();
+        Environment.Function function = scope.lookupFunction(ast.getName(), arity);
+
+        List<Environment.PlcObject> args = new ArrayList();
+
+        for (Ast.Expression exp : ast.getArguments())
+            args.add(visit(exp));
+
+        return function.invoke(args);
     }
 
     @Override
