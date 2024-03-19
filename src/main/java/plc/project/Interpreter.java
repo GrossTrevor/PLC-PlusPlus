@@ -206,29 +206,47 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
             }
         }
         else if(ast.getOperator().equals(">") || ast.getOperator().equals("<")){
-            //left is less than right
-            //check if comparable class
-//            if(ast.getLeft().compareTo(ast.getRight()) < 0){
-//                if(ast.getOperator().equals(">")){
-//                    return Environment.create(false);
-//                }
-//                else{
-//                    return Environment.create(true);
-//                }
-//            }
-//            //left is greater than right
-//            else if(ast.getLeft().compareTo(ast.getRight()) > 0){
-//                if(ast.getOperator().equals(">")){
-//                    return Environment.create(true);
-//                }
-//                else{
-//                    return Environment.create(false);
-//                }
-//            }
-//            // == 0, both are equal
-//            else{
-//                return Environment.create(false);
-//            }
+            if(Comparable.class.isInstance(visit(ast.getLeft()).getValue()) && Comparable.class.isInstance(visit(ast.getRight()).getValue())){
+                // both sides are the same type of class
+                if(ast.getLeft().getClass().equals(ast.getRight().getClass())){
+                    Comparable temp1;
+                    Comparable temp2;
+
+                    try{
+                        temp1 = requireType(Comparable.class, visit(ast.getLeft()));
+                        temp2 = requireType(Comparable.class, visit(ast.getRight()));
+                    }
+                    catch(Exception e){
+                        throw new RuntimeException("sides are not the same type");
+                    }
+
+                    if(temp1.compareTo(temp2) < 0){
+                        if(ast.getOperator().equals(">")){
+                            return Environment.create(false);
+                        }
+                        else{
+                            return Environment.create(true);
+                        }
+                    }
+                    else if(temp1.compareTo(temp2) > 0){
+                        if(ast.getOperator().equals(">")){
+                            return Environment.create(true);
+                        }
+                        else{
+                            return Environment.create(false);
+                        }
+                    }
+                    else{
+                        return Environment.create(false);
+                    }
+                }
+                else{
+                    throw new RuntimeException("sides are not the same type");
+                }
+            }
+            else{
+                throw new RuntimeException("arguments aren't comparable");
+            }
         }
         else if(ast.getOperator().equals("==") || ast.getOperator().equals("!=")){
             if(ast.getLeft().equals(ast.getRight())){
@@ -243,33 +261,108 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
             return Environment.create(false);
         }
         else if(ast.getOperator().equals("+")){
-//            System.out.println("in addition");
-//            String temp = ast.getRight().toString();
-//            String temp1 = ast.getLeft().toString();
-//            System.out.println();
-//            return Environment.create(temp.concat(temp1));
-//
-//            requireType(String.class, visit(ast.getLeft()));
-//
-//            System.out.println(ast.getRight().getClass().equals(String.class));
-//            System.out.println(ast.getRight());
-//            if(requireType(String.class, visit(ast.getLeft()))){
-//                System.out.println("one is a string");
-//                String temp = ast.getRight().toString();
-//                String temp1 = ast.getLeft().toString();
-//                return Environment.create(temp + temp1);
-//            }
+            if(String.class.isInstance(visit(ast.getLeft()).getValue())){
+                String temp1 = requireType(String.class, visit(ast.getLeft()));
+                String temp2 = visit(ast.getRight()).getValue().toString();
+                return Environment.create(temp1 + temp2);
+            }
+            else if(String.class.isInstance(visit(ast.getRight()).getValue())){
+                String temp1 = visit(ast.getLeft()).getValue().toString();
+                String temp2 = requireType(String.class, visit(ast.getRight()));
+                return Environment.create(temp1 + temp2);
+            }
+            else if(BigInteger.class.isInstance(visit(ast.getLeft()).getValue()) && BigInteger.class.isInstance(visit(ast.getRight()).getValue())){
+                BigInteger temp1 = requireType(BigInteger.class, visit(ast.getLeft()));
+                BigInteger temp2 = requireType(BigInteger.class, visit(ast.getRight()));
+                return Environment.create(temp1.add(temp2));
+            }
+            else if(BigDecimal.class.isInstance(visit(ast.getLeft()).getValue()) && BigDecimal.class.isInstance(visit(ast.getRight()).getValue())){
+                BigDecimal temp1 = requireType(BigDecimal.class, visit(ast.getLeft()));
+                BigDecimal temp2 = requireType(BigDecimal.class, visit(ast.getRight()));
+                return Environment.create(temp1.add(temp2));
+            }
+            else{
+                throw new RuntimeException("types of the sides of the equation do not match");
+            }
         }
-        else if(ast.getOperator().equals("-") || ast.getOperator().equals("*")){
-
+        else if(ast.getOperator().equals("-")){
+            if(BigInteger.class.isInstance(visit(ast.getLeft()).getValue()) && BigInteger.class.isInstance(visit(ast.getRight()).getValue())){
+                BigInteger temp1 = requireType(BigInteger.class, visit(ast.getLeft()));
+                BigInteger temp2 = requireType(BigInteger.class, visit(ast.getRight()));
+                return Environment.create(temp1.subtract(temp2));
+            }
+            else if(BigDecimal.class.isInstance(visit(ast.getLeft()).getValue()) && BigDecimal.class.isInstance(visit(ast.getRight()).getValue())){
+                BigDecimal temp1 = requireType(BigDecimal.class, visit(ast.getLeft()));
+                BigDecimal temp2 = requireType(BigDecimal.class, visit(ast.getRight()));
+                return Environment.create(temp1.subtract(temp2));
+            }
+            else{
+                throw new RuntimeException("types of the sides of the equation do not match");
+            }
+        }
+        else if(ast.getOperator().equals("*")){
+            if(BigInteger.class.isInstance(visit(ast.getLeft()).getValue()) && BigInteger.class.isInstance(visit(ast.getRight()).getValue())){
+                BigInteger temp1 = requireType(BigInteger.class, visit(ast.getLeft()));
+                BigInteger temp2 = requireType(BigInteger.class, visit(ast.getRight()));
+                return Environment.create(temp1.multiply(temp2));
+            }
+            else if(BigDecimal.class.isInstance(visit(ast.getLeft()).getValue()) && BigDecimal.class.isInstance(visit(ast.getRight()).getValue())){
+                BigDecimal temp1 = requireType(BigDecimal.class, visit(ast.getLeft()));
+                BigDecimal temp2 = requireType(BigDecimal.class, visit(ast.getRight()));
+                return Environment.create(temp1.multiply(temp2));
+            }
+            else{
+                throw new RuntimeException("types of the sides of the equation do not match");
+            }
         }
         else if(ast.getOperator().equals("/")){
-
+            if(BigInteger.class.isInstance(visit(ast.getLeft()).getValue()) && BigInteger.class.isInstance(visit(ast.getRight()).getValue())){
+                BigInteger temp1 = requireType(BigInteger.class, visit(ast.getLeft()));
+                BigInteger temp2 = requireType(BigInteger.class, visit(ast.getRight()));
+                if(temp2.equals(BigInteger.ZERO)){
+                    throw new RuntimeException("cannot divide by zero");
+                }
+                return Environment.create(temp2.divide(temp1));
+            }
+            else if(BigDecimal.class.isInstance(visit(ast.getLeft()).getValue()) && BigDecimal.class.isInstance(visit(ast.getRight()).getValue())){
+                BigDecimal temp1 = requireType(BigDecimal.class, visit(ast.getLeft()));
+                BigDecimal temp2 = requireType(BigDecimal.class, visit(ast.getRight()));
+                if(temp2.equals(BigDecimal.ZERO)){
+                    throw new RuntimeException("cannot divide by zero");
+                }
+                System.out.println(temp1 + " and " + temp2);
+                return Environment.create(temp1.divide(temp2, RoundingMode.HALF_EVEN));
+            }
+            else{
+                throw new RuntimeException("types of the sides of the equation do not match");
+            }
         }
         else if(ast.getOperator().equals("^")){
+            if(BigInteger.class.isInstance(visit(ast.getLeft()).getValue()) && BigInteger.class.isInstance(visit(ast.getRight()).getValue())){
+                BigInteger temp1 = requireType(BigInteger.class, visit(ast.getLeft()));
+                BigInteger temp2 = requireType(BigInteger.class, visit(ast.getRight()));
 
+                //BigInteger result = BigInteger.ONE;
+                // temp2 > 0
+                if(temp2.compareTo(BigInteger.ZERO) > 0){
+                    while(!temp2.equals(BigInteger.ONE)){
+                        temp1 = temp1.multiply(temp1);
+                        temp2 = temp2.subtract(BigInteger.ONE);
+                    }
+                    return Environment.create(temp1);
+                }
+                // temp2 < 0
+                else if(temp2.compareTo(BigInteger.ZERO) < 0){
+                    while(!temp2.equals(BigInteger.ONE.negate())){
+                        temp1 = temp1.multiply(temp1);
+                        temp2 = temp2.add(BigInteger.ONE);
+                    }
+                    temp1 = BigInteger.ONE.divide(temp1);
+                    return Environment.create(temp1);
+                }
+            }
         }
-        throw new UnsupportedOperationException(); //TODO
+        throw new RuntimeException("operator is not the right type");
     }
 
     @Override

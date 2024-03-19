@@ -337,6 +337,14 @@ final class InterpreterTests {
                         ),
                         true
                 ),
+                // 1 < "z"
+//                Arguments.of("Less Than with string",
+//                        new Ast.Expression.Binary("<",
+//                                new Ast.Expression.Literal(BigInteger.ONE),
+//                                new Ast.Expression.Literal("z")
+//                        ),
+//                        true
+//                ),
                 // 1 == 10
                 Arguments.of("Equal",
                         new Ast.Expression.Binary("==",
@@ -353,6 +361,30 @@ final class InterpreterTests {
                         ),
                         "ab"
                 ),
+                // "a" + 1
+                Arguments.of("Concatenation with int",
+                        new Ast.Expression.Binary("+",
+                                new Ast.Expression.Literal("a"),
+                                new Ast.Expression.Literal(BigInteger.ONE)
+                        ),
+                        "a1"
+                ),
+                // "a" + 3.4
+                Arguments.of("Concatenation with dec",
+                        new Ast.Expression.Binary("+",
+                                new Ast.Expression.Literal("a"),
+                                new Ast.Expression.Literal(new BigDecimal("3.4"))
+                        ),
+                        "a3.4"
+                ),
+                // 3.4 + "a"
+                Arguments.of("Concatenation with dec",
+                        new Ast.Expression.Binary("+",
+                                new Ast.Expression.Literal(new BigDecimal("3.4")),
+                                new Ast.Expression.Literal("a")
+                        ),
+                        "3.4a"
+                ),
                 // 1 + 10
                 Arguments.of("Addition",
                         new Ast.Expression.Binary("+",
@@ -361,6 +393,22 @@ final class InterpreterTests {
                         ),
                         BigInteger.valueOf(11)
                 ),
+                // 1 - 10
+                Arguments.of("Subtraction",
+                        new Ast.Expression.Binary("-",
+                                new Ast.Expression.Literal(BigInteger.ONE),
+                                new Ast.Expression.Literal(BigInteger.TEN)
+                        ),
+                        BigInteger.valueOf(-9)
+                ),
+                // 1 * 10
+                Arguments.of("Multiplication",
+                        new Ast.Expression.Binary("*",
+                                new Ast.Expression.Literal(BigInteger.ONE),
+                                new Ast.Expression.Literal(BigInteger.TEN)
+                        ),
+                        BigInteger.valueOf(10)
+                ),
                 // 1.2 / 3.4
                 Arguments.of("Division",
                         new Ast.Expression.Binary("/",
@@ -368,6 +416,13 @@ final class InterpreterTests {
                                 new Ast.Expression.Literal(new BigDecimal("3.4"))
                         ),
                         new BigDecimal("0.4")
+                ),
+                Arguments.of("Division Integer",
+                        new Ast.Expression.Binary("/",
+                                new Ast.Expression.Literal(BigInteger.TWO),
+                                new Ast.Expression.Literal(BigInteger.TWO)
+                        ),
+                        BigInteger.valueOf(1)
                 ),
                 // 1.2 / 3.4 + 1.1
                 Arguments.of("Division",
@@ -379,6 +434,30 @@ final class InterpreterTests {
                                 new Ast.Expression.Literal(new BigDecimal("1.1"))
                         ),
                         new BigDecimal("1.5")
+                ),
+                // 2 ^ 2
+                Arguments.of("Power",
+                        new Ast.Expression.Binary("^",
+                                new Ast.Expression.Literal(BigInteger.TWO),
+                                new Ast.Expression.Literal(BigInteger.TWO)
+                        ),
+                        BigInteger.valueOf(4)
+                ),
+                // -2 ^ 2
+                Arguments.of("Power Negative Base",
+                        new Ast.Expression.Binary("^",
+                                new Ast.Expression.Literal(BigInteger.TWO.negate()),
+                                new Ast.Expression.Literal(BigInteger.TWO)
+                        ),
+                        BigInteger.valueOf(4)
+                ),
+                // -2 ^ 2
+                Arguments.of("Power Negative Exponent",
+                        new Ast.Expression.Binary("^",
+                                new Ast.Expression.Literal(BigInteger.TWO),
+                                new Ast.Expression.Literal(BigInteger.TWO.negate())
+                        ),
+                        BigInteger.valueOf(0)
                 )
         );
     }
