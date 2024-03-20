@@ -208,40 +208,35 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
         else if(ast.getOperator().equals(">") || ast.getOperator().equals("<")){
             if(Comparable.class.isInstance(visit(ast.getLeft()).getValue()) && Comparable.class.isInstance(visit(ast.getRight()).getValue())){
                 // both sides are the same type of class
-                if(ast.getLeft().getClass().equals(ast.getRight().getClass())){
-                    Comparable temp1;
-                    Comparable temp2;
+                Comparable temp1;
+                Comparable temp2;
 
-                    try{
-                        temp1 = requireType(Comparable.class, visit(ast.getLeft()));
-                        temp2 = requireType(Comparable.class, visit(ast.getRight()));
-                    }
-                    catch(Exception e){
-                        throw new RuntimeException("sides are not the same type");
-                    }
+                try{
+                    temp1 = requireType(Comparable.class, visit(ast.getLeft()));
+                    temp2 = requireType(Comparable.class, visit(ast.getRight()));
+                }
+                catch(Exception e){
+                    throw new RuntimeException("sides are not the same type");
+                }
 
-                    if(temp1.compareTo(temp2) < 0){
-                        if(ast.getOperator().equals(">")){
-                            return Environment.create(false);
-                        }
-                        else{
-                            return Environment.create(true);
-                        }
+                if(temp1.compareTo(temp2) < 0){
+                    if(ast.getOperator().equals(">")){
+                        return Environment.create(false);
                     }
-                    else if(temp1.compareTo(temp2) > 0){
-                        if(ast.getOperator().equals(">")){
-                            return Environment.create(true);
-                        }
-                        else{
-                            return Environment.create(false);
-                        }
+                    else{
+                        return Environment.create(true);
+                    }
+                }
+                else if(temp1.compareTo(temp2) > 0){
+                    if(ast.getOperator().equals(">")){
+                        return Environment.create(true);
                     }
                     else{
                         return Environment.create(false);
                     }
                 }
                 else{
-                    throw new RuntimeException("sides are not the same type");
+                    return Environment.create(false);
                 }
             }
             else{
