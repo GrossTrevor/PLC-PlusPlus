@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
@@ -37,7 +38,26 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Function ast) {
-        throw new UnsupportedOperationException(); //TODO
+        Scope parent = scope;
+        scope.defineFunction(ast.getName(), ast.getParameters().size(), args -> {
+            scope = new Scope(scope);
+
+            List<Environment.PlcObject> params = new ArrayList();
+
+            for (String param : ast.getParameters()) {
+                scope.defineVariable(param, false, parent.lookupVariable(param).getValue());
+                params.add(scope.lookupVariable(param).getValue());
+            }
+
+            Environment.PlcObject ret = Environment.NIL;
+            for (Ast.Statement stmt : ast.getStatements()) {
+                ret = visit(stmt);
+            }
+            scope = scope.getParent();
+            return ret;
+        });
+
+        return Environment.NIL;
     }
 
     @Override
