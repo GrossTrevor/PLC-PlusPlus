@@ -103,12 +103,39 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Switch ast) {
-        throw new UnsupportedOperationException(); //TODO
+        boolean found = false;
+        Environment.Variable temp = scope.lookupVariable(((Ast.Expression.Access) ast.getCondition()).getName());
+        Ast.Statement.Case last_case = new Ast.Statement.Case(Optional.empty(),new ArrayList<>());
+
+        for(Ast.Statement.Case stmt : ast.getCases()){
+            if(stmt.getValue().isPresent()){
+                if(temp.getValue().getValue().equals(((Ast.Expression.Literal) stmt.getValue().get()).getLiteral())){
+                    visit(stmt);
+                    found = true;
+                    break;
+                }
+            }
+            last_case = stmt;
+        }
+
+        if(!found){
+            //run default
+            visit(last_case);
+        }
+
+        return Environment.NIL;
     }
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Case ast) {
-        throw new UnsupportedOperationException(); //TODO
+        try{
+            scope = new Scope(scope);
+            ast.getStatements().forEach(this::visit);
+        }
+        finally {
+            scope = scope.getParent();
+        }
+        return Environment.NIL;
     }
 
     @Override
