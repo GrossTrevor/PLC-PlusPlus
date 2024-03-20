@@ -45,16 +45,19 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
             List<Environment.PlcObject> params = new ArrayList();
 
             for (String param : ast.getParameters()) {
-                scope.defineVariable(param, false, parent.lookupVariable(param).getValue());
+                scope.defineVariable(param, false, Environment.NIL);
                 params.add(scope.lookupVariable(param).getValue());
             }
 
             Environment.PlcObject ret = Environment.NIL;
             for (Ast.Statement stmt : ast.getStatements()) {
-                ret = visit(stmt);
+                if (stmt instanceof Ast.Statement.Return)
+                    throw new Return(visit(stmt));
+                else
+                    visit(stmt);
             }
             scope = scope.getParent();
-            return ret;
+            return Environment.NIL;
         });
 
         return Environment.NIL;
