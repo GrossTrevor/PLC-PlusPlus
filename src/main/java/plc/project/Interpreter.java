@@ -59,9 +59,9 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
             List<Environment.PlcObject> params = new ArrayList();
 
-            for (String param : ast.getParameters()) {
-                scope.defineVariable(param, false, Environment.NIL);
-                params.add(scope.lookupVariable(param).getValue());
+            for (int i = 0; i < ast.getParameters().size(); i++) {
+                scope.defineVariable(ast.getParameters().get(i), true, args.get(i));
+                params.add(scope.lookupVariable(ast.getParameters().get(i)).getValue());
             }
 
             Ast.Expression ret = null;
