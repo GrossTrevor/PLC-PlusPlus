@@ -29,10 +29,11 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     public Environment.PlcObject visit(Ast.Source ast) {
         ast.getGlobals().forEach(this::visit);
         for(Ast.Function func : ast.getFunctions()){
-            visit(func);
-
             if(func.getName().equals("main") && func.getParameters().size() == 0){
                 return visit(func);
+            }
+            else{
+                visit(func);
             }
         }
         //main function is not found
@@ -52,7 +53,30 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Function ast) {
-        throw new UnsupportedOperationException(); //TODO
+        scope.defineFunction(ast.getName(), ast.getParameters().size(), args -> {
+            scope = new Scope(scope);
+
+            List<Environment.PlcObject> params = new ArrayList();
+
+            for (String param : ast.getParameters()) {
+                scope.defineVariable(param, false, Environment.create(BigInteger.TEN));
+                params.add(scope.lookupVariable(param).getValue());
+            }
+
+            Ast.Expression ret = null;
+            for (Ast.Statement stmt : ast.getStatements()) {
+                if (stmt instanceof Ast.Statement.Return) {
+                    ret = (Ast.Expression) ((Ast.Statement.Return) new Return(visit(stmt)).value.getValue()).getValue();
+                    return visit(ret);
+                }
+                else
+                    visit(stmt);
+            }
+            return Environment.NIL;
+        });
+
+        //scope = scope.getParent();
+        return Environment.NIL;
     }
 
     @Override
@@ -172,7 +196,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Return ast) {
-        throw new Return(Environment.create(ast));
+        return new Return(Environment.create(ast)).value;
     }
 
     @Override
@@ -348,6 +372,23 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 BigDecimal temp2 = requireType(BigDecimal.class, visit(ast.getRight()));
                 return Environment.create(temp1.multiply(temp2));
             }
+//            else if(Ast.Expression.Access.class.isInstance(ast.getLeft())){
+//                System.out.println("fuck u: " + ((Ast.Expression.Access) ast.getLeft()).getName());
+//                Environment.Variable temp = scope.lookupVariable(((Ast.Expression.Access) ast.getLeft()).getName());
+//                System.out.println("temp: " + temp);
+//                System.out.println("val: " + temp.getValue().getValue());
+//                if(Ast.Expression.Access.class.isInstance(ast.getRight())){
+//                    //both sides are accesses
+//
+//                }
+//                else{
+//                    //only left is access
+//
+//                }
+//            }
+//            else if(Ast.Expression.Access.class.isInstance(ast.getRight())){
+//
+//            }
             else{
                 throw new RuntimeException("types of the sides of the equation do not match");
             }
@@ -370,7 +411,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 System.out.println(temp1 + " and " + temp2);
                 return Environment.create(temp1.divide(temp2, RoundingMode.HALF_EVEN));
             }
-            else if(Ast.Expression.Access.class.isInstance(visit(ast.getLeft()).getValue()) || Ast.Expression.Access.class.isInstance(visit(ast.getRight()).getValue()))
             else{
                 throw new RuntimeException("types of the sides of the equation do not match");
             }
