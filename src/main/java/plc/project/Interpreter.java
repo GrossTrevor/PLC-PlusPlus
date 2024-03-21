@@ -28,12 +28,27 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Source ast) {
-        throw new UnsupportedOperationException(); //TODO
+        ast.getGlobals().forEach(this::visit);
+        for(Ast.Function func : ast.getFunctions()){
+            visit(func);
+
+            if(func.getName().equals("main") && func.getParameters().size() == 0){
+                return visit(func);
+            }
+        }
+        //main function is not found
+        return Environment.NIL;
     }
 
     @Override
     public Environment.PlcObject visit(Ast.Global ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if(ast.getValue().isPresent()){
+            scope.defineVariable(ast.getName(), true, visit(ast.getValue().get()));
+        }
+        else{
+            scope.defineVariable(ast.getName(), true, Environment.NIL);
+        }
+        return Environment.NIL;
     }
 
     @Override
