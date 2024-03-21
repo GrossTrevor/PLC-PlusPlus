@@ -30,10 +30,11 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     public Environment.PlcObject visit(Ast.Source ast) {
         ast.getGlobals().forEach(this::visit);
         for(Ast.Function func : ast.getFunctions()){
-            visit(func);
-
-            if(func.getName().equals("main") && func.getParameters().size() == 0){
+            if(func.getName().equals("main") && func.getParameters().isEmpty()){
                 return visit(func);
+            }
+            else{
+                visit(func);
             }
         }
         //main function is not found
