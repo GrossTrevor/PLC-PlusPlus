@@ -27,7 +27,16 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Source ast) {
-        throw new UnsupportedOperationException(); //TODO
+        ast.getGlobals().forEach(this::visit);
+        for(Ast.Function func : ast.getFunctions()){
+            visit(func);
+
+            if(func.getName().equals("main") && func.getParameters().size() == 0){
+                return visit(func);
+            }
+        }
+        //main function is not found
+        return Environment.NIL;
     }
 
     @Override
@@ -361,6 +370,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 System.out.println(temp1 + " and " + temp2);
                 return Environment.create(temp1.divide(temp2, RoundingMode.HALF_EVEN));
             }
+            else if(Ast.Expression.Access.class.isInstance(visit(ast.getLeft()).getValue()) || Ast.Expression.Access.class.isInstance(visit(ast.getRight()).getValue()))
             else{
                 throw new RuntimeException("types of the sides of the equation do not match");
             }
