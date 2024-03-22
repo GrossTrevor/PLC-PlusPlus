@@ -30,15 +30,13 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     public Environment.PlcObject visit(Ast.Source ast) {
         ast.getGlobals().forEach(this::visit);
         for(Ast.Function func : ast.getFunctions()){
+            visit(func);
             if(func.getName().equals("main") && func.getParameters().isEmpty()){
-                return visit(func);
-            }
-            else{
-                visit(func);
+                Environment.Function main = scope.lookupFunction("main", 0);
+                return main.invoke(List.of());
             }
         }
-        //main function is not found
-        return Environment.NIL;
+        throw new RuntimeException("No main() function found!");
     }
 
     @Override
@@ -66,7 +64,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
             Ast.Expression ret = null;
             for (Ast.Statement stmt : ast.getStatements()) {
-                if (stmt instanceof Ast.Statement.Return) {
+                if (Ast.Statement.Return.class.isInstance(stmt)) {
                     ret = (Ast.Expression) ((Ast.Statement.Return) new Return(visit(stmt)).value.getValue()).getValue();
                     return visit(ret);
                 }
