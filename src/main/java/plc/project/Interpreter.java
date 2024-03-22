@@ -49,6 +49,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Function ast) {
+        System.out.println("name func: " + ast.getName());
         scope.defineFunction(ast.getName(), ast.getParameters().size(), args -> {
             scope = new Scope(scope);
 
@@ -63,15 +64,19 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
             for (Ast.Statement stmt : ast.getStatements()) {
                 if (stmt instanceof Ast.Statement.Return) {
                     ret = (Ast.Expression) ((Ast.Statement.Return) new Return(visit(stmt)).value.getValue()).getValue();
-                    return visit(ret);
+                    System.out.println("return: " + ret);
+                    Environment.PlcObject visret = visit(ret);
+                    scope = scope.getParent();
+                    return visret;
                 }
                 else
+                    System.out.println("stmt: " + stmt);
                     visit(stmt);
             }
+            scope = scope.getParent();
             return Environment.NIL;
         });
 
-        //scope = scope.getParent();
         return Environment.NIL;
     }
 
@@ -438,6 +443,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     @Override
     public Environment.PlcObject visit(Ast.Expression.Function ast) {
         int arity = ast.getArguments().size();
+        System.out.println("in expr.func & func name: " + ast.getName());
         Environment.Function function = scope.lookupFunction(ast.getName(), arity);
 
         List<Environment.PlcObject> args = new ArrayList();
@@ -445,6 +451,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
         for (Ast.Expression exp : ast.getArguments())
             args.add(visit(exp));
 
+        System.out.println("in expr.func & invoke: " + function.invoke(args));
         return function.invoke(args);
     }
 
