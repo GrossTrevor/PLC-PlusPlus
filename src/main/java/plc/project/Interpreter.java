@@ -388,7 +388,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 if(temp2.equals(BigDecimal.ZERO)){
                     throw new RuntimeException("cannot divide by zero");
                 }
-                System.out.println(temp1 + " and " + temp2);
                 return Environment.create(temp1.divide(temp2, RoundingMode.HALF_EVEN));
             }
             else{
