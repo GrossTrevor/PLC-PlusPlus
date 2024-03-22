@@ -63,11 +63,14 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
             for (Ast.Statement stmt : ast.getStatements()) {
                 if (stmt instanceof Ast.Statement.Return) {
                     ret = (Ast.Expression) ((Ast.Statement.Return) new Return(visit(stmt)).value.getValue()).getValue();
-                    return visit(ret);
+                    Environment.PlcObject visret = visit(ret);
+                    scope = scope.getParent();
+                    return visret;
                 }
                 else
                     visit(stmt);
             }
+            scope = scope.getParent();
             return Environment.NIL;
         });
 
