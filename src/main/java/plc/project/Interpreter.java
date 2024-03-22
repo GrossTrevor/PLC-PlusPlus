@@ -29,15 +29,11 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     public Environment.PlcObject visit(Ast.Source ast) {
         ast.getGlobals().forEach(this::visit);
         for(Ast.Function func : ast.getFunctions()){
-            if(func.getName().equals("main") && func.getParameters().size() == 0){
-                return visit(func);
-            }
-            else{
-                visit(func);
-            }
+            visit(func);
         }
-        //main function is not found
-        return Environment.NIL;
+
+        Environment.Function main = scope.lookupFunction("main", 0);
+        return main.invoke(List.of());
     }
 
     @Override
@@ -58,9 +54,9 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
             List<Environment.PlcObject> params = new ArrayList();
 
-            for (String param : ast.getParameters()) {
-                scope.defineVariable(param, false, Environment.create(BigInteger.TEN));
-                params.add(scope.lookupVariable(param).getValue());
+            for (int i = 0; i < ast.getParameters().size(); i++) {
+                scope.defineVariable(ast.getParameters().get(i), true, args.get(i));
+                params.add(scope.lookupVariable(ast.getParameters().get(i)).getValue());
             }
 
             Ast.Expression ret = null;
@@ -372,23 +368,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 BigDecimal temp2 = requireType(BigDecimal.class, visit(ast.getRight()));
                 return Environment.create(temp1.multiply(temp2));
             }
-//            else if(Ast.Expression.Access.class.isInstance(ast.getLeft())){
-//                System.out.println("fuck u: " + ((Ast.Expression.Access) ast.getLeft()).getName());
-//                Environment.Variable temp = scope.lookupVariable(((Ast.Expression.Access) ast.getLeft()).getName());
-//                System.out.println("temp: " + temp);
-//                System.out.println("val: " + temp.getValue().getValue());
-//                if(Ast.Expression.Access.class.isInstance(ast.getRight())){
-//                    //both sides are accesses
-//
-//                }
-//                else{
-//                    //only left is access
-//
-//                }
-//            }
-//            else if(Ast.Expression.Access.class.isInstance(ast.getRight())){
-//
-//            }
             else{
                 throw new RuntimeException("types of the sides of the equation do not match");
             }
