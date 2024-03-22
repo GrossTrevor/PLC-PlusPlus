@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
@@ -29,7 +28,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     @Override
     public Environment.PlcObject visit(Ast.Source ast) {
         ast.getGlobals().forEach(this::visit);
-        for(Ast.Function func : ast.getFunctions()) {
+        for(Ast.Function func : ast.getFunctions()){
             visit(func);
         }
 
@@ -50,7 +49,6 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Function ast) {
-        System.out.println("ast func " + ast.toString());
         scope.defineFunction(ast.getName(), ast.getParameters().size(), args -> {
             scope = new Scope(scope);
 
@@ -63,7 +61,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
             Ast.Expression ret = null;
             for (Ast.Statement stmt : ast.getStatements()) {
-                if (Ast.Statement.Return.class.isInstance(stmt)) {
+                if (stmt instanceof Ast.Statement.Return) {
                     ret = (Ast.Expression) ((Ast.Statement.Return) new Return(visit(stmt)).value.getValue()).getValue();
                     return visit(ret);
                 }
@@ -79,7 +77,8 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Statement.Expression ast) {
-        return visit(ast.getExpression());
+        visit(ast.getExpression());
+        return Environment.NIL;
     }
 
     @Override
