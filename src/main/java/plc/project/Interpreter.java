@@ -29,14 +29,12 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
     @Override
     public Environment.PlcObject visit(Ast.Source ast) {
         ast.getGlobals().forEach(this::visit);
-        for(Ast.Function func : ast.getFunctions()){
+        for(Ast.Function func : ast.getFunctions()) {
             visit(func);
-            if(func.getName().equals("main") && func.getParameters().isEmpty()){
-                Environment.Function main = scope.lookupFunction("main", 0);
-                return main.invoke(List.of());
-            }
         }
-        throw new RuntimeException("No main() function found!");
+
+        Environment.Function main = scope.lookupFunction("main", 0);
+        return main.invoke(List.of());
     }
 
     @Override
@@ -52,6 +50,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
 
     @Override
     public Environment.PlcObject visit(Ast.Function ast) {
+        System.out.println("ast func " + ast.toString());
         scope.defineFunction(ast.getName(), ast.getParameters().size(), args -> {
             scope = new Scope(scope);
 
