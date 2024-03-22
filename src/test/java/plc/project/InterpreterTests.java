@@ -43,6 +43,24 @@ final class InterpreterTests {
                                         new Ast.Expression.Access(Optional.empty(), "x"),
                                         new Ast.Expression.Access(Optional.empty(), "y")                                ))
                         )))
+                ), Environment.NIL.getValue()),
+                // VAR x = 1; VAR y = 2; VAR z = 3; FUN f() DO x + y + z; END FUN main() DO LET y = 4; RETURN f(5); END
+                Arguments.of("Scope Testing", new Ast.Source(
+                        Arrays.asList(
+                                new Ast.Global("x", true, Optional.of(new Ast.Expression.Literal(BigInteger.ONE))),
+                                new Ast.Global("y", true, Optional.of(new Ast.Expression.Literal(BigInteger.TWO))),
+                                new Ast.Global("z", true, Optional.of(new Ast.Expression.Literal(BigInteger.valueOf(3))))
+                        ),
+                        Arrays.asList(new Ast.Function("f", Arrays.asList("z"), Arrays.asList(
+                                new Ast.Statement.Expression(new Ast.Expression.Binary("+",
+                                        (new Ast.Expression.Binary("+",
+                                                new Ast.Expression.Access(Optional.empty(), "x"),
+                                                new Ast.Expression.Access(Optional.empty(), "y"))),
+                                        new Ast.Expression.Access(Optional.empty(), "z"))
+                        ))), new Ast.Function("main", Arrays.asList(), Arrays.asList(
+                                new Ast.Statement.Declaration("y", Optional.of(new Ast.Expression.Literal(BigInteger.valueOf(4)))),
+                                new Ast.Statement.Return(new Ast.Expression.Function("f", Arrays.asList(new Ast.Expression.Literal(BigInteger.valueOf(5))))))
+                        ))
                 ), Environment.NIL.getValue())
         );
     }
