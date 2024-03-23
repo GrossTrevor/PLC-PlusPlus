@@ -447,6 +447,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
         for (Ast.Expression exp : ast.getArguments())
             args.add(visit(exp));
 
+        scope = scope.getParent();
         return function.invoke(args);
     }
 
