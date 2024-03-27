@@ -91,6 +91,7 @@ public final class Parser {
      */
     public Ast.Global parseList() throws ParseException {
         String name = "";
+        String type = "";
         List<Ast.Expression> expressionList = new ArrayList<>();
         if (peek(Token.Type.IDENTIFIER)){
             name = tokens.get(0).getLiteral();
@@ -98,6 +99,17 @@ public final class Parser {
         }
         else
             throw new ParseException("parse exception, no identifier in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+
+        if (!peek(":")){
+            throw new ParseException("parse exception, no colon in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        match(":");
+
+        if (!peek(Token.Type.IDENTIFIER)){
+            throw new ParseException("parse exception, no type in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        type = tokens.get(0).getLiteral();
+        match(Token.Type.IDENTIFIER);
 
         if (!peek("=")){
             throw new ParseException("parse exception, no equals in list", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
@@ -121,7 +133,7 @@ public final class Parser {
         }
         match("]");
 
-        return new Ast.Global(name, true, Optional.of(new Ast.Expression.PlcList(expressionList)));
+        return new Ast.Global(name, type, true, Optional.of(new Ast.Expression.PlcList(expressionList)));
     }
 
     /**
@@ -130,20 +142,33 @@ public final class Parser {
      */
     public Ast.Global parseMutable() throws ParseException {
         String name = "";
+        String type = "";
         if (peek(Token.Type.IDENTIFIER)){
             name = tokens.get(0).getLiteral();
             match(Token.Type.IDENTIFIER);
         }
         else
             throw new ParseException("parse exception, no identifier in mutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+
+        if (!peek(":")){
+            throw new ParseException("parse exception, no colon in mutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        match(":");
+
+        if (!peek(Token.Type.IDENTIFIER)){
+            throw new ParseException("parse exception, no type in mutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        type = tokens.get(0).getLiteral();
+        match(Token.Type.IDENTIFIER);
+
         Ast.Expression exp = null;
         if (peek("=")){
             match("=");
             exp = parseExpression();
-            return new Ast.Global(name, true, Optional.of(exp));
+            return new Ast.Global(name, type, true, Optional.of(exp));
         }
         else
-            return new Ast.Global(name, true, Optional.empty());
+            return new Ast.Global(name, type, true, Optional.empty());
     }
 
     /**
@@ -152,17 +177,30 @@ public final class Parser {
      */
     public Ast.Global parseImmutable() throws ParseException {
         String name = "";
+        String type = "";
         if (peek(Token.Type.IDENTIFIER)){
             name = tokens.get(0).getLiteral();
             match(Token.Type.IDENTIFIER);
         }
         else
             throw new ParseException("parse exception, no identifier in immutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+
+        if (!peek(":")){
+            throw new ParseException("parse exception, no colon in immutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        match(":");
+
+        if (!peek(Token.Type.IDENTIFIER)){
+            throw new ParseException("parse exception, no type in immutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+        }
+        type = tokens.get(0).getLiteral();
+        match(Token.Type.IDENTIFIER);
+
         Ast.Expression exp = null;
         if (peek("=")){
             match("=");
             exp = parseExpression();
-            return new Ast.Global(name, false, Optional.of(exp));
+            return new Ast.Global(name, type, false, Optional.of(exp));
         }
         else
             throw new ParseException("parse exception, no equals sign in immutable", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
@@ -174,7 +212,9 @@ public final class Parser {
      */
     public Ast.Function parseFunction() throws ParseException {
         List<String> params = new ArrayList<>();
+        List<String> paramTypes = new ArrayList<>();
         List<Ast.Statement> states = new ArrayList<>();
+        Optional<String> type = Optional.empty();
         if (!peek("FUN"))
             return null;
 
@@ -198,12 +238,30 @@ public final class Parser {
                     break;
                 params.add(tokens.get(0).getLiteral());
                 match(tokens.get(0).getLiteral());
+                if (!peek(":")){
+                    throw new ParseException("parse exception, no parameter colon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+                }
+                match(":");
+                if (!peek(Token.Type.IDENTIFIER)){
+                    throw new ParseException("parse exception, no parameter type", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+                }
+                paramTypes.add(tokens.get(0).getLiteral());
+                match(tokens.get(0).getLiteral());
             }
         }
 
         if (!peek(")"))
             throw new ParseException("parse exception, no close parenthesis", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         match(")");
+
+        if (peek(":")){
+            match(":");
+            if (!peek(Token.Type.IDENTIFIER)){
+                throw new ParseException("parse exception, no return type after colon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+            }
+            type = Optional.of(tokens.get(0).getLiteral());
+            match(tokens.get(0).getLiteral());
+        }
 
         if (!peek("DO"))
             throw new ParseException("parse exception, no DO", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
@@ -215,7 +273,7 @@ public final class Parser {
             throw new ParseException("parse exception, no END", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
         match("END");
 
-        return new Ast.Function(name, params, states);
+        return new Ast.Function(name, params, paramTypes, type, states);
     }
 
     /**
