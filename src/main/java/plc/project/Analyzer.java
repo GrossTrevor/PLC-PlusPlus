@@ -56,7 +56,11 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.If ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if(!(((Ast.Expression.Literal)ast.getCondition()).getLiteral() instanceof Boolean) || ast.getThenStatements().equals(Arrays.asList())){
+            throw new RuntimeException("if statement does not have the correct format");
+        }
+        ((Ast.Expression.Literal)ast.getCondition()).setType(Environment.Type.BOOLEAN);
+        return null;
     }
 
     @Override
