@@ -36,7 +36,7 @@ final class ParserModifiedTests {
                 ),
                 Arguments.of("Global - Immutable",
                         Arrays.asList(
-                                //LET name: Type = expr;
+                                //VAL name: Type = expr;
                                 new Token(Token.Type.IDENTIFIER, "VAL", 0),
                                 new Token(Token.Type.IDENTIFIER, "name", 4),
                                 new Token(Token.Type.OPERATOR, ":", 9),
