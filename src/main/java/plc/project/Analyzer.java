@@ -60,6 +60,16 @@ public final class Analyzer implements Ast.Visitor<Void> {
             throw new RuntimeException("if statement does not have the correct format");
         }
         ((Ast.Expression.Literal)ast.getCondition()).setType(Environment.Type.BOOLEAN);
+        for(Ast.Statement stmt : ast.getThenStatements()){
+            scope = new Scope(scope);
+            visit(stmt);
+            scope = scope.getParent();
+        }
+        for(Ast.Statement stmt : ast.getElseStatements()){
+            scope = new Scope(scope);
+            visit(stmt);
+            scope = scope.getParent();
+        }
         return null;
     }
 
@@ -75,7 +85,16 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.While ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if(!(((Ast.Expression.Literal)ast.getCondition()).getLiteral() instanceof Boolean)){
+            throw new RuntimeException("if statement does not have the correct format");
+        }
+        ((Ast.Expression.Literal)ast.getCondition()).setType(Environment.Type.BOOLEAN);
+        for(Ast.Statement stmt : ast.getStatements()){
+            scope = new Scope(scope);
+            visit(stmt);
+            scope = scope.getParent();
+        }
+        return null;
     }
 
     @Override
