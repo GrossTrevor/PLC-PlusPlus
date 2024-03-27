@@ -401,8 +401,7 @@ public class Interpreter implements Ast.Visitor<Environment.PlcObject> {
                 BigInteger temp1 = requireType(BigInteger.class, visit(ast.getLeft()));
                 BigInteger temp2 = requireType(BigInteger.class, visit(ast.getRight()));
 
-                //BigInteger result = BigInteger.ONE;
-                // temp2 > 0
+                //they're adding one to the exponent == making it multiply one more time than it should :(
                 if(temp2.compareTo(BigInteger.ZERO) > 0){
                     while(!temp2.equals(BigInteger.ONE)){
                         temp1 = temp1.multiply(temp1);
