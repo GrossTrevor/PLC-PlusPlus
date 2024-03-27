@@ -364,18 +364,31 @@ public final class Parser {
      */
     public Ast.Statement.Declaration parseDeclarationStatement() throws ParseException {
         Ast.Expression temp1 = null;
+        Ast.Expression temp2 = null;
 
-        //change to peek
         if(peek(Token.Type.IDENTIFIER)){
             String name = tokens.get(0).getLiteral();
             match(Token.Type.IDENTIFIER);
-            if(tokens.has(0) && peek("=")){
-                match("=");
+            if(tokens.has(0) && peek(":")){
+                match(":");
                 if(tokens.has(0)){
                     temp1 = parseExpression();
                     if(peek(";")){
                         match(";");
-                        return new Ast.Statement.Declaration(name, Optional.of(temp1));
+                        return new Ast.Statement.Declaration(name, Optional.of(((Ast.Expression.Access)(temp1)).getName()), Optional.empty());
+                    }
+                }
+            }
+            if(tokens.has(0) && peek("=")){
+                match("=");
+                if(tokens.has(0)){
+                    temp2 = parseExpression();
+                    if(peek(";")){
+                        match(";");
+                        if(temp1 instanceof Ast.Expression.Access){
+                            return new Ast.Statement.Declaration(name, Optional.of(((Ast.Expression.Access)(temp1)).getName()), Optional.of(temp2));
+                        }
+                        return new Ast.Statement.Declaration(name, Optional.of(temp2));
                     }
                 }
                 else{
