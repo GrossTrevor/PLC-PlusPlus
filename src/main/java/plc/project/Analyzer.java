@@ -75,7 +75,13 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Switch ast) {
-        throw new UnsupportedOperationException();  // TODO
+        for(Ast.Statement.Case stmt : ast.getCases()){
+            System.out.println(ast.getCondition().getType());
+//            if((((Ast.Expression.Literal)ast.getCondition()).getLiteral() instanceof ast.getCondition().getType()){
+//
+//            }
+        }
+        return null;
     }
 
     @Override
@@ -133,7 +139,18 @@ public final class Analyzer implements Ast.Visitor<Void> {
     }
 
     public static void requireAssignable(Environment.Type target, Environment.Type type) {
-        throw new UnsupportedOperationException();  // TODO
+        if (target == Environment.Type.COMPARABLE && !(type == Environment.Type.CHARACTER || type == Environment.Type.DECIMAL || type == Environment.Type.INTEGER || type == Environment.Type.STRING))
+            throw new RuntimeException("runtime exception, illegal assignment to target == COMPARABLE");
+        if (target == Environment.Type.CHARACTER && !(type == Environment.Type.CHARACTER))
+            throw new RuntimeException("runtime exception, illegal assignment to target == CHARACTER");
+        if (target == Environment.Type.DECIMAL && !(type == Environment.Type.DECIMAL))
+            throw new RuntimeException("runtime exception, illegal assignment to target == DECIMAL");
+        if (target == Environment.Type.INTEGER && !(type == Environment.Type.INTEGER))
+            throw new RuntimeException("runtime exception, illegal assignment to target == INTEGER");
+        if (target == Environment.Type.STRING && !(type == Environment.Type.STRING))
+            throw new RuntimeException("runtime exception, illegal assignment to target == STRING");
+        if (target == Environment.Type.BOOLEAN && !(type == Environment.Type.BOOLEAN))
+            throw new RuntimeException("runtime exception, illegal assignment to target == BOOLEAN");
     }
 
 }
