@@ -162,6 +162,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
         }
         else if(ast.getOperator().equals(">") || ast.getOperator().equals("<") || ast.getOperator().equals("==") || ast.getOperator().equals("!=")){
             requireAssignable(Environment.Type.COMPARABLE, ast.getLeft().getType());
+            requireAssignable(Environment.Type.COMPARABLE, ast.getRight().getType());
             ast.setType(Environment.Type.BOOLEAN);
         }
         else if(ast.getOperator().equals("+")){
