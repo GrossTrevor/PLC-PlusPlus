@@ -56,7 +56,21 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.If ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getCondition());
+        if(!ast.getCondition().getType().equals(Environment.Type.BOOLEAN) || ast.getThenStatements().equals(Arrays.asList())){
+            throw new RuntimeException("if statement does not have the correct format");
+        }
+        for(Ast.Statement stmt : ast.getThenStatements()){
+            scope = new Scope(scope);
+            visit(stmt);
+            scope = scope.getParent();
+        }
+        for(Ast.Statement stmt : ast.getElseStatements()){
+            scope = new Scope(scope);
+            visit(stmt);
+            scope = scope.getParent();
+        }
+        return null;
     }
 
     @Override
@@ -71,7 +85,17 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.While ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getCondition());
+        if(!ast.getCondition().getType().equals(Environment.Type.BOOLEAN)){
+            throw new RuntimeException("if statement does not have the correct format");
+        }
+        visit(ast.getCondition());
+        for(Ast.Statement stmt : ast.getStatements()){
+            scope = new Scope(scope);
+            visit(stmt);
+            scope = scope.getParent();
+        }
+        return null;
     }
 
     @Override
@@ -120,7 +144,44 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Binary ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getLeft());
+        visit(ast.getRight());
+        if(ast.getOperator().equals("&&") || ast.getOperator().equals("||")){
+            if(ast.getLeft().getType().equals(Environment.Type.BOOLEAN) && ast.getRight().getType().equals(Environment.Type.BOOLEAN))
+                ast.setType(Environment.Type.BOOLEAN);
+            else
+                throw new RuntimeException("expected boolean for && and ||");
+        }
+        else if(ast.getOperator().equals(">") || ast.getOperator().equals("<") || ast.getOperator().equals("==") || ast.getOperator().equals("!=")){
+            requireAssignable(Environment.Type.COMPARABLE, ast.getLeft().getType());
+            requireAssignable(Environment.Type.COMPARABLE, ast.getRight().getType());
+            ast.setType(Environment.Type.BOOLEAN);
+        }
+        else if(ast.getOperator().equals("+")){
+            if(ast.getLeft().getType().equals(Environment.Type.STRING) || ast.getRight().getType().equals(Environment.Type.STRING))
+                ast.setType(Environment.Type.STRING);
+            else if(ast.getLeft().getType().equals(Environment.Type.INTEGER) && ast.getRight().getType().equals(Environment.Type.INTEGER))
+                ast.setType(Environment.Type.INTEGER);
+            else if(ast.getLeft().getType().equals(Environment.Type.DECIMAL) && ast.getRight().getType().equals(Environment.Type.DECIMAL))
+                ast.setType(Environment.Type.DECIMAL);
+            else
+                throw new RuntimeException("expected string, integer, or decimal for +");
+        }
+        else if(ast.getOperator().equals("-") || ast.getOperator().equals("*") || ast.getOperator().equals("/")){
+            if(ast.getLeft().getType().equals(Environment.Type.INTEGER) && ast.getRight().getType().equals(Environment.Type.INTEGER))
+                ast.setType(Environment.Type.INTEGER);
+            else if(ast.getLeft().getType().equals(Environment.Type.DECIMAL) && ast.getRight().getType().equals(Environment.Type.DECIMAL))
+                ast.setType(Environment.Type.DECIMAL);
+            else
+                throw new RuntimeException("expected integer or decimal for -, *, and /");
+        }
+        else if(ast.getOperator().equals("^")){
+            if(ast.getLeft().getType().equals(Environment.Type.INTEGER) && ast.getRight().getType().equals(Environment.Type.INTEGER))
+                ast.setType(Environment.Type.INTEGER);
+            else
+                throw new RuntimeException("expected integer for ^");
+        }
+        return null;
     }
 
     @Override
