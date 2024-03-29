@@ -2,6 +2,7 @@ package plc.project;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
         if(!(((Ast.Expression.Literal)ast.getCondition()).getLiteral() instanceof Boolean) || ast.getThenStatements().equals(Arrays.asList())){
             throw new RuntimeException("if statement does not have the correct format");
         }
-        ((Ast.Expression.Literal)ast.getCondition()).setType(Environment.Type.BOOLEAN);
+        visit(ast.getCondition());
         for(Ast.Statement stmt : ast.getThenStatements()){
             scope = new Scope(scope);
             visit(stmt);
@@ -76,7 +77,8 @@ public final class Analyzer implements Ast.Visitor<Void> {
     @Override
     public Void visit(Ast.Statement.Switch ast) {
         for(Ast.Statement.Case stmt : ast.getCases()){
-            System.out.println(ast.getCondition().getType());
+            System.out.println("condition: " + ((Ast.Expression.Access)ast.getCondition()).getName());
+            System.out.println("stmt: " + stmt);
 //            if((((Ast.Expression.Literal)ast.getCondition()).getLiteral() instanceof ast.getCondition().getType()){
 //
 //            }
@@ -94,7 +96,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
         if(!(((Ast.Expression.Literal)ast.getCondition()).getLiteral() instanceof Boolean)){
             throw new RuntimeException("if statement does not have the correct format");
         }
-        ((Ast.Expression.Literal)ast.getCondition()).setType(Environment.Type.BOOLEAN);
+        visit(ast.getCondition());
         for(Ast.Statement stmt : ast.getStatements()){
             scope = new Scope(scope);
             visit(stmt);
@@ -110,32 +112,103 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Literal ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if (ast.getLiteral() instanceof Boolean){
+            ast.setType(Environment.Type.BOOLEAN);
+            return null;
+        }
+        if (ast.getLiteral() instanceof Character){
+            ast.setType(Environment.Type.CHARACTER);
+            return null;
+        }
+        if (ast.getLiteral() instanceof String){
+            ast.setType(Environment.Type.STRING);
+            return null;
+        }
+        if (ast.getLiteral() instanceof BigInteger) {
+            if ((((BigInteger) ast.getLiteral()).compareTo(BigInteger.valueOf(Integer.MAX_VALUE))) == 1)
+                throw new RuntimeException("runtime exception, big integer value greater than integer max value");
+            ast.setType(Environment.Type.INTEGER);
+            return null;
+        }
+        if (ast.getLiteral() instanceof BigDecimal) {
+            if ((((BigDecimal) ast.getLiteral()).compareTo(BigDecimal.valueOf(Double.MAX_VALUE))) == 1)
+                throw new RuntimeException("runtime exception, big decimal value greater than integer max value");
+            ast.setType(Environment.Type.DECIMAL);
+            return null;
+        }
+        ast.setType(Environment.Type.NIL);
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Group ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if (!(ast.getExpression() instanceof Ast.Expression.Binary))
+            throw new RuntimeException("runtime exception, group expression not a binary");
+        ast.setType(ast.getExpression().getType());
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Binary ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getLeft());
+        visit(ast.getRight());
+        if(ast.getOperator().equals("&&") || ast.getOperator().equals("||")){
+            if(((Ast.Expression.Literal)ast.getLeft()).getType().equals(Environment.Type.BOOLEAN) && ((Ast.Expression.Literal)ast.getRight()).getType().equals(Environment.Type.BOOLEAN))
+                ast.setType(Environment.Type.BOOLEAN);
+            else
+                throw new RuntimeException("expected boolean for && and ||");
+        }
+        else if(ast.getOperator().equals(">") || ast.getOperator().equals("<") || ast.getOperator().equals("==") || ast.getOperator().equals("!=")){
+            requireAssignable(Environment.Type.COMPARABLE, ((Ast.Expression.Literal)ast.getLeft()).getType());
+            ast.setType(Environment.Type.BOOLEAN);
+        }
+        else if(ast.getOperator().equals("+")){
+            if(((Ast.Expression.Literal)ast.getLeft()).getType().equals(Environment.Type.STRING) || ((Ast.Expression.Literal)ast.getRight()).getType().equals(Environment.Type.STRING))
+                ast.setType(Environment.Type.STRING);
+            else if(((Ast.Expression.Literal)ast.getLeft()).getType().equals(Environment.Type.INTEGER) && ((Ast.Expression.Literal)ast.getRight()).getType().equals(Environment.Type.INTEGER))
+                ast.setType(Environment.Type.INTEGER);
+            else if(((Ast.Expression.Literal)ast.getLeft()).getType().equals(Environment.Type.DECIMAL) && ((Ast.Expression.Literal)ast.getRight()).getType().equals(Environment.Type.DECIMAL))
+                ast.setType(Environment.Type.DECIMAL);
+            else
+                throw new RuntimeException("expected string, integer, or decimal for +");
+        }
+        else if(ast.getOperator().equals("-") || ast.getOperator().equals("*") || ast.getOperator().equals("/")){
+            if(((Ast.Expression.Literal)ast.getLeft()).getType().equals(Environment.Type.INTEGER) && ((Ast.Expression.Literal)ast.getRight()).getType().equals(Environment.Type.INTEGER))
+                ast.setType(Environment.Type.INTEGER);
+            else if(((Ast.Expression.Literal)ast.getLeft()).getType().equals(Environment.Type.DECIMAL) && ((Ast.Expression.Literal)ast.getRight()).getType().equals(Environment.Type.DECIMAL))
+                ast.setType(Environment.Type.DECIMAL);
+            else
+                throw new RuntimeException("expected integer or decimal for -, *, and /");
+        }
+        else if(ast.getOperator().equals("^")){
+            if(((Ast.Expression.Literal)ast.getLeft()).getType().equals(Environment.Type.INTEGER) && ((Ast.Expression.Literal)ast.getRight()).getType().equals(Environment.Type.INTEGER))
+                ast.setType(Environment.Type.INTEGER);
+            else
+                throw new RuntimeException("expected integer for ^");
+        }
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Access ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if (ast.getOffset().isPresent() && ast.getOffset().get().getType() != Environment.Type.INTEGER)
+            throw new RuntimeException("runtime exception, offset of access not an integer");
+        ast.setVariable(scope.lookupVariable(ast.getName()));
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Function ast) {
-        throw new UnsupportedOperationException();  // TODO
+        ast.setFunction(scope.lookupFunction(ast.getName(), ast.getArguments().size()));
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.PlcList ast) {
-        throw new UnsupportedOperationException();  // TODO
+        for (Ast.Expression exp : ast.getValues()){
+            requireAssignable(ast.getType(), exp.getType());
+        }
+        return null;
     }
 
     public static void requireAssignable(Environment.Type target, Environment.Type type) {

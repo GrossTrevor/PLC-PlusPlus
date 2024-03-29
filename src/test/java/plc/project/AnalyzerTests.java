@@ -467,6 +467,17 @@ public final class AnalyzerTests {
                                 new Ast.Expression.Literal(BigDecimal.ONE)
                         ),
                         null
+                ),
+                Arguments.of("Comparable",
+                        // 1 == 1
+                        new Ast.Expression.Binary("==",
+                                new Ast.Expression.Literal(BigInteger.ONE),
+                                new Ast.Expression.Literal(BigInteger.ONE)
+                        ),
+                        init(new Ast.Expression.Binary("==",
+                                init(new Ast.Expression.Literal(BigInteger.ONE), ast -> ast.setType(Environment.Type.INTEGER)),
+                                init(new Ast.Expression.Literal(BigInteger.ONE), ast -> ast.setType(Environment.Type.INTEGER))
+                        ), ast -> ast.setType(Environment.Type.BOOLEAN))
                 )
         );
     }
