@@ -81,12 +81,40 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Literal ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if (ast.getLiteral() instanceof Boolean){
+            ast.setType(Environment.Type.BOOLEAN);
+            return null;
+        }
+        if (ast.getLiteral() instanceof Character){
+            ast.setType(Environment.Type.CHARACTER);
+            return null;
+        }
+        if (ast.getLiteral() instanceof String){
+            ast.setType(Environment.Type.STRING);
+            return null;
+        }
+        if (ast.getLiteral() instanceof BigInteger) {
+            if ((((BigInteger) ast.getLiteral()).compareTo(BigInteger.valueOf(Integer.MAX_VALUE))) == 1)
+                throw new RuntimeException("runtime exception, big integer value greater than integer max value");
+            ast.setType(Environment.Type.INTEGER);
+            return null;
+        }
+        if (ast.getLiteral() instanceof BigDecimal) {
+            if ((((BigDecimal) ast.getLiteral()).compareTo(BigDecimal.valueOf(Double.MAX_VALUE))) == 1)
+                throw new RuntimeException("runtime exception, big decimal value greater than integer max value");
+            ast.setType(Environment.Type.DECIMAL);
+            return null;
+        }
+        ast.setType(Environment.Type.NIL);
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Group ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if (!(ast.getExpression() instanceof Ast.Expression.Binary))
+            throw new RuntimeException("runtime exception, group expression not a binary");
+        ast.setType(ast.getExpression().getType());
+        return null;
     }
 
     @Override
@@ -96,12 +124,16 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Access ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if (ast.getOffset().isPresent() && ast.getOffset().get().getType() != Environment.Type.INTEGER)
+            throw new RuntimeException("runtime exception, offset of access not an integer");
+        ast.setVariable(scope.lookupVariable(ast.getName()));
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Function ast) {
-        throw new UnsupportedOperationException();  // TODO
+        ast.setFunction(scope.lookupFunction(ast.getName(), ast.getArguments().size()));
+        return null;
     }
 
     @Override
