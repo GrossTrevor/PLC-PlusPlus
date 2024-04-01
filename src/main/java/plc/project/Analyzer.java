@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +52,20 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Declaration ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if(ast.getValue().isPresent()){
+            visit(ast.getValue().get());
+        }
+        if(ast.getTypeName().isPresent()){
+            if(ast.getValue().isPresent()){
+                requireAssignable(Environment.getType(ast.getTypeName().get()), ast.getValue().get().getType());
+            }
+            ast.setVariable(scope.defineVariable(ast.getName(), ast.getName(), Environment.getType(ast.getTypeName().get()),true, Environment.NIL));
+        }
+        else if(ast.getValue().isPresent())
+            ast.setVariable(scope.defineVariable(ast.getName(), ast.getName(), ast.getValue().get().getType(),true, Environment.NIL));
+        else
+            throw new RuntimeException("missing variable type or initial condition");
+        return null;
     }
 
     @Override
@@ -73,7 +87,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
             throw new RuntimeException("if statement does not have the correct format");
         }
         try{
-            scope = scope.getParent();
+            scope = new Scope(scope);
             for(Ast.Statement stmt : ast.getThenStatements()){
                 visit(stmt);
             }
