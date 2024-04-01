@@ -42,7 +42,11 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Expression ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getExpression());
+        if(!(ast.getExpression() instanceof Ast.Expression.Function)){
+            throw new RuntimeException("expected ast.expression.function");
+        }
+        return null;
     }
 
     @Override
@@ -52,23 +56,32 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Assignment ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getReceiver());
+        visit(ast.getValue());
+        requireAssignable(ast.getReceiver().getType(), ast.getValue().getType());
+        if(!(ast.getReceiver() instanceof Ast.Expression.Access)){
+            throw new RuntimeException("expected ast.expression.access");
+        }
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.If ast) {
         visit(ast.getCondition());
-        if(!ast.getCondition().getType().equals(Environment.Type.BOOLEAN) || ast.getThenStatements().equals(Arrays.asList())){
+        requireAssignable(Environment.Type.BOOLEAN, ast.getCondition().getType());
+        if(ast.getThenStatements().equals(Arrays.asList())){
             throw new RuntimeException("if statement does not have the correct format");
         }
-        for(Ast.Statement stmt : ast.getThenStatements()){
-            scope = new Scope(scope);
-            visit(stmt);
+        try{
             scope = scope.getParent();
+            for(Ast.Statement stmt : ast.getThenStatements()){
+                visit(stmt);
+            }
+            for(Ast.Statement stmt : ast.getElseStatements()){
+                visit(stmt);
+            }
         }
-        for(Ast.Statement stmt : ast.getElseStatements()){
-            scope = new Scope(scope);
-            visit(stmt);
+        finally {
             scope = scope.getParent();
         }
         return null;
