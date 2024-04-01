@@ -2,10 +2,9 @@ package plc.project;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -38,7 +37,27 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Function ast) {
-        throw new UnsupportedOperationException();  // TODO
+        String name = ast.getName();
+        List<Environment.Type> typesList = new ArrayList<>();
+        Environment.Type returnType = Environment.Type.NIL;
+
+        for (String type : ast.getParameterTypeNames())
+            typesList.add(Environment.getType(type));
+        if (ast.getReturnTypeName().isPresent())
+            returnType = Environment.getType(ast.getReturnTypeName().get());
+
+        ast.setFunction(scope.defineFunction(name, name, typesList, returnType, args -> Environment.NIL));
+        function = ast;
+
+        scope = new Scope(scope);
+
+        for (Ast.Statement stmt : ast.getStatements()) {
+            visit(stmt);
+            if (stmt instanceof Ast.Statement.Return)
+                requireAssignable(returnType, ((Ast.Statement.Return) stmt).getValue().getType());
+        }
+        scope = scope.getParent();
+        return null;
     }
 
     @Override
@@ -103,14 +122,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Switch ast) {
-        for(Ast.Statement.Case stmt : ast.getCases()){
-            System.out.println("condition: " + ((Ast.Expression.Access)ast.getCondition()).getName());
-            System.out.println("stmt: " + stmt);
-//            if((((Ast.Expression.Literal)ast.getCondition()).getLiteral() instanceof ast.getCondition().getType()){
-//
-//            }
-        }
-        return null;
+        throw new UnsupportedOperationException();  // TODO
     }
 
     @Override
@@ -136,6 +148,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Return ast) {
+        visit(ast.getValue());
         requireAssignable(function.getFunction().getReturnType(), ast.getValue().getType());
         return null;
     }
@@ -230,6 +243,8 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Function ast) {
+        for (Ast.Expression exp : ast.getArguments())
+            visit(exp);
         ast.setFunction(scope.lookupFunction(ast.getName(), ast.getArguments().size()));
         return null;
     }
