@@ -2,6 +2,7 @@ package plc.project;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,38 +37,84 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Function ast) {
-        throw new UnsupportedOperationException();  // TODO
+        String name = ast.getName();
+        List<Environment.Type> typesList = new ArrayList<>();
+        Environment.Type returnType = Environment.Type.NIL;
+
+        for (String type : ast.getParameterTypeNames())
+            typesList.add(Environment.getType(type));
+        if (ast.getReturnTypeName().isPresent())
+            returnType = Environment.getType(ast.getReturnTypeName().get());
+
+        ast.setFunction(scope.defineFunction(name, name, typesList, returnType, args -> Environment.NIL));
+        function = ast;
+
+        scope = new Scope(scope);
+
+        for (Ast.Statement stmt : ast.getStatements()) {
+            visit(stmt);
+            if (stmt instanceof Ast.Statement.Return)
+                requireAssignable(returnType, ((Ast.Statement.Return) stmt).getValue().getType());
+        }
+        scope = scope.getParent();
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Expression ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getExpression());
+        if(!(ast.getExpression() instanceof Ast.Expression.Function)){
+            throw new RuntimeException("expected ast.expression.function");
+        }
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Declaration ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if(ast.getValue().isPresent()){
+            visit(ast.getValue().get());
+        }
+        if(ast.getTypeName().isPresent()){
+            if(ast.getValue().isPresent()){
+                requireAssignable(Environment.getType(ast.getTypeName().get()), ast.getValue().get().getType());
+            }
+            ast.setVariable(scope.defineVariable(ast.getName(), ast.getName(), Environment.getType(ast.getTypeName().get()),true, Environment.NIL));
+        }
+        else if(ast.getValue().isPresent())
+            ast.setVariable(scope.defineVariable(ast.getName(), ast.getName(), ast.getValue().get().getType(),true, Environment.NIL));
+        else
+            throw new RuntimeException("missing variable type or initial condition");
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Assignment ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getReceiver());
+        visit(ast.getValue());
+        requireAssignable(ast.getReceiver().getType(), ast.getValue().getType());
+        if(!(ast.getReceiver() instanceof Ast.Expression.Access)){
+            throw new RuntimeException("expected ast.expression.access");
+        }
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.If ast) {
         visit(ast.getCondition());
-        if(!ast.getCondition().getType().equals(Environment.Type.BOOLEAN) || ast.getThenStatements().equals(Arrays.asList())){
+        requireAssignable(Environment.Type.BOOLEAN, ast.getCondition().getType());
+        if(ast.getThenStatements().equals(Arrays.asList())){
             throw new RuntimeException("if statement does not have the correct format");
         }
-        for(Ast.Statement stmt : ast.getThenStatements()){
+        try{
             scope = new Scope(scope);
-            visit(stmt);
-            scope = scope.getParent();
+            for(Ast.Statement stmt : ast.getThenStatements()){
+                visit(stmt);
+            }
+            for(Ast.Statement stmt : ast.getElseStatements()){
+                visit(stmt);
+            }
         }
-        for(Ast.Statement stmt : ast.getElseStatements()){
-            scope = new Scope(scope);
-            visit(stmt);
+        finally {
             scope = scope.getParent();
         }
         return null;
@@ -101,6 +148,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Return ast) {
+        visit(ast.getValue());
         requireAssignable(function.getFunction().getReturnType(), ast.getValue().getType());
         return null;
     }
@@ -195,6 +243,8 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Function ast) {
+        for (Ast.Expression exp : ast.getArguments())
+            visit(exp);
         ast.setFunction(scope.lookupFunction(ast.getName(), ast.getArguments().size()));
         return null;
     }
