@@ -27,12 +27,33 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Source ast) {
-        throw new UnsupportedOperationException();  // TODO
+        for (Ast.Global global : ast.getGlobals())
+            visit(global);
+        for (Ast.Function func : ast.getFunctions()) {
+            visit(func);
+            if (func.getName().equals("main") && func.getParameters().isEmpty()){
+                if (func.getReturnTypeName().isPresent())
+                    requireAssignable(Environment.getType(func.getReturnTypeName().get()), Environment.Type.INTEGER);
+                else
+                    throw new RuntimeException("runtime exception, main function return type not assignable to integer");
+            }
+        }
+        scope.lookupFunction("main", 0);
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Global ast) {
-        throw new UnsupportedOperationException();  // TODO
+        String name = ast.getName();
+
+        if (ast.getValue().isPresent()) {
+            visit(ast.getValue().get());
+            requireAssignable(Environment.getType(ast.getTypeName()), ast.getValue().get().getType());
+        }
+        ast.setVariable(scope.defineVariable(name, name, Environment.getType(ast.getTypeName()), ast.getMutable(), Environment.NIL));
+
+        return null;
     }
 
     @Override
@@ -187,6 +208,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
     public Void visit(Ast.Expression.Group ast) {
         if (!(ast.getExpression() instanceof Ast.Expression.Binary))
             throw new RuntimeException("runtime exception, group expression not a binary");
+        visit(ast.getExpression());
         ast.setType(ast.getExpression().getType());
         return null;
     }
@@ -243,8 +265,10 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Function ast) {
-        for (Ast.Expression exp : ast.getArguments())
+        for (Ast.Expression exp : ast.getArguments()) {
+            requireAssignable(ast.getType(), exp.getType());
             visit(exp);
+        }
         ast.setFunction(scope.lookupFunction(ast.getName(), ast.getArguments().size()));
         return null;
     }
