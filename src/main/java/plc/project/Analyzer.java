@@ -143,12 +143,33 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Switch ast) {
-        throw new UnsupportedOperationException();  // TODO
+        visit(ast.getCondition());
+        for(int i = 0; i < ast.getCases().size(); i++){
+            Ast.Statement.Case stmt = ast.getCases().get(i);
+            visit(stmt);
+            if(stmt.getValue().isPresent())
+                requireAssignable(ast.getCondition().getType(), stmt.getValue().get().getType());
+            if(i == (ast.getCases().size() - 1) && stmt.getValue().isPresent())
+                throw new RuntimeException("default case should not have a value");
+        }
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Case ast) {
-        throw new UnsupportedOperationException();  // TODO
+        if(ast.getValue().isPresent())
+            visit(ast.getValue().get());
+        try{
+            scope = new Scope(scope);
+            for(Ast.Statement stmt : ast.getStatements()){
+                visit(stmt);
+            }
+        }
+        finally{
+            scope = scope.getParent();
+        }
+        return null;
     }
 
     @Override
@@ -265,11 +286,11 @@ public final class Analyzer implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Function ast) {
-        for (Ast.Expression exp : ast.getArguments()) {
-            requireAssignable(ast.getType(), exp.getType());
-            visit(exp);
-        }
         ast.setFunction(scope.lookupFunction(ast.getName(), ast.getArguments().size()));
+        for (int i = 0; i < ast.getArguments().size(); i++) {
+            visit(ast.getArguments().get(i));
+            requireAssignable(ast.getFunction().getParameterTypes().get(i), ast.getArguments().get(i).getType());
+        }
         return null;
     }
 
