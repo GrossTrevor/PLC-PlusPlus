@@ -70,6 +70,43 @@ final class ParserModifiedTests {
                                         new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt"))
                                 )))
                         )
+                ),
+                Arguments.of("Function Argument Type",
+                        Arrays.asList(
+                                //FUN name(arg: Type): Type DO stmt; END
+                                new Token(Token.Type.IDENTIFIER, "FUN", 0),
+                                new Token(Token.Type.IDENTIFIER, "name", 4),
+                                new Token(Token.Type.OPERATOR, "(", 8),
+                                new Token(Token.Type.IDENTIFIER, "arg", 9),
+                                new Token(Token.Type.OPERATOR, ":", 12),
+                                new Token(Token.Type.IDENTIFIER, "Type", 14),
+                                new Token(Token.Type.OPERATOR, ")", 18),
+                                new Token(Token.Type.IDENTIFIER, "DO", 19),
+                                new Token(Token.Type.IDENTIFIER, "stmt", 22),
+                                new Token(Token.Type.OPERATOR, ";", 26),
+                                new Token(Token.Type.IDENTIFIER, "END", 28)
+                        ),
+                        new Ast.Source(
+                                Arrays.asList(),
+                                Arrays.asList(new Ast.Function("name", List.of("arg"), List.of("Type"), Optional.empty(), Arrays.asList(
+                                        new Ast.Statement.Expression(new Ast.Expression.Access(Optional.empty(), "stmt"))
+                                )))
+                        )
+                ),
+                Arguments.of("Function Argument Missing Type",
+                        Arrays.asList(
+                                //FUN name(arg) DO stmt; END
+                                new Token(Token.Type.IDENTIFIER, "FUN", 0),
+                                new Token(Token.Type.IDENTIFIER, "name", 4),
+                                new Token(Token.Type.OPERATOR, "(", 8),
+                                new Token(Token.Type.IDENTIFIER, "arg", 9),
+                                new Token(Token.Type.OPERATOR, ")", 12),
+                                new Token(Token.Type.IDENTIFIER, "DO", 14),
+                                new Token(Token.Type.IDENTIFIER, "stmt", 17),
+                                new Token(Token.Type.OPERATOR, ";", 21),
+                                new Token(Token.Type.IDENTIFIER, "END", 23)
+                        ),
+                        null
                 )
         );
     }

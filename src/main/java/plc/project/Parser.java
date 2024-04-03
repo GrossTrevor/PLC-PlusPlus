@@ -231,6 +231,15 @@ public final class Parser {
         if (!peek(Token.Type.OPERATOR)){
             params.add(tokens.get(0).getLiteral());
             match(tokens.get(0).getLiteral());
+            if (!peek(":")){
+                throw new ParseException("parse exception, no parameter colon", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+            }
+            match(":");
+            if (!peek(Token.Type.IDENTIFIER)){
+                throw new ParseException("parse exception, no parameter type", tokens.get(-1).getIndex() + tokens.get(-1).getLiteral().length());
+            }
+            paramTypes.add(tokens.get(0).getLiteral());
+            match(tokens.get(0).getLiteral());
 
             while (peek(",")){
                 match(",");
