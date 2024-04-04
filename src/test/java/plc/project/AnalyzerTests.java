@@ -84,6 +84,13 @@ public final class AnalyzerTests {
                         new Ast.Global("name", "Decimal", true, Optional.of(new Ast.Expression.Literal(BigInteger.ONE))),
                         null
                 ),
+//                Arguments.of("List",
+//                        // LIST list: Integer = [1, 2];
+//                        new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(BigInteger.ONE), new Ast.Expression.Literal(BigInteger.TWO))))),
+//                        init(new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(BigInteger.ONE), new Ast.Expression.Literal(BigInteger.TWO))))), ast -> {
+//                            ast.setVariable(new Environment.Variable("list", "list", Environment.Type.INTEGER, true, Environment.NIL));
+//                        })
+//                ),
                 Arguments.of("List Type Mismatch",
                         // LIST list: Integer = [1.0, 2.0];
                         new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(new BigDecimal("1.0")), new Ast.Expression.Literal(new BigDecimal("2.0")))))),

@@ -48,10 +48,14 @@ public final class Analyzer implements Ast.Visitor<Void> {
         String name = ast.getName();
 
         if (ast.getValue().isPresent()) {
+            if (ast.getValue().get() instanceof Ast.Expression.PlcList)
+                ((Ast.Expression.PlcList) ast.getValue().get()).setType(Environment.getType(ast.getTypeName()));
             visit(ast.getValue().get());
+            ast.setVariable(scope.defineVariable(name, name, Environment.getType(ast.getTypeName()), ast.getMutable(), Environment.NIL));
             requireAssignable(Environment.getType(ast.getTypeName()), ast.getValue().get().getType());
         }
-        ast.setVariable(scope.defineVariable(name, name, Environment.getType(ast.getTypeName()), ast.getMutable(), Environment.NIL));
+        else
+            ast.setVariable(scope.defineVariable(name, name, Environment.getType(ast.getTypeName()), ast.getMutable(), Environment.NIL));
 
         return null;
     }
@@ -297,6 +301,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
     @Override
     public Void visit(Ast.Expression.PlcList ast) {
         for (Ast.Expression exp : ast.getValues()){
+            visit(exp);
             requireAssignable(ast.getType(), exp.getType());
         }
         return null;
