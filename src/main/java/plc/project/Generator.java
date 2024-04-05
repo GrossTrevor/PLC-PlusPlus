@@ -100,7 +100,14 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Access ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print(ast.getName());
+        if(ast.getOffset().isPresent()){
+            print("[");
+            print(ast.getOffset());
+            print("]");
+        }
+
+        return null;
     }
 
     @Override
