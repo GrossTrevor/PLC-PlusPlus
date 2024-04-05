@@ -1,6 +1,8 @@
 package plc.project;
 
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public final class Generator implements Ast.Visitor<Void> {
 
@@ -85,7 +87,17 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Literal ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if (ast.getLiteral() instanceof Boolean)
+            print(ast.getLiteral().toString().toLowerCase());
+        if (ast.getLiteral() instanceof Character)
+            print("'" + ast.getLiteral() + "'");
+        if (ast.getLiteral() instanceof String)
+            print("\"" + ast.getLiteral() + "\"");
+        if (ast.getLiteral() instanceof BigInteger)
+            print(((BigInteger) ast.getLiteral()).toString());
+        if (ast.getLiteral() instanceof BigDecimal)
+            print(((BigDecimal) ast.getLiteral()).toString());
+        return null;
     }
 
     @Override
@@ -105,12 +117,27 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Function ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print(ast.getFunction().getJvmName());
+        print("(");
+        for (Ast.Expression exp : ast.getArguments()){
+            if (!exp.equals(ast.getArguments().getFirst()))
+                print(", ");
+            visit(exp);
+        }
+        print(")");
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.PlcList ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("{");
+        for (Ast.Expression exp : ast.getValues()) {
+            if (!exp.equals(ast.getValues().getFirst()))
+                print(", ");
+            visit(exp);
+        }
+        print("}");
+        return null;
     }
 
 }
