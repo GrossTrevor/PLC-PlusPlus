@@ -82,7 +82,11 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Return ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("return ");
+        visit(ast.getValue());
+        print(";");
+
+        return null;
     }
 
     @Override
@@ -102,17 +106,43 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Group ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("(");
+        visit(ast.getExpression());
+        print(")");
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Binary ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if(ast.getOperator().equals("^")){
+            print("Math.pow(");
+            visit(ast.getLeft());
+            print(", ");
+            visit(ast.getRight());
+            print(")");
+        }
+        else{
+            visit(ast.getLeft());
+            print(" ");
+            print(ast.getOperator());
+            print(" ");
+            visit(ast.getRight());
+        }
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Expression.Access ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print(ast.getVariable().getJvmName());
+        if(ast.getOffset().isPresent()){
+            print("[");
+            print(ast.getOffset());
+            print("]");
+        }
+
+        return null;
     }
 
     @Override
