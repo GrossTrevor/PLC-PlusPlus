@@ -108,7 +108,7 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Expression.Access ast) {
-        print(ast.getName());
+        print(ast.getVariable().getJvmName());
         if(ast.getOffset().isPresent()){
             print("[");
             print(ast.getOffset());
