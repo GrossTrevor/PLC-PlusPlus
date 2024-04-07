@@ -47,12 +47,14 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Expression ast) {
-        throw new UnsupportedOperationException(); //TODO
+        visit(ast.getExpression());
+        print(";");
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Declaration ast) {
-        print(ast.getVariable().getJvmName() + " ");
+        print(ast.getVariable().getType().getJvmName() + " ");
         print(ast.getName());
         if(ast.getValue().isPresent()){
             print(" = ");
@@ -89,7 +91,7 @@ public final class Generator implements Ast.Visitor<Void> {
         if(!ast.getElseStatements().isEmpty()){
             print(" else {");
             indent++;
-            for (Ast.Statement stmt : ast.getThenStatements()){
+            for (Ast.Statement stmt : ast.getElseStatements()){
                 newline(indent);
                 visit(stmt);
             }
@@ -103,12 +105,46 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Switch ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("switch (");
+        visit(ast.getCondition());
+        print(") {");
+        indent++;
+        for (Ast.Statement stmt : ast.getCases()){
+            newline(indent);
+            visit(stmt);
+        }
+        indent--;
+        newline(indent);
+        print("}");
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Case ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if(ast.getValue().isPresent()){
+            print("case ");
+            visit(ast.getValue().get());
+            print(":");
+            indent++;
+            for (Ast.Statement stmt : ast.getStatements()){
+                newline(indent);
+                visit(stmt);
+            }
+            newline(indent);
+            print("break;");
+            indent--;
+        }
+        else{
+            print("default:");
+            indent++;
+            for (Ast.Statement stmt : ast.getStatements()){
+                newline(indent);
+                visit(stmt);
+            }
+            indent--;
+        }
+        return null;
     }
 
     @Override
