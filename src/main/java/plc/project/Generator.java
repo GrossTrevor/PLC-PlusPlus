@@ -86,32 +86,119 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Declaration ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print(ast.getVariable().getType().getJvmName() + " ");
+        print(ast.getName());
+        if(ast.getValue().isPresent()){
+            print(" = ");
+            visit(ast.getValue().get());
+        }
+        print(";");
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Assignment ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print(ast.getReceiver());
+        print(" = ");
+        visit(ast.getValue());
+        print(";");
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.If ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("if (");
+        visit(ast.getCondition());
+        print(") {");
+        indent++;
+        for (Ast.Statement stmt : ast.getThenStatements()){
+            newline(indent);
+            visit(stmt);
+        }
+        indent--;
+        newline(indent);
+        print("}");
+        if(!ast.getElseStatements().isEmpty()){
+            print(" else {");
+            indent++;
+            for (Ast.Statement stmt : ast.getElseStatements()){
+                newline(indent);
+                visit(stmt);
+            }
+            indent--;
+            newline(indent);
+            print("}");
+        }
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Switch ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("switch (");
+        visit(ast.getCondition());
+        print(") {");
+        indent++;
+        for (Ast.Statement stmt : ast.getCases()){
+            newline(indent);
+            visit(stmt);
+        }
+        indent--;
+        newline(indent);
+        print("}");
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Case ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if(ast.getValue().isPresent()){
+            print("case ");
+            visit(ast.getValue().get());
+            print(":");
+            indent++;
+            for (Ast.Statement stmt : ast.getStatements()){
+                newline(indent);
+                visit(stmt);
+            }
+            newline(indent);
+            print("break;");
+            indent--;
+        }
+        else{
+            print("default:");
+            indent++;
+            for (Ast.Statement stmt : ast.getStatements()){
+                newline(indent);
+                visit(stmt);
+            }
+            indent--;
+        }
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.While ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("while (");
+        visit(ast.getCondition());
+        print(") {");
+        if(ast.getStatements().isEmpty()){
+            print("}");
+        }
+        else{
+            indent++;
+            for (Ast.Statement stmt : ast.getStatements()){
+                newline(indent);
+                visit(stmt);
+            }
+            indent--;
+            newline(indent);
+            print("}");
+        }
+
+        return null;
     }
 
     @Override
