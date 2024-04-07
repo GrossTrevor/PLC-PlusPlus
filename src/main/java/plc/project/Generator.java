@@ -32,7 +32,31 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Source ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("public class Main {");
+        newline(0);
+        indent++;
+        for (Ast.Global stmt : ast.getGlobals()){
+            newline(indent);
+            visit(stmt);
+        }
+        newline(indent);
+        print("public static void main(String[] args) {");
+        indent++;
+        newline(indent);
+        print("System.exit(new Main().main());");
+        indent--;
+        newline(indent);
+        print("}");
+        newline(0);
+        for (Ast.Function stmt : ast.getFunctions()){
+            newline(indent);
+            visit(stmt);
+        }
+        newline(0);
+        indent--;
+        newline(indent);
+        print("}");
+        return null;
     }
 
     @Override
@@ -65,14 +89,14 @@ public final class Generator implements Ast.Visitor<Void> {
 
         print(") {");
         indent++;
-        newline(indent);
 
         for (Ast.Statement stmt : ast.getStatements()) {
-            visit(stmt);
             newline(indent);
+            visit(stmt);
         }
 
         indent--;
+        newline(indent);
         print("}");
         return null;
     }
