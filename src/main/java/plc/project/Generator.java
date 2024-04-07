@@ -52,12 +52,20 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Declaration ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print(ast.getVariable().getJvmName() + " ");
+        print(ast.getName());
+        if(ast.getValue().isPresent()){
+            print(" = ");
+            visit(ast.getValue().get());
+        }
+        print(";");
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.Assignment ast) {
-        visit(ast.getReceiver());
+        print(ast.getReceiver());
         print(" = ");
         visit(ast.getValue());
         print(";");
