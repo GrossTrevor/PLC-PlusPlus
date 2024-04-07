@@ -37,12 +37,25 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Global ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if (ast.getValue().isPresent() && ast.getValue().get() instanceof Ast.Expression.PlcList) {
+            print(ast.getVariable().getType().getJvmName() + "[] " + ast.getName() + " = ");
+            visit(ast.getValue().get());
+        }
+        else {
+            if (!ast.getMutable())
+                print("final ");
+            print(ast.getVariable().getType().getJvmName() + " " + ast.getName());
+            if (ast.getValue().isPresent()) {
+                print(" = " + ast.getValue().get());
+            }
+        }
+        print(";");
+        return null;
     }
 
     @Override
     public Void visit(Ast.Function ast) {
-        print(ast.getFunction().getJvmName() + " " + ast.getName() + "(");
+        print(ast.getFunction().getReturnType().getJvmName() + " " + ast.getName() + "(");
 
         for (int i = 0; i < ast.getParameters().size(); i++) {
             if (i != 0)
