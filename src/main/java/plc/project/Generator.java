@@ -57,12 +57,40 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Statement.Assignment ast) {
-        throw new UnsupportedOperationException(); //TODO
+        visit(ast.getReceiver());
+        print(" = ");
+        visit(ast.getValue());
+        print(";");
+
+        return null;
     }
 
     @Override
     public Void visit(Ast.Statement.If ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("if (");
+        visit(ast.getCondition());
+        print(") {");
+        indent++;
+        for (Ast.Statement stmt : ast.getThenStatements()){
+            newline(indent);
+            visit(stmt);
+        }
+        indent--;
+        newline(indent);
+        print("}");
+        if(!ast.getElseStatements().isEmpty()){
+            print(" else {");
+            indent++;
+            for (Ast.Statement stmt : ast.getThenStatements()){
+                newline(indent);
+                visit(stmt);
+            }
+            indent--;
+            newline(indent);
+            print("}");
+        }
+
+        return null;
     }
 
     @Override
@@ -85,8 +113,8 @@ public final class Generator implements Ast.Visitor<Void> {
         }
         else{
             indent++;
-            newline(indent);
             for (Ast.Statement stmt : ast.getStatements()){
+                newline(indent);
                 visit(stmt);
             }
             indent--;
