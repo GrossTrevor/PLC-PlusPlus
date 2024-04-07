@@ -32,17 +32,73 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Source ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print("public class Main {");
+        newline(0);
+        indent++;
+        for (Ast.Global stmt : ast.getGlobals()){
+            newline(indent);
+            visit(stmt);
+        }
+        newline(indent);
+        print("public static void main(String[] args) {");
+        indent++;
+        newline(indent);
+        print("System.exit(new Main().main());");
+        indent--;
+        newline(indent);
+        print("}");
+        newline(0);
+        for (Ast.Function stmt : ast.getFunctions()){
+            newline(indent);
+            visit(stmt);
+        }
+        newline(0);
+        indent--;
+        newline(indent);
+        print("}");
+        return null;
     }
 
     @Override
     public Void visit(Ast.Global ast) {
-        throw new UnsupportedOperationException(); //TODO
+        if (ast.getValue().isPresent() && ast.getValue().get() instanceof Ast.Expression.PlcList) {
+            print(ast.getVariable().getType().getJvmName() + "[] " + ast.getName() + " = ");
+            visit(ast.getValue().get());
+        }
+        else {
+            if (!ast.getMutable())
+                print("final ");
+            print(ast.getVariable().getType().getJvmName() + " " + ast.getName());
+            if (ast.getValue().isPresent()) {
+                print(" = " + ast.getValue().get());
+            }
+        }
+        print(";");
+        return null;
     }
 
     @Override
     public Void visit(Ast.Function ast) {
-        throw new UnsupportedOperationException(); //TODO
+        print(ast.getFunction().getReturnType().getJvmName() + " " + ast.getName() + "(");
+
+        for (int i = 0; i < ast.getParameters().size(); i++) {
+            if (i != 0)
+                print(", ");
+            print(ast.getFunction().getParameterTypes().get(i).getJvmName() + " " + ast.getParameters().get(i));
+        }
+
+        print(") {");
+        indent++;
+
+        for (Ast.Statement stmt : ast.getStatements()) {
+            newline(indent);
+            visit(stmt);
+        }
+
+        indent--;
+        newline(indent);
+        print("}");
+        return null;
     }
 
     @Override
