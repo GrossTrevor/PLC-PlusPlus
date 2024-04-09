@@ -238,14 +238,16 @@ public final class Generator implements Ast.Visitor<Void> {
     public Void visit(Ast.Expression.Literal ast) {
         if (ast.getLiteral() instanceof Boolean)
             print(ast.getLiteral().toString().toLowerCase());
-        if (ast.getLiteral() instanceof Character)
+        else if (ast.getLiteral() instanceof Character)
             print("'" + ast.getLiteral() + "'");
-        if (ast.getLiteral() instanceof String)
+        else if (ast.getLiteral() instanceof String)
             print("\"" + ast.getLiteral() + "\"");
-        if (ast.getLiteral() instanceof BigInteger)
+        else if (ast.getLiteral() instanceof BigInteger)
             print(((BigInteger) ast.getLiteral()).toString());
-        if (ast.getLiteral() instanceof BigDecimal)
+        else if (ast.getLiteral() instanceof BigDecimal)
             print(((BigDecimal) ast.getLiteral()).toString());
+        else
+            print("null");
         return null;
     }
 
