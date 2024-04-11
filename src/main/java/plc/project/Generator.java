@@ -32,13 +32,18 @@ public final class Generator implements Ast.Visitor<Void> {
 
     @Override
     public Void visit(Ast.Source ast) {
+        boolean hasGlobal = false;
+
         print("public class Main {");
         newline(0);
         indent++;
         for (Ast.Global stmt : ast.getGlobals()){
             newline(indent);
             visit(stmt);
+            hasGlobal = true;
         }
+        if(hasGlobal)
+            newline(0);
         newline(indent);
         print("public static void main(String[] args) {");
         indent++;
@@ -283,7 +288,7 @@ public final class Generator implements Ast.Visitor<Void> {
         print(ast.getVariable().getJvmName());
         if(ast.getOffset().isPresent()){
             print("[");
-            print(ast.getOffset());
+            visit(ast.getOffset().get());
             print("]");
         }
 
