@@ -84,13 +84,13 @@ public final class AnalyzerTests {
                         new Ast.Global("name", "Decimal", true, Optional.of(new Ast.Expression.Literal(BigInteger.ONE))),
                         null
                 ),
-//                Arguments.of("List",
-//                        // LIST list: Integer = [1, 2];
-//                        new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(BigInteger.ONE), new Ast.Expression.Literal(BigInteger.TWO))))),
-//                        init(new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(BigInteger.ONE), new Ast.Expression.Literal(BigInteger.TWO))))), ast -> {
-//                            ast.setVariable(new Environment.Variable("list", "list", Environment.Type.INTEGER, true, Environment.NIL));
-//                        })
-//                ),
+                Arguments.of("List",
+                        // LIST list: Integer = [1, 2];
+                        new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(BigInteger.ONE), new Ast.Expression.Literal(BigInteger.TWO))))),
+                        init(new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(BigInteger.ONE), new Ast.Expression.Literal(BigInteger.TWO))))), ast -> {
+                            ast.setVariable(new Environment.Variable("list", "list", Environment.Type.INTEGER, true, Environment.NIL));
+                        })
+                ),
                 Arguments.of("List Type Mismatch",
                         // LIST list: Integer = [1.0, 2.0];
                         new Ast.Global("list", "Integer", true, Optional.of(new Ast.Expression.PlcList(Arrays.asList(new Ast.Expression.Literal(new BigDecimal("1.0")), new Ast.Expression.Literal(new BigDecimal("2.0")))))),
@@ -141,6 +141,22 @@ public final class AnalyzerTests {
                                 new Ast.Statement.Return(init(new Ast.Expression.Literal(new BigInteger("0")), ast -> ast.setType(Environment.Type.INTEGER)))
                         )),
                         ast -> ast.setFunction(new Environment.Function("main", "main", Arrays.asList(), Environment.Type.INTEGER, args -> Environment.NIL)))
+                ),
+                Arguments.of("Valid Parameter Use",
+                        // FUN increment(num: Integer): Decimal DO RETURN num + 1; END
+                        new Ast.Function("increment", Arrays.asList("num"), Arrays.asList("Integer"), Optional.of("Integer"), Arrays.asList(
+                                new Ast.Statement.Return(new Ast.Expression.Binary("+",
+                                        new Ast.Expression.Access(Optional.empty(), "num"),
+                                        new Ast.Expression.Literal(BigInteger.ONE)
+                                ))
+                        )),
+                        init(new Ast.Function("increment", Arrays.asList("num"), Arrays.asList("Integer"), Optional.of("Integer"), Arrays.asList(
+                                        new Ast.Statement.Return(new Ast.Expression.Binary("+",
+                                                new Ast.Expression.Access(Optional.empty(), "num"),
+                                                new Ast.Expression.Literal(BigInteger.ONE)
+                                        ))
+                                )),
+                                ast -> ast.setFunction(new Environment.Function("increment", "increment", Arrays.asList(Environment.Type.INTEGER), Environment.Type.INTEGER, args -> Environment.NIL)))
                 ),
                 Arguments.of("Return Type Mismatch",
                         // FUN increment(num: Integer): Decimal DO RETURN num + 1; END
