@@ -251,7 +251,15 @@ public final class Analyzer implements Ast.Visitor<Void> {
         else if(ast.getOperator().equals(">") || ast.getOperator().equals("<") || ast.getOperator().equals("==") || ast.getOperator().equals("!=")){
             requireAssignable(Environment.Type.COMPARABLE, ast.getLeft().getType());
             requireAssignable(Environment.Type.COMPARABLE, ast.getRight().getType());
-            ast.setType(Environment.Type.BOOLEAN);
+
+            if(ast.getLeft().getType().equals(Environment.Type.INTEGER) && ast.getRight().getType().equals(Environment.Type.INTEGER))
+                ast.setType(Environment.Type.BOOLEAN);
+            else if(ast.getLeft().getType().equals(Environment.Type.DECIMAL) && ast.getRight().getType().equals(Environment.Type.DECIMAL))
+                ast.setType(Environment.Type.BOOLEAN);
+            else if(ast.getLeft().getType().equals(Environment.Type.COMPARABLE) && ast.getRight().getType().equals(Environment.Type.COMPARABLE))
+                ast.setType(Environment.Type.BOOLEAN);
+            else
+                throw new RuntimeException("expected integer or decimal for comparison");
         }
         else if(ast.getOperator().equals("+")){
             if(ast.getLeft().getType().equals(Environment.Type.STRING) || ast.getRight().getType().equals(Environment.Type.STRING))
@@ -308,7 +316,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
     }
 
     public static void requireAssignable(Environment.Type target, Environment.Type type) {
-        if (target == Environment.Type.COMPARABLE && !(type == Environment.Type.CHARACTER || type == Environment.Type.DECIMAL || type == Environment.Type.INTEGER || type == Environment.Type.STRING))
+        if (target == Environment.Type.COMPARABLE && !(target == Environment.Type.COMPARABLE || type == Environment.Type.CHARACTER || type == Environment.Type.DECIMAL || type == Environment.Type.INTEGER || type == Environment.Type.STRING))
             throw new RuntimeException("runtime exception, illegal assignment to target == COMPARABLE");
         if (target == Environment.Type.CHARACTER && !(type == Environment.Type.CHARACTER))
             throw new RuntimeException("runtime exception, illegal assignment to target == CHARACTER");

@@ -428,7 +428,10 @@ public final class AnalyzerTests {
     @ParameterizedTest(name = "{0}")
     @MethodSource
     public void testBinaryExpression(String test, Ast.Expression.Binary ast, Ast.Expression.Binary expected) {
-        test(ast, expected, new Scope(null));
+        test(ast, expected, init(new Scope(null), scope -> {
+            scope.defineVariable("comp", "comp", Environment.Type.COMPARABLE, true, Environment.create(new BigInteger("1")));
+            scope.defineVariable("comp2", "comp2", Environment.Type.COMPARABLE, true, Environment.create(new BigInteger("4")));
+        }));
     }
 
     private static Stream<Arguments> testBinaryExpression() {
@@ -492,7 +495,26 @@ public final class AnalyzerTests {
                                 init(new Ast.Expression.Literal(BigInteger.ONE), ast -> ast.setType(Environment.Type.INTEGER)),
                                 init(new Ast.Expression.Literal(BigInteger.ONE), ast -> ast.setType(Environment.Type.INTEGER))
                         ), ast -> ast.setType(Environment.Type.BOOLEAN))
+                ),
+                Arguments.of("Integer Decimal Comparison",
+                        // 2 != 1.0
+                        new Ast.Expression.Binary("!=",
+                                new Ast.Expression.Literal(BigInteger.TWO),
+                                new Ast.Expression.Literal(BigDecimal.ONE)
+                        ),
+                        null
                 )
+//                Arguments.of("Comparison with Var in Scope",
+//                        // comp > comp2
+//                        new Ast.Expression.Binary(">",
+//                                new Ast.Expression.Access(Optional.empty(),"comp"),
+//                                new Ast.Expression.Access(Optional.empty(),"comp2")
+//                        ),
+//                        init(new Ast.Expression.Binary("==",
+//                                init(new Ast.Expression.Literal(BigInteger.ONE), ast -> ast.setType(Environment.Type.INTEGER)),
+//                                init(new Ast.Expression.Literal(BigInteger.ONE), ast -> ast.setType(Environment.Type.INTEGER))
+//                        ), ast -> ast.setType(Environment.Type.BOOLEAN))
+//                )
         );
     }
 
