@@ -70,7 +70,8 @@ public final class Generator implements Ast.Visitor<Void> {
                 print("final ");
             print(ast.getVariable().getType().getJvmName() + " " + ast.getName());
             if (ast.getValue().isPresent()) {
-                print(" = " + ast.getValue().get());
+                print(" = ");
+                visit(ast.getValue().get());
             }
         }
         print(";");
