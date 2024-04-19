@@ -94,6 +94,10 @@ public final class Generator implements Ast.Visitor<Void> {
         }
 
         print(") {");
+        if(ast.getStatements().isEmpty()){
+            print("}");
+            return null;
+        }
         indent++;
 
         for (Ast.Statement stmt : ast.getStatements()) {
