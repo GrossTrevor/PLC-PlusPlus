@@ -66,8 +66,10 @@ public final class Analyzer implements Ast.Visitor<Void> {
         List<Environment.Type> typesList = new ArrayList<>();
         Environment.Type returnType = Environment.Type.NIL;
 
-        for (String type : ast.getParameterTypeNames())
-            typesList.add(Environment.getType(type));
+        for (int i = 0; i < ast.getParameters().size(); i++) {
+            typesList.add(Environment.getType(ast.getParameterTypeNames().get(i)));
+            scope.defineVariable(ast.getParameters().get(i), ast.getParameters().get(i), typesList.get(i), true, Environment.NIL);
+        }
         if (ast.getReturnTypeName().isPresent())
             returnType = Environment.getType(ast.getReturnTypeName().get());
 
@@ -308,7 +310,7 @@ public final class Analyzer implements Ast.Visitor<Void> {
     }
 
     public static void requireAssignable(Environment.Type target, Environment.Type type) {
-        if (target == Environment.Type.COMPARABLE && !(type == Environment.Type.CHARACTER || type == Environment.Type.DECIMAL || type == Environment.Type.INTEGER || type == Environment.Type.STRING))
+        if (target == Environment.Type.COMPARABLE && !(type == Environment.Type.CHARACTER || type == Environment.Type.DECIMAL || type == Environment.Type.INTEGER || type == Environment.Type.STRING || type == Environment.Type.COMPARABLE))
             throw new RuntimeException("runtime exception, illegal assignment to target == COMPARABLE");
         if (target == Environment.Type.CHARACTER && !(type == Environment.Type.CHARACTER))
             throw new RuntimeException("runtime exception, illegal assignment to target == CHARACTER");
