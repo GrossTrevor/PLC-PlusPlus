@@ -48,8 +48,8 @@ public final class Analyzer implements Ast.Visitor<Void> {
         String name = ast.getName();
 
         if (ast.getValue().isPresent()) {
-//            if (ast.getValue().get() instanceof Ast.Expression.PlcList)
-//                ((Ast.Expression.PlcList) ast.getValue().get()).setType(Environment.getType(ast.getTypeName()));
+            if (ast.getValue().get() instanceof Ast.Expression.PlcList)
+                ((Ast.Expression.PlcList) ast.getValue().get()).setType(Environment.getType(ast.getTypeName()));
             visit(ast.getValue().get());
             ast.setVariable(scope.defineVariable(name, name, Environment.getType(ast.getTypeName()), ast.getMutable(), Environment.NIL));
             requireAssignable(Environment.getType(ast.getTypeName()), ast.getValue().get().getType());
