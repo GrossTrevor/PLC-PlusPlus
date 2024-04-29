@@ -1,4 +1,5 @@
 # PLC++ 
-Java Interpreter and Compiler 
-Samantha Bennett and Trevor Gross
-COP 4020 Spring 2024
+Java Interpreter and Compiler </br>
+Samantha Bennett and Trevor Gross </br>
+COP 4020, Spring 2024 </br>
+Dr. Pete Dobbins </br>
