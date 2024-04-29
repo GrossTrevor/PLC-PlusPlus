@@ -507,27 +507,27 @@ final class InterpreterTests {
                         ),
                         new BigDecimal("1.5")
                 ),
-                // 2 ^ 2
+                // 2 ^ 10
                 Arguments.of("Power",
                         new Ast.Expression.Binary("^",
-                                new Ast.Expression.Literal(BigInteger.TWO),
-                                new Ast.Expression.Literal(BigInteger.TWO)
+                                new Ast.Expression.Literal(BigInteger.valueOf(8)),
+                                new Ast.Expression.Literal(BigInteger.valueOf(9))
                         ),
-                        BigInteger.valueOf(4)
+                        BigInteger.valueOf(134217728)
                 ),
                 // -2 ^ 2
                 Arguments.of("Power Negative Base",
                         new Ast.Expression.Binary("^",
                                 new Ast.Expression.Literal(BigInteger.TWO.negate()),
-                                new Ast.Expression.Literal(BigInteger.TWO)
+                                new Ast.Expression.Literal(BigInteger.valueOf(9))
                         ),
-                        BigInteger.valueOf(4)
+                        BigInteger.valueOf(-512)
                 ),
-                // -2 ^ 2
+                // 2 ^ -2
                 Arguments.of("Power Negative Exponent",
                         new Ast.Expression.Binary("^",
                                 new Ast.Expression.Literal(BigInteger.TWO),
-                                new Ast.Expression.Literal(BigInteger.TWO.negate())
+                                new Ast.Expression.Literal(BigInteger.TWO.valueOf(10).negate())
                         ),
                         BigInteger.valueOf(0)
                 )
